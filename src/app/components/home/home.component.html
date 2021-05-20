@@ -1,0 +1,31 @@
+<app-preloader></app-preloader>
+
+<div id="pcoded" class="pcoded">
+  <div class="pcoded-overlay-box"></div>
+  <div class="pcoded-container navbar-wrapper">
+    <app-cabezote></app-cabezote>
+
+    <div class="pcoded-main-container">
+      <div class="pcoded-wrapper">
+        <app-menu></app-menu>
+        <div class="pcoded-content">
+          <div class="pcoded-inner-content">
+            <!-- Main-body start -->  
+              <!-- <app-alert style="height: 700px"></app-alert> -->
+            <div class="main-body">
+              <div class="page-wrapper">
+
+                <router-outlet></router-outlet>
+
+              </div>
+              <div id="styleSelector"> </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<app-ie-warning></app-ie-warning>

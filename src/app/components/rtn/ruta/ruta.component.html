@@ -1,0 +1,107 @@
+<div class="page-body">
+  <!-- Base Style table start -->
+  <div class="card">
+    <div class="card-block">
+      <form #rutaForm="ngForm">
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Nombre ruta</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="ruta.name"
+                   placeholder="Digite el nombre de la ruta" required #name="ngModel">
+
+            <div *ngIf="name.invalid && (name.dirty || name.touched)"
+                 class="alert alert-danger">
+
+              <div *ngIf="name.errors.required">
+                El nombre es requerido.
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Ciudad origen</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="originCity" name="originCity" [(ngModel)]="ruta.originCity"
+                   placeholder="Digite la ciudad de origen" required #originCity="ngModel">
+
+            <div *ngIf="originCity.invalid && (originCity.dirty || originCity.touched)"
+                 class="alert alert-danger">
+
+              <div *ngIf="originCity.errors.required">
+                La ciudad es requerida.
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Dirección origen</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="originAddress" name="originAddress" [(ngModel)]="ruta.originAddress"
+                   placeholder="Digite la dirección de origen" required #originAddress="ngModel">
+
+            <div *ngIf="originAddress.invalid && (originAddress.dirty || originAddress.touched)"
+                 class="alert alert-danger">
+
+              <div *ngIf="originAddress.errors.required">
+                La dirección es requerida.
+              </div>
+
+            </div>
+            <div style="margin-top: 5px;"><button type="button"  title="Insertar origen" class="btn btn-primary m-b-20" (click)="addOriginPtn()">*</button></div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Ciudad destino</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="destinationCity" name="destinationCity" [(ngModel)]="ruta.destinationCity"
+                   placeholder="Digite la ciudad de destino" required #destinationCity="ngModel">
+            <div *ngIf="destinationCity.invalid && (destinationCity.dirty || destinationCity.touched)"
+                 class="alert alert-danger">
+
+              <div *ngIf="destinationCity.errors.required">
+                  La ciudad es requerida.
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Dirección destino</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="destinationAddress" name="destinationAddress" [(ngModel)]="ruta.destinationAddress"
+                   placeholder="Digite la dirección de destino" required #destinationAddress="ngModel">
+
+            <div *ngIf="destinationAddress.invalid && (destinationAddress.dirty || destinationAddress.touched)"
+                 class="alert alert-danger">
+
+              <div *ngIf="destinationAddress.errors.required">
+                  La dirección es requerida.
+              </div>
+            </div>
+             <div style="margin-top: 5px;"><button type="button"  title="Insertar destino" class="btn btn-primary m-b-20" (click)="addDestinationPtn()">*</button></div>
+          </div>
+
+        </div>
+
+      <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="createOriginDestination()">Crear Origen - Destino</button>
+      <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="traceRtn()">Trazar ruta</button>
+      <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="saveRtn()">Guardar ruta</button>
+    </form>
+    </div>
+    <div class="card-block">
+      <div id="b-map" class="set-map"></div>
+    </div>
+  </div>
+  <!-- Base Style table end -->
+</div>

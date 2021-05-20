@@ -1,0 +1,603 @@
+<ng-template #modalContent let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f.form.valid && crearActualizarReferencia(); f.form.valid && c('Al guardar')" #f="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar Referencia</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Nombre(s) y Apellido(s)</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="name" name="name" [(ngModel)]="referencia.name" placeholder="Digite el nombre" required #name="ngModel">
+          <div *ngIf="name.invalid && ( (name.dirty || name.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="name.errors.required">
+              El nombre es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Teléfono</label>
+        <div class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-phone"></i></span>
+          <input type="text" class="form-control" style="width:90%;padding:4px;" id="phone" name="phone" [(ngModel)]="referencia.phone" placeholder="Digite el teléfono" required #phone="ngModel">
+          <div *ngIf="phone.invalid && ( (phone.dirty || phone.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="phone.errors.required">
+              El teléfono es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Dirección</label>
+        <div class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-home"></i></span>
+          <input type="text" class="form-control" style="width:90%;padding:4px;" id="address" name="address" [(ngModel)]="referencia.address" placeholder="Digite la dirección" required #address="ngModel">
+          <div *ngIf="address.invalid && ( (address.dirty || address.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="address.errors.required">
+              La dirección es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+       <label class="col-5 col-form-label">Correo</label>
+       <div class="col-7">
+         <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-email"></i></span>
+         <input type="email" class="form-control" style="width:90%;padding:4px;" id="correo" name="correo" [(ngModel)]="referencia.email" placeholder="Digite el correo" pattern='^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$' #correo="ngModel">
+         <div *ngIf="correo.invalid&&referencia.email!=''" class="alert alert-danger">
+             El correo es inválido.
+         </div>
+       </div>
+     </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Tipo</label>
+        <div class="col-7">
+          <select class="form-control" name="type" id="type" [(ngModel)]="referencia.idTypeReference" #type="ngModel" required>
+            <option value="" disabled>Seleccione el tipo</option>
+            <option *ngFor="let tipoReferencia of tipos" [ngValue]="tipoReferencia.id">
+              {{ tipoReferencia.description}}
+            </option>
+          </select>
+          <div *ngIf="type.invalid && ( (type.dirty || type.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="type.errors.required">
+              El tipo es requerido.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+<div class="page-body">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="cover-profile">
+        <div class="profile-bg-img">
+          <img class="profile-bg-img img-fluid" src="assets/images/user-profile/bg-img1.jpg" alt="bg-img">
+          <div class="card-block user-info">
+            <div class="col-md-12">
+              <div class="col-xl-3 col-lg-4 col-md-4 col-xs-12">
+                <div class="social-timeline-left">
+                  <div class="card">
+                    <div class="social-profile" style="padding-bottom: 15px">
+                    <!-- <div class="social-profile" style="padding-bottom: 15px"> -->
+                      <img class="img-fluid width-100" src="assets/images/social/profile.jpg" alt="">
+                      <div class="profile-hvr m-t-15">
+
+
+                        <label for="file">
+                          <!-- <span class="icofont icofont-ui-edit p-r-10" aria-hidden="true"></span>-->
+                          <i class="icofont icofont-ui-edit p-r-10"></i>
+                          <input type="file" style="display:none" id="file" (change)="handleFileInput($event.target.files)" [(ngModel)]="conductor.img">
+                        </label>
+
+                        <label for="upload">
+                          <i class="icofont icofont-ui-delete"></i>
+                          <input type="button" style="display:none" id="upload" (click)="uploadFileToActivity()">
+                        </label>
+
+
+
+                          <!-- <div class="form-group">
+                              <label for="file">Choose File</label>
+                              <input type="file" id="file" (change)="handleFileInput($event.target.files)">
+                          </div> -->
+
+
+
+                       <!--  <i class="icofont icofont-ui-edit p-r-10"></i>
+                        <i class="icofont icofont-ui-delete"></i> -->
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <label class="file-upload btn btn-primary">
+                            Browse for file ... <input type="file" visbility="hidden"/>
+                        </label>
+                    </div>
+                </div>
+            </form> -->
+
+
+          <!--   <label for="upload">
+              <span class="icofont icofont-ui-edit p-r-10" aria-hidden="true"></span>
+              <input type="file" id="upload" style="display:none">
+            </label> -->
+
+          <!-- <div class="card-block user-info">
+            <div class="col-md-12">
+              <div class="media-left">
+                <a href="javascript:" class="profile-image">
+                  <img class="user-img img-radius" src="assets/images/user-profile/user-img.jpg" alt="user-img">
+                </a>
+              </div>
+              <div class="media-body row">
+                <div class="col-lg-12">
+                  <div class="user-title">
+                    <h2>{{conductor.name}} {{conductor.firstLastName}} {{conductor.secondLastName}}</h2>
+                  </div>
+                </div>
+                <div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="md-tabs md-card-tabs">
+        <ngb-tabset>
+          <ngb-tab>
+            <ng-template ngbTabTitle><b>Información básica</b></ng-template>
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                        <h5>Creación / Edición de conductor</h5>
+                    </div>
+                      <div class="card-block">
+                        <form #conductorForm="ngForm" (ngSubmit)="conductorForm.form.valid && crearActualizarConductor()">
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                              <label for="inputEmail4">Numero de documento</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <input type="text" class="form-control" id="identification" name="identification" [(ngModel)]="conductor.identification" placeholder="Digite el número de documento" required #identification="ngModel">
+                              </div>
+
+                              <div *ngIf="identification.invalid && ( (identification.dirty || identification.touched) || isSubmitted_1)"
+                               class="alert alert-danger">
+                                <div *ngIf="identification.errors.required">
+                                  El número de identificación es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                              <label for="inputPassword4">Lugar de documento</label>
+                              <div class="input-group">
+                                <span class="input-group-addon" id="sizing-addon2"><i class="icofont icofont-world"></i></span>
+                                <input type="text" class="form-control" id="docplace" name="docplace" [(ngModel)]="conductor.identificationPlace"
+                                 placeholder="Digite el lugar de documento" required #docplace="ngModel">
+
+                              </div>
+                              <div *ngIf="docplace.invalid && ( (docplace.dirty || docplace.touched) || isSubmitted_1)" class="alert alert-danger">
+
+                                <div *ngIf="docplace.errors.required">
+                                   El lugar del documento es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Nombre</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="name" name="name" [(ngModel)]="conductor.name" placeholder="Digite el nombre" required #name="ngModel">
+                              </div>
+                              <div *ngIf="name.invalid && ( (name.dirty || name.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="name.errors.required">
+                                  El nombre es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Primer apellido</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="firstLastName" name="firstLastName" [(ngModel)]="conductor.firstLastName" placeholder="Digite el primer apellido" required #firstLastName="ngModel">
+                              </div>
+                              <div *ngIf="firstLastName.invalid && ( (firstLastName.dirty || firstLastName.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="firstLastName.errors.required">
+                                  El primer apellido es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Segundo apellido</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="secondLastName" name="secondLastName" [(ngModel)]="conductor.secondLastName" placeholder="Digite el segundo apellido" required #secondLastName="ngModel">
+                              </div>
+                              <div *ngIf="secondLastName.invalid && ( (secondLastName.dirty || secondLastName.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="secondLastName.errors.required">
+                                  El segundo apellido es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-5">
+                              <label for="inputAddress">Fecha de nacimiento</label>
+                              <div class="input-group">
+                                <div class="input-group-addon" (click)="d.toggle()" >
+                                  <span class="icofont icofont-ui-calendar"></span>
+                                </div>
+                                <!--<span class="input-group-addon"><i class="icofont icofont-ui-calendar"></i></span>-->
+                                <!--<input type="text" class="datepicker" id="birthDate" name="birthDate" [(ngModel)]="conductor.birthDate"
+                                       placeholder="Digite la fecha de cumpleaños" (keyup)="onKey()" required #birthDate="ngModel">-->
+
+                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="birthDate" name="birthDate" [(ngModel)]="conductorExp.birthDate" ngbDatepicker #d="ngbDatepicker" (ngModelChange)="onChange($event)" (keyup)="onKey()" required #birthDate="ngModel">
+
+                              </div>
+                              <div *ngIf="birthDate.invalid && ( (birthDate.dirty || birthDate.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="birthDate.errors.required">
+                                  La fecha de nacimiento es requerida.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-5">
+                              <label for="inputAddress">Lugar de nacimiento</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+                                <input type="text" class="form-control" id="birthPlace" name="birthPlace" [(ngModel)]="conductor.birthPlace" placeholder="Digite el lugar de nacimiento" required #birthPlace="ngModel">
+                              </div>
+                              <div *ngIf="birthPlace.invalid && ( (birthPlace.dirty || birthPlace.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="birthPlace.errors.required">
+                                  El lugar de nacimiento es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-2 ">
+                              <label for="inputAddress">Edad</label>
+                              <input type="text" class="form-control" id="inputyears" disabled="" value="">
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">Dirección de residencia</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-home"></i></span>
+                                <input type="text" class="form-control" id="address" name="address" [(ngModel)]="conductor.homeAddress" placeholder="Digite la dirección de residencia" required #address="ngModel">
+                              </div>
+                              <div *ngIf="address.invalid && ( (address.dirty || address.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="address.errors.required">
+                                  La dirección de residencia es requerida.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                              <label for="inputAddress">Ciudad</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+                                <input type="text" class="form-control" id="city" name="city" [(ngModel)]="conductor.city" placeholder="Digite la ciudad" required #city="ngModel">
+                              </div>
+                              <div *ngIf="city.invalid && ( (city.dirty || city.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="city.errors.required">
+                                  La ciudad es requerida.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                              <label for="inputAddress">Barrio</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="district" name="district" [(ngModel)]="conductor.district" placeholder="Digite el barrio" required #district="ngModel">
+                              </div>
+                              <div *ngIf="district.invalid && ( (district.dirty || district.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="district.errors.required">
+                                  El Barrio es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-3">
+                              <label for="inputAddress">Estado civil</label>
+                              <div class="input-group">
+                                <select class="form-control" name="maritalstatus" id="maritalstatus" [(ngModel)]="conductor.maritalStatusId" #maritalstatus="ngModel" required>
+                                  <option value="" disabled>Seleccione el estado civil</option>
+                                  <option *ngFor="let estado of estadosCivil" [ngValue]="estado.id">
+                                    {{ estado.description}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="maritalstatus.invalid && ( (maritalstatus.dirty || maritalstatus.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="maritalstatus.errors.required">
+                                  El estado civil es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                              <label for="inputAddress">RH</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="rh" name="rh" [(ngModel)]="conductor.rh" placeholder="Digite el RH" required #rh="ngModel">
+                              </div>
+                              <div *ngIf="rh.invalid && ( (rh.dirty || rh.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="rh.errors.required">
+                                  El RH es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                             <label for="inputAddress">E-mail</label>
+                             <div class="input-group">
+                               <span class="input-group-addon"><i class="icofont icofont-ui-email"></i></span>
+                               <input type="email" class="form-control" id="correo" name="correo" [(ngModel)]="conductor.email" placeholder="Digite el correo" pattern='^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$' required #correo="ngModel">
+                             </div>
+                             <div *ngIf="correo.invalid && ( (correo.dirty || correo.touched) || isSubmitted_1)" class="alert alert-danger">
+                               <div *ngIf="correo.errors.required">
+                                 El correo es requerido.
+                               </div>
+                               <div *ngIf="correo.invalid&&conductor.email!=''">
+                                   El correo es inválido.
+                               </div>
+                             </div>
+                           </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Celular</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-mobile-phone"></i></span>
+                                <input type="text" class="form-control" id="phone1" name="phone1" [(ngModel)]="conductor.phone1" placeholder="Digite el telefono" required #phone1="ngModel">
+                              </div>
+                              <div *ngIf="phone1.invalid && ( (phone1.dirty || phone1.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="phone1.errors.required">
+                                  El telefono es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Telefono fijo</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-phone"></i></span>
+                                <input type="text" class="form-control" id="phone2" name="phone2" [(ngModel)]="conductor.phone2" placeholder="Digite el telefono" #phone2="ngModel" required >
+                              </div>
+                              <div *ngIf="phone2.invalid && ( (phone2.dirty || phone2.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="phone2.errors.required">
+                                  El telefono es requerido.
+                                </div>
+                              </div>
+
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Telefono alternativo</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-phone-circle"></i></span>
+                                <input type="text" class="form-control" id="phone3" name="phone3" [(ngModel)]="conductor.phone3" placeholder="Digite el telefono" #phone3="ngModel">
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-3">
+                              <label for="inputAddress">Banco</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-bank"></i></span>
+                                <input type="text" class="form-control" id="bank" name="bank" [(ngModel)]="conductor.bank" placeholder="Digite el banco" required #bank="ngModel">
+
+                              </div>
+                              <div *ngIf="bank.invalid && ( (bank.dirty || bank.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="bank.errors.required">
+                                  El banco es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                              <label for="inputAddress">Tipo de cuenta</label>
+                              <div class="input-group">
+                                <!--<input type="text" class="form-control" id="accounttype" name="accounttype" [(ngModel)]="conductor.accounttype" placeholder="Digite el tipo de cuenta" required #accounttype="ngModel">-->
+                                <select class="form-control" name="accounttype" id="accounttype" [(ngModel)]="conductor.accountTypeId" #accounttype="ngModel" required>
+                                  <option value="" disabled>Seleccione el tipo de cuenta</option>
+                                  <option *ngFor="let tipoCuenta of tiposCuenta" [ngValue]="tipoCuenta.id">
+                                    {{ tipoCuenta.description}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="accounttype.invalid && ( (accounttype.dirty || accounttype.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="accounttype.errors.required">
+                                  El tipo de cuenta es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                              <label for="inputAddress">Numero de la cuenta</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="accountnumber" name="accountnumber" [(ngModel)]="conductor.accountNumber" placeholder="Digite el número de cuenta" required #accountnumber="ngModel">
+                              </div>
+                              <div *ngIf="accountnumber.invalid && ( (accountnumber.dirty || accountnumber.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="accountnumber.errors.required">
+                                  El número de cuenta es requerida.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Nombre de la cuenta</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="accountname" name="accountname" [(ngModel)]="conductor.accountName" placeholder="Digite el nombre de la cuenta" required #accountname="ngModel">
+                              </div>
+                              <div *ngIf="accountname.invalid && ( (accountname.dirty || accountname.touched) || isSubmitted_1)" class="alert alert-danger">
+                                <div *ngIf="accountname.errors.required">
+                                  El nombre de la cuenta es requerida.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Estado</label>
+                            <div class="col-sm-10">
+
+                              <input class="border-checkbox" type="checkbox" id="checkboxStatus" name="checkboxStatus" #status="ngModel" [(ngModel)]="conductor.status">
+                              <label *ngIf="conductor.status" class="border-checkbox-label" for="checkboxStatus">Activo</label>
+                              <label *ngIf="!conductor.status" class="border-checkbox-label" for="checkboxStatus">Inactivo</label>
+
+                            </div>
+                          </div>
+
+                          <hr>
+                          <button type="submit" id="addEditConductor" class="btn btn-primary m-b-20" (click)="isSubmitted_1 = true">Guardar</button>
+                        </form>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab>
+            <ng-template ngbTabTitle><b>Referencias</b></ng-template>
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <div class="tab-pane" id="profile1" role="tabpanel">
+                  <div class="card">
+
+                    <div class="card-header">
+                      <h5>Creación / Edición de referencias personales</h5>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="button" class="btn btn-primary m-b-20" (click)="openModal(modalContent,-1)">+Nuevo</button>
+                    </div>
+                    <div class="card-block">
+                      <div class="dt-responsive table-responsive">
+                        <table id="base-style" class="table table-striped table-bordered nowrap table-hover">
+                          <thead>
+                            <tr>
+                              <th>Nombre</th>
+                              <th>Teléfono</th>
+                              <th>Dirección</th>
+                              <th>Correo</th>
+                              <th>Tipo</th>
+                              <th>Acción</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!--<tr>
+                              <td>Juan Carlos Perez</td>
+                              <td>4851150</td>
+                              <td>juca@gmail.com</td>
+                              <td>Personal</td>
+                              <td>
+                                <a href="#" style="padding-right: 15px"><i class="icofont icofont-edit-alt" data-toggle="tooltip" title="Editar" data-placement="top"></i></a>
+                                <a href="#" style="padding-right: 15px"><i class="icofont icofont-trash" data-toggle="tooltip" title="Eliminar" data-placement="top"></i></a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Adriana Gómez</td>
+                              <td>5851350</td>
+                              <td>adri.gomez@gmail.com</td>
+                              <td>Familiar</td>
+                              <td>
+                                <a href="#" style="padding-right: 15px"><i class="icofont icofont-edit-alt"></i></a>
+                                <a href="#" style="padding-right: 15px"><i class="icofont icofont-trash"></i></a>
+                              </td>
+                            </tr>-->
+                            <tr *ngFor="let ref of referencias; let i = index">
+                              <td>{{ref.name}}</td>
+                              <td>{{ref.phone}}</td>
+                              <td>{{ref.address}}</td>
+                              <td>{{ref.email}}</td>
+                              <td>{{ref.nameTypeReference}}</td>
+                              <td>
+                                <a (click)="openModal(modalContent,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                <a (click)="borrar(i);" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-trash"></i></a>
+                                <!--<button type="button" class="btn btn-warning alert-confirm m-b-10" (click)="openConfirmsSwal()">Confirm</button>-->
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab>
+            <ng-template ngbTabTitle><b>Anexos</b></ng-template>
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+
+                  </div>
+                </div>
+               </div>
+            </ng-template>
+          </ngb-tab>
+
+        </ngb-tabset>
+      </div>
+    </div>
+  </div>
+</div>

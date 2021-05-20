@@ -1,0 +1,75 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-header-text"><i class="icofont icofont-wheel m-r-10"></i> Perfiles</h5>
+  </div>
+
+  <div class="card-body">
+
+    <form #perfilesForm="ngForm" (submit)="perfilesForm.form.valid && guardarModulos()">
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Perfil</label>
+        <div class="col-sm-6">
+          <select class="form-control" name="perfil" id="perfil" [(ngModel)]="idPerfil"
+                  #perfil="ngModel" required (change)="obtenerModulos()">
+            <option value="" disabled>Seleccione un perfil</option>
+            <option *ngFor="let rol of roles" [ngValue]="rol.id">
+              {{ rol.descripcion }}
+            </option>
+          </select>
+
+          <div *ngIf="perfil.invalid && ( (perfil.dirty || perfil.touched) || isSubmitted)"
+               class="alert alert-danger">
+
+            <div *ngIf="perfil.errors.required">
+              El perfil es requerido.
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Permisos</th>
+            <th scope="col">Lectura</th>
+            <th scope="col">Escritura</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let m of modulos">
+          <tr>
+            <td scope="col"><label>{{m.Description}}</label></td>
+            <th scope="col">
+              <div class="checkbox-fade fade-in-primary">
+                <label>
+                  <input type="checkbox" id="check_r_{{m.id}}" name="check_r_{{m.id}}" [(ngModel)]="m.reading">
+                  <span class="cr">
+                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                  </span>
+                </label>
+              </div>
+            </th>
+
+            <th scope="col">
+              <div class="checkbox-fade fade-in-primary">
+                <label>
+                  <input type="checkbox" id="check_w_{{m.id}}" name="check_w_{{m.id}}" [(ngModel)]="m.writing">
+                  <span class="cr">
+                    <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                  </span>
+                </label>
+              </div>
+            </th>
+
+          </tr>
+        </tbody>
+      </table>
+      <div class="row text-center">
+        <div class="col-sm-12">
+          <button type="submit" (click)="isSubmitted = true" class="btn btn-primary waves-effect waves-light p-l-40 p-r-40">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+

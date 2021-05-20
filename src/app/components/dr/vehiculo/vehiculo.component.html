@@ -1,0 +1,688 @@
+<div class="page-body">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="md-tabs md-card-tabs">
+        <ngb-tabset>
+          <ngb-tab title="Información básica">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <!-- personal card start -->
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Creación / Edición de vehículo</h5>
+                      </div>
+                        <div class="card-block">
+                          <form #vehiculoForm="ngForm" (ngSubmit)="vehiculoForm.form.valid && crearActualizarVehiculo()">
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-2">
+                              <label>Placa</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-western-union-alt"></i></span>
+                                <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="vehiculo.plate" placeholder="Digita la placa" required #plate="ngModel">
+                              </div>
+                              <div *ngIf="plate.invalid && ((plate.dirty || plate.touched) || guardarVehiculo)" class="alert alert-danger">
+                                <div *ngIf="plate.errors.required">
+                                  La placa es requerida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                              <label>Modelo</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-calendar"></i></span>
+                                <input type="text" class="form-control" id="modelo" name="modelo" [(ngModel)]="vehiculo.model" required #model="ngModel" placeholder="Modelo">
+                              </div>
+                              <div *ngIf="model.invalid && ((model.dirty || model.touched) || guardarVehiculo)" class="alert alert-danger">
+                                <div *ngIf="model.errors.required">
+                                  El modelo es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-2 col-md-offsett-2">
+                              <label>Repotenciado</label>
+                              <div class="form-group row">
+                                <div class="checkbox-fade fade-in-primary">
+                                  <label>
+                                    <div class="col-sm-10">
+                                      <input class="border-checkbox" type="checkbox" id="checkboxRepotenc" name="checkboxRepotenc" #repowering="ngModel" [(ngModel)]="vehiculo.repowering">
+                                      <span class="cr">
+                                        <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                      </span>
+                                      <label *ngIf="vehiculo.repowering" class="border-checkbox-label" for="checkboxRepotenc">Si</label>
+                                      <label *ngIf="!vehiculo.repowering" class="border-checkbox-label" for="checkboxRepotenc">No</label>
+                                    </div>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label>Cilindraje</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="cilindraje" name="cilindraje" placeholder="Digite el cilindraje" [(ngModel)]="vehiculo.displacement"  required #displacement="ngModel">
+                              </div>
+                              <div *ngIf="displacement.invalid && ((displacement.dirty || displacement.touched) || guardarVehiculo)" class="alert alert-danger">
+                                <div *ngIf="displacement.errors.required">
+                                  El cilindraje es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Combustible</label>
+                                <div class="input-group">
+                                  <select class="form-control" name="combustible" id="combustible" [(ngModel)]="vehiculo.fuelTypeId" #fuelType="ngModel" required>
+                                    <option value="" disabled>Seleccione el tipo de combustible</option>
+                                    <option *ngFor="let tipoComb of tiposCombustible" [ngValue]="tipoComb.id"> {{ tipoComb.description}}
+                                    </option>
+                                </select>
+                              </div>
+                              <div *ngIf="fuelType.invalid && ((fuelType.dirty || fuelType.touched) || guardarVehiculo)" class="alert alert-danger">
+                                <div *ngIf="fuelType.errors.required">
+                                    El tipo de combustible es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">Marca vehículo</label>
+                              <div class="input-group">
+                                <select class="form-control" name="marca" id="marca" [(ngModel)]="vehiculo.brandId" #marca="ngModel" required (ngModelChange)="obtenerLineasVehiculo($event)">
+                                  <option value="" disabled>Seleccione la marca del vehículo</option>
+                                  <option *ngFor="let m of marcas" [ngValue]="m.brandId" >
+                                    {{ m.description }}
+                                  </option>
+                                </select>
+                                <!-- <select class="form-control" name="marca" id="marca" [(ngModel)]="vehiculo.brandId" #brand="ngModel" required>
+                                (ngModelChange)="vehiculo.brandId=obtenerLineasVehiculo($event, vehiculo.brandId)"
+                                (change)="handleChange($event.marca.description)"
+                                  <option value="" disabled>Seleccione la marca del vehículo</option>
+                                  <option [ngValue]="marca.id" *ngFor="let marca of marcas" (click)="handleChange(marca.description)">
+                                    {{ marca.description }}
+                                    {{label(marca.description)}}<
+                                  </option>
+                                </select> -->
+                              </div>
+                              <div *ngIf="marca.invalid && ((marca.dirty || marca.touched) || guardarVehiculo)" class="alert alert-danger">
+                                <div *ngIf="marca.errors.required">
+                                    La marca es requerida.
+                                </div>
+                              </div>
+                          </div>
+
+                          <div class="form-group col-md-6">
+                              <label for="inputAddress">Linea</label>
+                              <div class="input-group">
+                                <select class="form-control" name="line" id="line" [(ngModel)]="vehiculo.lineId" #line="ngModel" required>
+                                  <option value="" disabled>Seleccione la linea del vehículo</option>
+                                  <option *ngFor="let linea of lineasVehiculo" [ngValue]="linea.lineId">
+                                    {{ linea.lineName}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="line.invalid && ( (line.dirty || line.touched))" class="alert alert-danger">
+                                <div *ngIf="line.errors.required">
+                                    La linea es requerida.
+                                </div>
+                              </div>
+                          </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                                  <label for="inputAddress">Clase de vehiculo</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="vehicleClass" id="vehicleClass" [(ngModel)]="vehiculo.vehicleClassId" #vehicleClass="ngModel" required>
+                                      <option value="" disabled>Seleccione la clase de vehículo</option>
+                                      <option *ngFor="let clase of clasesVehiculo" [ngValue]="clase.id">
+                                        {{ clase.description }}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="vehicleClass.invalid && ((vehicleClass.dirty || vehicleClass.touched) || guardarVehiculo)" class="alert alert-danger">
+                                    <div *ngIf="vehicleClass.errors.required">
+                                        La clase es requerida.
+                                    </div>
+                                  </div>
+                              </div>
+
+                              <div class="form-group col-md-6">
+                                  <label for="inputAddress">Tipo carroceria</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="tipoCarroceria" id="tipoCarroceria" [(ngModel)]="vehiculo.vehicleTypeId" #vehicleType="ngModel" required>
+                                      <option value="" disabled>Seleccione el tipo de carroceria</option>
+                                      <option *ngFor="let tipo of tiposCarroceria" [ngValue]="tipo.id">
+                                        {{ tipo.description}}
+                                      </option>
+                                    </select>
+
+                                  </div>
+                                  <div *ngIf="vehicleType.invalid && ( (vehicleType.dirty || vehicleType.touched) || guardarVehiculo)" class="alert alert-danger">
+                                    <div *ngIf="vehicleType.errors.required">
+                                        El tipo de carroceria es requerido.
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-row col-md-12">
+                              <div class="form-group col-md-6">
+                                  <label for="inputAddress">Color vehículo</label>
+                                  <div class="input-group">
+
+                                    <select class="form-control" name="color" id="color" [(ngModel)]="vehiculo.colorId" #colorName="ngModel" required>
+                                      <option value="" disabled>Seleccione el color del vehiculo</option>
+                                      <option *ngFor="let color of coloresVehiculo" [ngValue]="color.id">
+                                        {{ color.description }}
+                                      </option>
+                                    </select>
+
+                                  </div>
+                                  <div *ngIf="colorName.invalid && ((colorName.dirty || colorName.touched) || guardarVehiculo)" class="alert alert-danger">
+                                    <div *ngIf="colorName.errors.required">
+                                        El color es requerido.
+                                    </div>
+                                  </div>
+                              </div>
+
+                              <div class="form-group col-md-6">
+                                <label>Numero de serie</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-social-slack"></i></span>
+                                  <input type="text" class="form-control" id="numSerie" name="numSerie" [(ngModel)]="vehiculo.serialNumber" #serialNumber="ngModel" placeholder="Digite el número de serie" required>
+                                </div>
+
+                                <div *ngIf="serialNumber.invalid && ((serialNumber.dirty || serialNumber.touched) || guardarVehiculo)"
+                                 class="alert alert-danger">
+                                  <div *ngIf="serialNumber.errors.required">
+                                    El número de serie es requerido.
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-row col-md-12">
+                              <div class="form-group col-md-6">
+                                <label>Número de motor</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-social-slack"></i></span>
+                                  <input type="text" class="form-control" id="motor" name="motor" [(ngModel)]="vehiculo.motorNumber" #motorNumber="ngModel" placeholder="Digite el número de motor" required>
+                                </div>
+                                <div *ngIf="motorNumber.invalid && ((motorNumber.dirty || motorNumber.touched) || guardarVehiculo)" class="alert alert-danger">
+                                  <div *ngIf="motorNumber.errors.required">
+                                    El número de motor es requerido.
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group col-md-6">
+                                <label>Numero de chasis</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-social-slack"></i></span>
+                                  <input type="text" class="form-control" id="chasis" name="chasis" [(ngModel)]="vehiculo.chassisNumber" #chassisNumber="ngModel" placeholder="Digite el número de chasis" required>
+                                </div>
+                                <div *ngIf="chassisNumber.invalid && ((chassisNumber.dirty || chassisNumber.touched) || guardarVehiculo)" class="alert alert-danger">
+                                  <div *ngIf="chassisNumber.errors.required">
+                                  El número de chasisi es requerido.
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-row col-md-12">
+                              <div class="form-group col-md-6">
+                                <label>Dirección WEB satelital</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-satellite"></i></span>
+                                  <input type="text" class="form-control" id="dirWeb" name="dirWeb" [(ngModel)]="vehiculo.satellitalWebAddress" #satellitalWebAddress="ngModel" placeholder="Digite la dirección WEB" required>
+                                </div>
+                                <div *ngIf="satellitalWebAddress.invalid && ((satellitalWebAddress.dirty || satellitalWebAddress.touched) || guardarVehiculo)" class="alert alert-danger">
+                                  <div *ngIf="satellitalWebAddress.errors.required">
+                                    La direccion web es requerida.
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <label>Fecha matricula</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-calendar"></i></span>
+                                  <input type="date" class="form-control" id="fechaMatricula" [(ngModel)]="vehiculo.registrationDate" #registrationDate="ngModel" name="fechaMatricula" required>
+                                </div>
+                                <div *ngIf="registrationDate.invalid && ((registrationDate.dirty || registrationDate.touched) || guardarVehiculo)" class="alert alert-danger">
+                                  <div *ngIf="registrationDate.errors.required">
+                                    La fechaMatricula es requerida.
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <label>Fecha expedición</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-calendar"></i></span>
+                                  <input type="date" class="form-control" id="fechaExpedicion" [(ngModel)]="vehiculo.expeditionDate" #expeditionDate="ngModel" name="fechaExpedicion" required>
+                                </div>
+                                <div *ngIf="expeditionDate.invalid && ( (expeditionDate.dirty || expeditionDate.touched) || guardarVehiculo)" class="alert alert-danger
+                                ">
+                                  <div *ngIf="expeditionDate.errors.required">
+                                    La fecha de Expedicion es requerida.
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <hr>
+
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-6">
+                                    <label>Usuario</label>
+                                    <div class="input-group">
+                                      <span class="input-group-addon"><i class="icofont icofont-ui-user"></i></span>
+                                      <input type="text" class="form-control" id="usuario" name="usuario" [(ngModel)]="vehiculo.user" #user="ngModel" placeholder="Digite el usuario" required>
+                                    </div>
+                                    <div *ngIf="user.invalid && ((user.dirty || user.touched) || guardarVehiculo)" class="alert alert-danger">
+                                      <div *ngIf="user.errors.required">
+                                        El usuario es requerido.
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group col-md-6">
+                                    <label>Contraseña</label>
+                                    <div class="input-group">
+                                      <span class="input-group-addon"><i class="icofont icofont-ui-password"></i></span>
+                                      <input type="password" class="form-control" id="contrasena" name="contrasena" [(ngModel)]="vehiculo.pwd" #pwd="ngModel" placeholder="Digite la contraseña" required>
+                                    </div>
+
+                                    <div *ngIf="pwd.invalid && ((pwd.dirty || pwd.touched) || guardarVehiculo)" class="alert alert-danger">
+                                      <div *ngIf="pwd.errors.required">
+                                        El número de identificación es requerido.
+                                      </div>
+                                    </div>
+                                  </div>
+                              </div>
+
+                              <hr>
+
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-2">
+                                  <label>Peso vacio</label>
+                                  <div class="input-group">
+                                    <input type="number" class="form-control" id="peso" name="peso" [(ngModel)]="vehiculo.weight" #weight="ngModel" placeholder="Digite el peso" required>
+                                  </div>
+                                  <div *ngIf="weight.invalid && ((weight.dirty || weight.touched) || guardarVehiculo)" class="alert alert-danger">
+                                    <div *ngIf="weight.errors.required">
+                                      El peso es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                  <label>Capacidad</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="capacidad" name="capacidad" [(ngModel)]="vehiculo.capacity" #capacity="ngModel" placeholder="Digite la capacidad" required>
+                                  </div>
+                                  <div *ngIf="capacity.invalid && ( (capacity.dirty || capacity.touched) || guardarVehiculo)"
+                                   class="alert alert-danger">
+                                    <div *ngIf="capacity.errors.required">
+                                      La capacidad.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-2">
+                                  <label>Flota propia</label>
+                                  <div class="form-group row">
+                                    <div class="checkbox-fade fade-in-primary">
+                                      <label>
+                                        <div class="col-sm-10">
+                                            <input class="border-checkbox" type="checkbox" id="checkboxFlotaPropia" name="checkboxFlotaPropia" #ownFleet="ngModel" [(ngModel)]="vehiculo.ownFleet">
+                                            <span class="cr">
+                                              <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                            </span>
+                                            <label *ngIf="vehiculo.ownFleet" class="border-checkbox-label" for="checkboxFlotaPropia">Si</label>
+                                            <label *ngIf="!vehiculo.ownFleet" class="border-checkbox-label" for="checkboxFlotaPropia">No</label>
+                                        </div>
+                                        </label>
+                                      </div>
+                                  </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label>Acreedor prendario</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-user-alt-3"></i></span>
+                                    <input type="text" class="form-control" id="prendario" name="prendario" #pledgee="ngModel" [(ngModel)]="vehiculo.pledgee" placeholder="Digite el número de documento" required>
+                                  </div>
+
+                                  <div *ngIf="pledgee.invalid && ((pledgee.dirty || pledgee.touched) || guardarVehiculo)" class="alert alert-danger">
+                                    <div *ngIf="pledgee.errors.required">
+                                      El número de identificación es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <hr>
+
+                              <button type="submit" id="guardarEditarVehiculo" class="btn btn-primary m-b-20" (click)="guardarVehiculo = true">Guardar</button>
+                          </form>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- personal card end-->
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="Fotos vehículo">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <!-- info card start -->
+
+                <!-- info card end -->
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="Propietario">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                      <div class="card-header">
+                        <h5>Propietario segun documentos</h5>
+                      </div>
+                      <div class="card-block">
+                      <form #propietarioForm="ngForm" (ngSubmit)="propietarioForm.form.valid && crearActualizarPropietario()">
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-6">
+                            <label>Titular de la tarjeta de propiedad</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-user"></i></span>
+                              <input type="text" class="form-control" id="titular" name="titular" placeholder="Digita el titular" disabled="" [(ngModel)]="propietario.titular" #titular="ngModel">
+                            </div>
+                            <div *ngIf="titular.invalid && ( (titular.dirty || titular.touched) || guardarPropietario)" class="alert alert-danger">
+                              <div *ngIf="identification.errors.required">
+                                El titular es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-6">
+                            <label>Cedula</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                              <!--<input type="text" class="form-control" id="cedula" name="cedula" placeholder="Digite la cedula" >-->
+                              <select id="cedula" name="cedula"  class="form-control" [(ngModel)]="propietario.cedula" (ngModelChange)="onChangeCedula_1($event)" #cedula="ngModel">
+                                <option *ngFor="let c of cedulas1" [value]="c.id">
+                                  {{c.identification}}
+                                </option>
+                              </select>
+                            </div>
+                            <div *ngIf="cedula.invalid && ( (cedula.dirty || cedula.touched) || guardarPropietario)" class="alert alert-danger">
+                              <div *ngIf="cedula.errors.required">
+                                La cedula es requerido.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-4">
+                            <label>Lugar de la cedula</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+                              <input type="text" class="form-control" id="lugCedula" name="lugCedula" placeholder="Digite el lugar de la cédula" disabled="" [(ngModel)]="propietario.lugCedula" #lugCedula="ngModel">
+                            </div>
+                            <div *ngIf="lugCedula.invalid && ((lugCedula.dirty || lugCedula.touched) || guardarPropietario)" class="alert alert-danger">
+                              <div *ngIf="lugCedula.errors.required">
+                                El lugar de la cedula es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label>Telefono fijo</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-ui-call"></i></span>
+                              <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Digite elt telefono fijo" disabled="" [(ngModel)]="propietario.telefono" #telefono="ngModel">
+                            </div>
+                            <div *ngIf="telefono.invalid && ( (telefono.dirty || telefono.touched) || guardarPropietario)" class="alert alert-danger">
+                              <div *ngIf="telefono.errors.required">
+                                El telefono fijo es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label>Celular</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-ui-cell-phone"></i></span>
+                              <input type="text" class="form-control" id="celular" name="celular" placeholder="Digite el celular" disabled="" [(ngModel)]="propietario.celular" #celular="ngModel">
+                              </div>
+                              <div *ngIf="celular.invalid && ( (celular.dirty || celular.touched) || guardarPropietario)" class="alert alert-danger">
+                                <div *ngIf="celular.errors.required">
+                                  El celular es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                              <label>Dirección</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-home"></i></span>
+                                  <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Digite la dirección" disabled="" [(ngModel)]="propietario.direccion" #direccion="ngModel">
+                              </div>
+                              <div *ngIf="direccion.invalid && ( (direccion.dirty || direccion.touched) || guardarPropietario)" class="alert alert-danger">
+                                <div *ngIf="direccion.errors.required">
+                                    La dirección es requerida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                              <label>Ciudad</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+                                <input type="text" class="form-control" id="ciudad" name="ciudad" placeholder="Digite la ciudad" disabled="" [(ngModel)]="propietario.ciudad" #ciudad="ngModel">
+                              </div>
+                              <div *ngIf="ciudad.invalid && ( (ciudad.dirty || ciudad.touched) || guardarPropietario)" class="alert alert-danger">
+                                <div *ngIf="ciudad.errors.required">
+                                    La ciudad es requerida.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+                          <hr>
+                          <hr>
+
+                          <div class="card-header">
+                            <h5>Propietario o poseedor del vehículo</h5>
+                          </div>
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                              <label>Nombre del propietario</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-user"></i></span>
+                                <input type="text" class="form-control" id="titularPos" name="titularPos" placeholder="Digita el titular" disabled="" [(ngModel)]="propietario.titularPos" #titularPos="ngModel">
+                              </div>
+                            <div *ngIf="titularPos.invalid && ( (titularPos.dirty || titularPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                              <div *ngIf="identification.errors.required">
+                                El titular es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-6">
+                            <label>Cedula</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                              <!--<input type="text" class="form-control" id="cedulaPos" name="cedulaPos" placeholder="Digite la cedula">-->
+                              <select id="cedulaPos" name="cedulaPos"  class="form-control" [(ngModel)]="propietario.cedulaPos" (ngModelChange)="onChangeCedula_2($event)" #cedulaPos="ngModel">
+                                <option *ngFor="let cedula of cedulas2" [value]="cedula.id">
+                                  {{cedula.identification}}
+                                </option>
+                              </select>
+                            </div>
+                            <div *ngIf="cedulaPos.invalid && ( (cedulaPos.dirty || cedulaPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                              <div *ngIf="cedulaPos.errors.required">
+                                La cedula es requerido.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-4">
+                            <label>Lugar de la cedula</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+                              <input type="text" class="form-control" id="lugCedulaPos" name="lugCedulaPos" placeholder="Digite el lugar de la cédula" disabled=""  [(ngModel)]="propietario.lugCedulaPos" #lugCedulaPos="ngModel">
+                            </div>
+                            <div *ngIf="lugCedulaPos.invalid && ( (lugCedulaPos.dirty || lugCedulaPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                              <div *ngIf="lugCedulaPos.errors.required">
+                                El lugar de la cedula es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label>Telefono fijo</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-ui-call"></i></span>
+                              <input type="text" class="form-control" id="telefonoPos" name="telefonoPos" placeholder="Digite el telefono fijo" disabled="" [(ngModel)]="propietario.telefonoPos" #telefonoPos="ngModel">
+                            </div>
+                            <div *ngIf="telefonoPos.invalid && ( (telefonoPos.dirty || telefonoPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                              <div *ngIf="telefonoPos.errors.required">
+                                El telefono fijo es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label>Celular</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-ui-cell-phone"></i></span>
+                              <input type="text" class="form-control" id="celularPos" name="celularPos" placeholder="Digite el celular" disabled=""  [(ngModel)]="propietario.celularPos" #celularPos="ngModel">
+                              </div>
+                              <div *ngIf="celularPos.invalid && ( (celularPos.dirty || celularPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                                <div *ngIf="celularPos.errors.required">
+                                  El celular es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                                  <label>Dirección</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-home"></i></span>
+                                    <input type="text" class="form-control" id="direccionPos" name="direccionPos" placeholder="Digite la dirección" disabled="" [(ngModel)]="propietario.direccionPos" #direccionPos="ngModel">
+                                  </div>
+                                  <div *ngIf="direccionPos.invalid && ((direccionPos.dirty || direccionPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                                    <div *ngIf="direccionPos.errors.required">
+                                      La dirección es requerida.
+                                    </div>
+                                  </div>
+                              </div>
+                              <div class="form-group col-md-6">
+                                <label>Ciudad</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+                                    <input type="text" class="form-control" id="ciudadPos" name="ciudadPos" placeholder="Digite la ciudad" disabled="" [(ngModel)]="propietario.ciudadPos" #ciudadPos="ngModel">
+                                  </div>
+
+                                  <div *ngIf="ciudadPos.invalid && ((ciudadPos.dirty || ciudadPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                                    <div *ngIf="ciudadPos.errors.required">
+                                        La ciudad es requerida.
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-row col-md-12">
+                              <div class="form-group col-md-6">
+                                <label>Número de la cuenta</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-social-slack"></i></span>
+                                  <input type="text" class="form-control" id="numCuentaPos" name="numCuentaPos" placeholder="Digite el número de la cuenta" disabled="" [(ngModel)]="propietario.numCuentaPos" #numCuentaPos="ngModel">
+                                </div>
+                                <div *ngIf="numCuentaPos.invalid && ((numCuentaPos.dirty || numCuentaPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                                  <div *ngIf="numCuentaPos.errors.required">
+                                    El numero de cuenta es requerido.
+                                  </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label>Tipo de cuenta</label>
+                                    <div class="input-group">
+                                      <!-- <span class="input-group-addon"><i class="icofont icofont-id"></i></span> -->
+                                      <input type="text" class="form-control" id="tipoCuentaPos" name="tipoCuentaPos" placeholder="Digite el tipo de cuenta" disabled="" [(ngModel)]="propietario.tipoCuentaPos" #tipoCuentaPos="ngModel">
+                                    </div>
+
+                                    <div *ngIf="tipoCuentaPos.invalid && ((tipoCuentaPos.dirty || tipoCuentaPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                                      <div *ngIf="tipoCuentaPos.errors.required">
+                                          EL tipo de cuenta es requerido
+                                      </div>
+                                    </div>
+                                </div>
+                              </div>
+
+                              <hr>
+
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-6">
+                                      <label>Entidad</label>
+                                      <div class="input-group">
+                                        <span class="input-group-addon"><i class="icofont icofont-bank"></i></span>
+                                        <input type="text" class="form-control" id="entidadPos" name="entidadPos" placeholder="Digite la entidad" disabled="" [(ngModel)]="propietario.entidadPos" #entidadPos="ngModel">
+                                      </div>
+                                      <div *ngIf="entidadPos.invalid && ((entidadPos.dirty || entidadPos.touched) || guardarPoseedor)" class="alert alert-danger">
+                                        <div *ngIf="entidadPos.errors.required">
+                                          La entidad es requerida.
+                                        </div>
+                                      </div>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                    <label>Nombre de la cuenta</label>
+                                      <div class="input-group">
+                                        <!-- <span class="input-group-addon"><i class="icofont icofont-id"></i></span> -->
+                                        <input type="text" class="form-control" id="nombreCuenta" name="nombreCuenta" placeholder="Digite el nombre de la cuenta" disabled="" [(ngModel)]="propietario.nombreCuenta" #nombreCuenta="ngModel">
+                                      </div>
+
+                                      <div *ngIf="nombreCuenta.invalid && ((nombreCuenta.dirty || nombreCuenta.touched) || guardarPoseedor)" class="alert alert-danger">
+                                        <div *ngIf="nombreCuenta.errors.required">
+                                            El nombre de la cuenta es requerido.
+                                        </div>
+                                      </div>
+                                  </div>
+                                </div>
+
+                              <button type="submit" id="guardarEditarVehiculo" class="btn btn-primary m-b-20" (click)="guardarPropario = true">Guardar</button>
+                          </form>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+
+        </ngb-tabset>
+      </div>
+    </div>
+  </div>
+</div>

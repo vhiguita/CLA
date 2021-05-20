@@ -1,0 +1,57 @@
+<!-- Page-header end -->
+<!-- Page-body start -->
+<div class="page-body">
+  <!-- Base Style table start -->
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de conductores</h5>
+      <span>Esta es la lista de conductores.</span>
+    </div>
+    <div class="card-block">
+      <button type="button" id="addConductor" [routerLink]="['/home/dr/conductor', '-1']" class="btn btn-primary m-b-20">+ Nuevo conductor</button>
+      <div class="table-responsive">
+        <table id="base-style" class="table">
+          <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Identificación</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Ciudad</th>
+            <th>Celular</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <!--<tr>
+            <td><img src="assets/images/product/product2.jpg" alt="prod img" class="img-fluid"></td>
+            <td>10.999.119
+            <td>Carlos Mario</td>
+            <td>Calle 33 # 56-20</td>
+            <td>3127328819</td>
+            <td>carlos.mario@gmail.com</td>
+          </tr>-->
+          <tr *ngFor="let e of conductores; let i = index">
+            <td><img src="assets/images/product/product2.jpg" alt="prod img" class="img-fluid"></td>
+            <td>{{e.identification}}</td>
+            <td>{{e.name}} {{e.firstLastName}} {{e.secondLastName}}</td>
+            <td>{{e.homeAddress}}</td>
+            <td>{{e.city}}</td>
+            <td>{{e.phone1}}</td>
+            <td>{{e.email}}</td>
+            <!--<td>{{e.status}}</td>-->
+            <td>{{e.status ? 'Activo' : 'Inactivo'}}</td>
+            <!--<td><button class="btn btn-primary m-b-20"  type="button" (click)="edit(i)">Editar</button></td>-->
+            <td><a (click)="edit(i)" style="cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a></td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Base Style table end -->
+</div>

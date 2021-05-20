@@ -1,0 +1,60 @@
+<div class="page-body">
+  <!-- Base Style table start -->
+  <div class="card">
+    <div class="card-block">
+      <form #rutaForm="ngForm">
+
+      <div class="form-row col-md-12">
+
+        <div class="form-group col-md-4">
+          <label>Tipo de punto de interés</label>
+          <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-map-pins"></i></span>
+            <select id="pts" name="pts"  class="form-control" [(ngModel)]="d.pts" #pts="ngModel">
+              <option *ngFor="let pts of punto" [value]="pts.id">
+                {{pts.description}}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label>Nombre</label>
+          <div class="input-group">
+            <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-user"></i></span>
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="d.name" placeholder="Digite el nombre" required #name="ngModel">
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label>Descripcion</label>
+          <div class="input-group">
+            <span class="input-group-addon" style="float:left;"><i class="icofont icofont-text-width"></i></span>
+            <input type="text" class="form-control" id="description" name="description" [(ngModel)]="d.description" placeholder="Digite la descripción" required #description="ngModel">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-12">
+          <label>Ubicación</label>
+          <div class="input-group">
+            <span class="input-group-addon" style="float:left;"><i class="icofont icofont-location-pin"></i></span>
+            <input type="text" class="form-control" id="address" name="address" [(ngModel)]="d.address" placeholder="Digite la ubicación" #address="ngModel">
+          </div>
+        </div>
+      </div>
+
+
+       <!--<button type="button" title="Crear punto de interés" class="btn btn-primary m-b-20" (click)="createPt()">Crear</button>-->
+       <button type="button" title="Guardar punto de interés actual"  class="btn btn-primary m-b-20" (click)="savePt()">Guardar</button>
+       <button type="button" title="Borrar punto de interés actual"  class="btn btn-primary m-b-20" style="background-color:#ff5370;border-color: #ff5370;" (click)="erasePt()">Borrar</button>
+       <div id="success-msg" style="color:#FF0000;display:none;"></div>
+    </form>
+    </div>
+    <div class="card-block">
+      <div id="map" class="set-map"></div>
+    </div>
+  </div>
+  <!-- Base Style table end -->
+</div>

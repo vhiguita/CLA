@@ -1,0 +1,39 @@
+<div class="page-body">
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de usuarios</h5>
+      <!-- <span>Esta es la lista de usuarios.</span> -->
+    </div>
+    <div class="card-block">
+      <button type="button" id="addEmpresa" [routerLink]="['/home/adm/usuario', '-1']" class="btn btn-primary m-b-20">+ Nuevo usuario</button>
+      <div class="dt-responsive table-responsive">
+        <table id="base-style" class="table table-striped table-bordered nowrap table-hover">
+          <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Perfil</th>
+            <th>Fecha creación</th>
+            <th>Estado</th>
+            <th>Notificaciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let u of usuarios">
+            <td [routerLink]="['/home/adm/usuario', u.id]">{{u.name}}</td>
+            <td>{{u.email}}</td>
+            <td>{{u.rol.description}}</td>
+            <td>{{u.creationDate}}</td>
+            <td>{{u.status}}</td>
+            <td>
+            <i data-toggle="tooltip" title="Ver notificaciones!" _ngcontent-c34="" class="fa fa-bell" id="notofUsr" [routerLink]="['/home/adm/notificacionesUsuario', u.id]"></i>
+            </td>
+          </tr>
+          </tbody>
+          <tfoot>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

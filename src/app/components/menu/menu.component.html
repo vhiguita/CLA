@@ -1,0 +1,80 @@
+<nav class="pcoded-navbar">
+  <div class="sidebar_toggle">
+    <a href="#">
+      <i class="icon-close icons"></i>
+    </a>
+  </div>
+  <div class="pcoded-inner-navbar main-menu">
+    <div class="pcoded-navigation-label" style="margin-top: 20px">
+      Administración
+    </div>
+    <ul class="pcoded-item pcoded-left-item">
+      <li class="" *ngIf="obtenerCodigoPerfilUsuario() == 'SUPERADMIN'">
+        <a [routerLink]="['/home/adm/empresas']">
+          <span class="pcoded-micon"><i class="ti-world"></i><b>N</b></span>
+          <span class="pcoded-mtext">Empresas</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN'">
+        <a [routerLink]="['/home/adm/usuarios']">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>N</b></span>
+          <span class="pcoded-mtext">Usuarios</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN'">
+        <a [routerLink]="['/home/adm/alertas']">
+          <span class="pcoded-micon"><i class="ti-alert"></i><b>N</b></span>
+          <span class="pcoded-mtext">Alertas</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN'">
+        <a [routerLink]="['/home/adm/perfiles']">
+          <span class="pcoded-micon"><i class="ti-target"></i><b>N</b></span>
+          <span class="pcoded-mtext">Perfiles</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN'">
+        <a [routerLink]="['/home/adm/notificacionesJerarquia']">
+          <span class="pcoded-micon"><i class="ti-notepad"></i><b>N</b></span>
+          <span class="pcoded-mtext">Notificaciones</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+    </ul>
+    <div class="pcoded-navigation-label">
+      Puntos de Interés
+    </div>
+    <ul class="pcoded-item pcoded-left-item">
+      <li class="">
+        <a [routerLink]="['/home/rtn/puntos']">
+          <span class="pcoded-micon"><i class="ti-map-alt"></i><b>N</b></span>
+          <span class="pcoded-mtext">Puntos</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+    </ul>
+    <div class="pcoded-navigation-label">
+      Vehículos
+    </div>
+    <ul class="pcoded-item pcoded-left-item">
+      <li class="">
+        <a [routerLink]="['/home/dr/conductores']">
+          <span class="pcoded-micon"><i class="ti-id-badge"></i><b>N</b></span>
+          <span class="pcoded-mtext">Conductores</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a [routerLink]="['/home/dr/vehiculos']">
+          <span class="pcoded-micon"><i class="ti-truck"></i><b>N</b></span>
+          <span class="pcoded-mtext">Vehículos</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

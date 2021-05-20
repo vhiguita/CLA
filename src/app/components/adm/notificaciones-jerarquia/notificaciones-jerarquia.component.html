@@ -1,0 +1,70 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-header-text"><i class="icofont icofont-notepad m-r-10"></i> Jerarquía de notificaciones</h5>
+  </div>
+
+  <div class="card-body">
+    <form #notificacionesForm="ngForm" (submit)="notificacionesForm.form.valid && guardarNotificacionesJerarquia()">
+      <table class="table" style="table-layout:fixed;">
+        <thead>
+        <tr>
+          <th scope="col">Notificacion</th>
+          <th scope="col">Recibe notificación</th>
+          <th scope="col">Nivel superior</th>
+          <th scope="col">Nivel superior 2</th>
+        </tr>
+        </thead>
+        <tbody *ngFor="let not of notificaciones">
+          <tr>
+            <td scope="col" style="word-wrap:break-word;white-space:normal"><label>{{not.nameNotification}}</label></td>
+            <td scope="col">
+              <label>{{not.nameRolHierarchy1}}</label>
+            </td>
+            <td scope="col">
+              <div class="form-group row">
+                <div class="col-sm-10">
+                  <select class="form-control" name="role2_{{not.idHierarchy}}" id="role2_{{not.idHierarchy}}" [(ngModel)]="not.hierarchy2" #role2="ngModel" required>
+                    <option value="">Seleccione un perfil</option>
+                    <option *ngFor="let perfil of roles" [ngValue]="perfil.id">
+                      {{ perfil.descripcion }}
+                    </option>
+                  </select>
+                  <div *ngIf="role2.invalid && ( (role2.dirty || role2.touched) || isSubmitted)" class="alert alert-danger">
+                    <div *ngIf="role2.errors.required">
+                      El perfil es requerido.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td scope="col">
+              <div class="form-group row">
+                <div class="col-sm-10">
+                  <select class="form-control" name="role1_{{not.idHierarchy}}" id="role1_{{not.idHierarchy}}" [(ngModel)]="not.hierarchy3"   #role1="ngModel" required>
+                    <option value="">Seleccione un perfil</option>
+                    <option *ngFor="let perfil of roles" [ngValue]="perfil.id">
+                      {{ perfil.descripcion }}
+                    </option>
+                  </select>
+                  <div *ngIf="role1.invalid && ( (role1.dirty || role1.touched) || isSubmitted)"
+                       class="alert alert-danger">
+                    <div *ngIf="role1.errors.required">
+                      El perfil es requerido.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row text-center">
+        <div class="col-sm-12">
+          <button type="submit" (click)="isSubmitted = true" class="btn btn-primary waves-effect waves-light p-l-40 p-r-40">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+

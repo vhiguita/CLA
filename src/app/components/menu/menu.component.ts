@@ -1,0 +1,22 @@
+import { Component, OnInit } from '@angular/core';
+import {CommonService} from '../../services/common.service';
+
+@Component({
+  selector: 'app-menu',
+  templateUrl: './menu.component.html',
+  styleUrls: ['./menu.component.css']
+})
+export class MenuComponent implements OnInit {
+
+  constructor(
+    private commonService: CommonService
+  ) { }
+
+  ngOnInit() {
+  }
+
+  obtenerCodigoPerfilUsuario(): string {
+    return this.commonService.obtenerCodigoPerfilUsuario();
+  }
+
+}

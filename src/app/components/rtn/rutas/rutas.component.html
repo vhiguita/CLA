@@ -1,0 +1,100 @@
+<!--<p>
+  rutas works!
+</p>-->
+<!-- Page-header start -->
+<!--
+<div class="page-header card">
+  <div class="card-block">
+    <h5 class="m-b-10">Styling DataTable</h5>
+    <p class="text-muted m-b-10">Easy to customise core stylesheets</p>
+    <ul class="breadcrumb-title b-t-default p-t-10">
+      <li class="breadcrumb-item">
+        <a href="index.html"> <i class="fa fa-home"></i> </a>
+      </li>
+      <li class="breadcrumb-item"><a href="#!">Data Table</a>
+      </li>
+      <li class="breadcrumb-item"><a href="#!">Styling</a>
+      </li>
+    </ul>
+  </div>
+</div>
+-->
+<!-- Page-header end -->
+<!-- Page-body start -->
+<div class="page-body">
+  <!-- Base Style table start -->
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de rutas</h5>
+      <span>Esta es la lista de rutas.</span>
+    </div>
+    <div class="card-block">
+      <button type="button" id="addEmpresa" [routerLink]="['/home/rtn/ruta', '-1']" class="btn btn-primary m-b-20">+ Nueva ruta</button>
+      <div class="dt-responsive table-responsive">
+        <table id="base-style" class="table table-striped table-bordered nowrap table-hover">
+          <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Ciudad Origen</th>
+            <th>Dirección Origen</th>
+            <th>Ciudad Destino</th>
+            <th>Dirección Destino</th>
+            <th>Estado</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <!--<tr *ngFor="let e of empresas" [routerLink]="['/home/adm/empresa', e.id]">
+            <td>{{e.identification}}</td>
+            <td>{{e.name}}</td>
+            <td>{{e.address}}</td>
+            <td>{{e.telephone}}</td>
+            <td>{{e.contact}}</td>
+            <td>{{e.email}}</td>
+            <td>{{e.insuranceNumber}}</td>
+            <td>{{e.insuranceValue}}</td>
+            <td>{{e.validationDistance}}</td>
+            <td>{{e.validationTime}}</td>
+            <td>{{e.continuosDrivingTime}}</td>
+            <td>{{e.plan.description}}</td>
+          </tr>
+          <tr [routerLink]="['/home/adm/empresa', '-123']">
+            <td>Tiger Nixon</td>
+            <td>System Architect</td>
+            <td>Edinburgh</td>
+            <td>61</td>
+            <td>2011/04/25</td>
+            <td>$320,800</td>
+          </tr>-->
+          <tr>
+          <td>Ruta 1</td>
+          <td>Medellin</td>
+          <td>CRR 86 # 50 80</td>
+          <td>Bogota</td>
+          <td>CRR 86 # 50 80</td>
+          <td>Finalizado</td>
+         </tr>
+          <tr>
+            <td>Ruta 2</td>
+            <td>Cali</td>
+            <td>CRR 46 # 20 80</td>
+            <td>Bogota</td>
+            <td>CRR 67 # 100 80</td>
+            <td>Asignado</td>
+          </tr>
+          <tr>
+            <td>Ruta 3</td>
+            <td>Pereira</td>
+            <td>CRR 40 # 20 90</td>
+            <td>Bogota</td>
+            <td>CRR 27 # 100 80</td>
+            <td>No asignado</td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Base Style table end -->
+</div>

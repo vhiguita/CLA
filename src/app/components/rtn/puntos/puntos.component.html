@@ -1,0 +1,41 @@
+<!-- Page-header end -->
+<!-- Page-body start -->
+<div class="page-body">
+  <!-- Base Style table start -->
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de puntos de interés</h5>
+      <span>Esta es la lista de puntos.</span>
+    </div>
+    <div class="card-block">
+      <button type="button" id="addEmpresa" [routerLink]="['/home/rtn/punto','-1']" class="btn btn-primary m-b-20">+ Nuevo punto</button>
+      <div class="dt-responsive table-responsive">
+        <table id="tbl-pts" class="table table-striped table-bordered nowrap table-hover">
+          <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Tipo</th>
+            <th> </th>
+            <th> </th>
+
+          </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let e of puntos; let i = index">
+              <td>{{e.name}}</td>
+              <td>{{e.description}}</td>
+              <td>{{e.nameType}}</td>
+              <td><a (click)="edit(i)" style="cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a></td>
+              <td><a (click)="delete(i)" style="cursor: pointer;"><i class="icofont icofont-trash"></i></a></td>
+              <!--<td><button class="btn btn-primary m-b-20"  type="button" (click)="edit(i)">Editar</button></td>
+              <td><button class="btn btn-primary m-b-20"  type="button" (click)="delete(i)">Borrar</button></td>-->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Base Style table end -->
+</div>

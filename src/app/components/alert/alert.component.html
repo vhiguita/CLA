@@ -1,0 +1,7 @@
+<div>
+<!--<div style="z-index: 500000; height: 160px">-->
+  <div style="cursor: pointer" *ngFor="let alert of alerts" class="{{ cssClass(alert) }} alert-dismissable" (click)="removeAlert(alert)">
+    {{alert.message}}
+    <a class="close" (click)="removeAlert(alert)">&times;</a>
+  </div>
+</div>

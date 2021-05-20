@@ -1,0 +1,96 @@
+<div class="page-body">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>Creación / Edición de usuario</h5>
+        </div>
+
+
+
+        <div class="card-block">
+          <form #usuarioForm="ngForm" (ngSubmit)="usuarioForm.form.valid && crearActualizarUsuario()">
+<!-- 
+             <div class="form-group row">
+                <label class="col-5 col-form-label">Correo</label>
+                <div class="col-7">
+                  <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-email"></i></span>
+                  <input type="email" class="form-control" style="width:90%;padding:4px;" id="correo" name="correo" [(ngModel)]="referencia.email" placeholder="Digite el correo" #correo="ngModel">
+                </div>
+              </div> -->
+
+            <div class="form-row col-md-12">
+              <div class="form-group col-md-6">
+                <label>Nombre</label>
+                <div class="input-group">
+                  <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-user"></i></span>             
+                  <input type="text" class="form-control" id="name" name="name" [(ngModel)]="usuario.name" placeholder="Digite el nombre" required #name="ngModel">
+                </div>
+                <div *ngIf="name.invalid && ( (name.dirty || name.touched) || isSubmitted)" class="alert alert-danger">
+                  <div *ngIf="name.errors.required">
+                    El nombre es requerido.
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label>Correo</label>
+                <div class="input-group">
+                  <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-email"></i></span>
+                  <input type="email" class="form-control" id="correo" name="correo" [(ngModel)]="usuario.email" placeholder="Digite el correo" required #correo="ngModel">
+                </div>
+                <div *ngIf="correo.invalid && ( (correo.dirty || correo.touched) || isSubmitted)" class="alert alert-danger">
+                  <div *ngIf="correo.errors.required">
+                    El correo es requerido.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row col-md-12">
+              <div class="form-group col-md-6">
+                <label >Perfil</label>
+                <div class="input-group">
+                  <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-user-group"></i></span>
+                  <select class="form-control" name="role" id="role" [(ngModel)]="usuario.rol.id" #role="ngModel" required>
+                    <option value="" disabled>Seleccione un perfil</option>
+                    <option *ngFor="let perfil of roles" [ngValue]="perfil.id">
+                      {{ perfil.descripcion }}
+                    </option>
+                  </select>
+                </div>
+                <div *ngIf="role.invalid && ( (role.dirty || role.touched) || isSubmitted)" class="alert alert-danger">
+                  <div *ngIf="role.errors.required">
+                    El perfil es requerido.
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-md-1"></div>
+
+              <div class="form-group col-md-5">
+                <label>Estado</label>
+                <div class="input-group">
+                  <div class="checkbox-fade fade-in-primary">
+                    <label>                    
+                      <input class="border-checkbox" type="checkbox" id="checkboxStatus" name="checkboxStatus" #status="ngModel" [(ngModel)]="usuario.status">
+                      <span class="cr">
+                        <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                      </span>
+                      <label *ngIf="usuario.status" class="border-checkbox-label" for="checkboxStatus">Activo</label>
+                      <label *ngIf="!usuario.status" class="border-checkbox-label" for="checkboxStatus">Inactivo</label>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>        
+
+            <button type="submit" id="addEditUsuario" class="btn btn-primary m-b-20" (click)="isSubmitted = true">Guardar</button>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
