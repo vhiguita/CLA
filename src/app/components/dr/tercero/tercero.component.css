@@ -1,0 +1,18 @@
+.multiselect-style{
+  width: 300px;
+  /*height: 80px;*/
+  height: auto;
+}
+/*.dual-list[_ngcontent-c9] .button-bar[_ngcontent-c9] button[_ngcontent-c9] {
+    width: 100%;
+}*/
+.ng-select.custom {
+    min-height: 0px;
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.ng-select.custom .ng-select-container  {
+    min-height: 0px;
+    border-radius: 0;
+}

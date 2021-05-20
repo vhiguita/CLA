@@ -1,0 +1,182 @@
+<div class="page-body">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="md-tabs md-card-tabs">
+        <ngb-tabset>
+          <ngb-tab title="Información contenedor">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <!-- personal card start -->
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Creación / Edición de contenedor</h5>
+                      </div>
+                        <div class="card-block">
+                          <form #contenedorForm="ngForm" (ngSubmit)="contenedorForm.form.valid && crearActualizarContenedor()">
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-3">
+                              <label>Fecha</label>
+                              <div class="input-group">
+                                <div class="input-group-addon" (click)="d1.toggle()" >
+                                  <span class="icofont icofont-ui-calendar"></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fecha" name="fecha" [(ngModel)]="contenedorExp.date" ngbDatepicker #d1="ngbDatepicker" (keyup)="onKey()" required #date="ngModel">
+                              </div>
+                              <div *ngIf="date.invalid && ((date.dirty || date.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="date.errors.required">
+                                  La fecha es requerida.
+                                </div>
+                                <div *ngIf="isValidDate(contenedorExp.date)==false">
+                                    El valor de la fecha no es válida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label>Cliente</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <select id="clientId" name="clientId"  class="form-control" [(ngModel)]="contenedor.clientIdentification" required #clientId="ngModel">
+                                  <option *ngFor="let c of clientes" [value]="c.identification">
+                                    {{c.identification}} - {{c.name}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="clientId.invalid && ( (clientId.dirty || clientId.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="clientId.errors.required">
+                                  El cliente es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                              <label>Asesor</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-user-alt-3"></i></span>
+                                <input type="text" class="form-control" id="advisor" name="advisor" #advisor="ngModel" [(ngModel)]="contenedor.advisor" placeholder="Digite el nombre del asesor" required>
+                              </div>
+
+                              <div *ngIf="advisor.invalid && ((advisor.dirty || advisor.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="advisor.errors.required">
+                                  El asesor es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-3">
+                              <label>Placa</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-western-union-alt"></i></span>
+                                <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="contenedor.plate" placeholder="Digita la placa" required #plate="ngModel">
+                              </div>
+                              <div *ngIf="plate.invalid && ((plate.dirty || plate.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="plate.errors.required">
+                                  La placa es requerida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label>Conductor</label>
+                              <div class="input-group">
+                                <ng2-completer name="conductor" [inputClass]="'form-control form-control-inline'" placeholder="Digite el conductor" [(ngModel)]="searchDriver" [datasource]="dataService" [minSearchLength]="0" [autofocus]="false" [clearSelected]="false" (selected)="onSelected($event)" [selectOnClick]="true" #conductor="ngModel" required ></ng2-completer>
+                                <!--<select id="conductor" name="conductor"  class="form-control" [(ngModel)]="vehiculo.driverId" #conductor="ngModel">
+                                  <option value="" disabled>Seleccione el conductor</option>
+                                  <option *ngFor="let c of conductores" [value]="c.id">
+                                    {{c.identification}}
+                                  </option>
+                                </select>-->
+                              </div>
+                             <div *ngIf="conductor.invalid && ( (conductor.dirty || conductor.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="conductor.errors.required">
+                                  El conductor es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label>Propietario</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <!--<input type="text" class="form-control" id="cedula" name="cedula" placeholder="Digite la cedula" >-->
+                                <select id="propertyId" name="propertyId"  class="form-control" [(ngModel)]="contenedor.propertyIdentification" required #propertyId="ngModel">
+                                  <option *ngFor="let p of propietarios" [value]="p.identification">
+                                    {{p.identification}} - {{p.name}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="propertyId.invalid && ( (propertyId.dirty || propertyId.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="propertyId.errors.required">
+                                  El propietario es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label>Poseedor</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <select id="ownerId" name="ownerId"  class="form-control" [(ngModel)]="contenedor.ownerIdentification" required #ownerId="ngModel">
+                                  <option *ngFor="let o of poseedores" [value]="o.identification">
+                                    {{o.identification}} - {{o.name}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="ownerId.invalid && ( (ownerId.dirty || ownerId.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="ownerId.errors.required">
+                                  El poseedor es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <hr>
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-4">
+                              <label>Número de contenedor</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-social-slack"></i></span>
+                                <input type="text" class="form-control" id="nContenedor" name="nContenedor" [(ngModel)]="contenedor.nContenedor" #nContenedor="ngModel" placeholder="Digite el número de contenedor" required>
+                              </div>
+                              <div *ngIf="nContenedor.invalid && ((nContenedor.dirty || nContenedor.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="nContenedor.errors.required">
+                                  El número de contenedor es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label>Capacidad</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="capacidad" name="capacidad" [(ngModel)]="contenedor.capacity" #capacity="ngModel" placeholder="Digite la capacidad" required>
+                              </div>
+                              <div *ngIf="capacity.invalid && ( (capacity.dirty || capacity.touched) || guardarContenedor)"
+                               class="alert alert-danger">
+                                <div *ngIf="capacity.errors.required">
+                                  La capacidad es requerida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label>Trailer</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <select id="trailerId" name="trailerId"  class="form-control" [(ngModel)]="contenedor.trailerId" required #trailerId="ngModel">
+                                  <option *ngFor="let t of trailers" [value]="t.id">
+                                    {{t.plate}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="ownerId.invalid && ( (ownerId.dirty || ownerId.touched) || guardarContenedor)" class="alert alert-danger">
+                                <div *ngIf="ownerId.errors.required">
+                                  El poseedor es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <button type="submit" id="guardarEditarVehiculo" class="btn btn-primary m-b-20" (click)="guardarContenedor = true">Guardar</button>
+                          </form>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- personal card end-->
+              </div>
+            </ng-template>
+          </ngb-tab>

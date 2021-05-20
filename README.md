@@ -1,4 +1,5 @@
 Autor: Victor Higuita
+
 Web platform developed with Angular, MySQL, Django and Google Maps, the project objective is to monitor transport trucks routes and travels in real time in the map.
 
 # MyApp

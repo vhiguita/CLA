@@ -1,0 +1,99 @@
+<div class="page-body">
+  <div class="card">
+    <div class="card-header">
+      <h5>Reporte de Productividad</h5>
+    </div>
+    <div class="card-block">
+      <form #reportForm="ngForm" (ngSubmit)="reportForm.form.valid && filterReport()">
+        <div class="form-row col-md-12">
+          <div class="form-group col-md-5">
+            <label>Filtro por conductor</label>
+            <div class="input-group">
+              <ng-select class="customDriver" name="driver" id="driver" [items]="drivers"
+                [virtualScroll]="true"
+                [loading]="loading1"
+                bindLabel="description"
+                bindValue="thirdId"
+                placeholder="- Seleccione conductor -"
+                [(ngModel)]="report.thirdId"
+                (scrollToEnd)="fetchMore_1($event)" #thirdId="ngModel">
+                <ng-template ng-header-tmp>
+                  <small class="form-text text-muted">{{driversBuffer.length}} de {{drivers.length}}</small>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{item.description}}
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="form-group col-md-3">
+            <label>Filtro por placa</label>
+            <div class="input-group">
+              <ng-select class="customPlate" name="plate" id="plate" [items]="plates"
+                [virtualScroll]="true"
+                [loading]="loading1"
+                bindLabel="plate"
+                bindValue="plateId"
+                placeholder="- Seleccione placa -"
+                [(ngModel)]="report.plateId"
+                (scrollToEnd)="fetchMore_1($event)" #plate="ngModel">
+                <ng-template ng-header-tmp>
+                  <small class="form-text text-muted">{{platesBuffer.length}} de {{plates.length}}</small>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{item.plate}}
+                </ng-template>
+              </ng-select>
+            </div>          
+          </div>
+
+          <div class="form-group col-md-3">
+            <label>Filtro por flota</label>
+            <div class="input-group">
+              <select class="form-control" name="ownfleet" id="ownfleet" style="height: 35px; border-radius: 5px">
+                <option value="2">- Seleccione -</option>
+                <option value="0">Flota no propia</option>
+                <option value="1">Flota propia</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group col-md-3">
+            <label >  </label>
+            <div class="input-group">
+            <!-- <a _ngcontent-c2="" class="btn btn-primary m-b-20" (click)="filterReport($event)">Buscar </a> -->
+
+            <button type="button" class="btn btn-primary m-b-20" (click)="filterReport($event)">Buscar</button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="form-row col-md-12">
+      <div class="dt-responsive table-responsive">
+        <table id="base-tbl" class="table">
+          	<thead>
+          		<tr>
+          			<th>Placa</th>
+	            	<th>Conductor</th>
+	            	<th>Ultima Asignación</th>
+                <th>Numero de dias sin asignar</th>
+	            	<th>Es flota propia</th>
+	            	
+	          	</tr>
+          	</thead>
+          	<tbody>
+              <tr *ngFor="let i of reports">
+                <td>{{ i.plate }}</td>
+                <td>{{ i.diverName }}</td>
+                <td>{{ i.date }}</td>
+                <td>{{ i.diference }}</td>
+                <td>{{ i.ownfleet }}</td>
+              </tr>
+          </tbody>
+          <tfoot>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

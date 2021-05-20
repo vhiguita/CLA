@@ -1,0 +1,165 @@
+<ng-template #modalUpdatePoint let-c="close" let-d="dismiss">
+  <div class="modal-body">
+    <div class="modal-header">
+      <h4 class="modal-title">Agregar / Modificar punto de chequeo </h4>
+      <button type="button" class="close" data-dismiss="modal" (click)="c('Close click')">&times;</button>
+    </div>
+
+    <!--<div style="cursor: pointer" *ngIf="messageResponse" class="alert alert-warning alert-dismissable fade show alert-bordered" (click)="refreshRouters()">
+      <i class="la la-info alert-icon"></i>
+      <button aria-label="Close" class="close" data-dismiss="alert" ></button>
+      <strong>Info!</strong>
+      <br>
+    </div>-->
+    <form name="form" (ngSubmit)="f.form.valid && saveUpdatePt(); f.form.valid && c('Al guardar')" #f="ngForm" novalidate>
+    <!--<form #form="ngForm" (ngSubmit)="form.valid">-->
+      <div class="flexbox mb-4 col-sm-12">
+        <div class="form-group col-sm-12">
+          <label class="mb-0 mr-2">Punto de chequeo</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-stop-circle"></i></span>
+            <select class="form-control" id="tipo" name="tipo" [(ngModel)]="this.point.IdCtrlPoint" #tipo="ngModel" style="height: 37px" required>
+              <option value="0" >Seleccione el punto</option>
+              <option *ngFor="let pt of checkingPoints" [ngValue]="pt.id">
+                {{ pt.name}}
+              </option>
+            </select>
+          </div>
+          <div *ngIf="tipo.invalid && ((tipo.dirty || tipo.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="tipo.errors.required">
+              El punto de chequeo es requerido
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-6">
+          <label>Orden</label>
+          <div  class="input-group">
+            <span class="input-group-addon">
+              <i class="fa fa-street-view"></i>
+            </span>
+            <input type="number" class="form-control" id="consecutive" name="consecutive" [(ngModel)]="this.point.Consecutive" placeholder="Digite el orden" #consecutive="ngModel" required>
+          </div>
+          <div *ngIf="consecutive.invalid && ((consecutive.dirty || consecutive.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="consecutive.errors.required">
+              El orden es requerido
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label>Tiempo (min)</label>
+          <div class="input-group">
+                <span class="input-group-addon">
+                  <i class="fa fa-map-marker" aria-hidden="true"></i>
+                </span>
+                <input type="number" class="form-control" id="time" name="time" placeholder="Digite el tiempo" [(ngModel)]="this.point.Time" #time="ngModel" required>
+          </div>
+          <div *ngIf="time.invalid && ((time.dirty || time.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="time.errors.required">
+              El tiempo de chequeo es requerido
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer col-sm-12" >
+        <div class="col-md-6" style="padding-left: 250px">
+          <!-- <button  type="button" class="btn btn-info mr-2" data-dismiss="modal" (click)="saveRfids()">Guardar</button> -->
+          <button type="submit" title="Guardar punto de chequeo"  class="btn btn-primary m-b-20">Guardar</button>
+          <!--<button type="button" title="Guardar punto de control"  class="btn btn-info m-b-20" (click)="saveUpdatePt()" [disabled]="isDisable">Guardar</button>-->
+        </div>
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="content-wrapper" style="background-color: #e9ecef">
+  <div class="page-content fade-in-up">
+    <div class="ibox">
+      <div class="ibox-body" style="background-color: #f2f3fa">
+        <div class="card-header">
+          <h5>Puntos de chequeo</h5>
+        </div>
+        <p>&nbsp;</p> -->
+
+<div class="page-body">
+  <div class="card">
+    <div class="card-header">
+      <h5>Puntos de chequeo</h5>
+    </div>
+    <div class="card-block">
+      <form #form="ngForm" (ngSubmit)="form.valid">
+        <div class="flexbox mb-4 col-sm-12">
+          <div class="form-group col-sm-12">
+            <label class="mb-0 mr-2">Ruta</label>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-map-signs"></i>
+              </span>
+              <select class="form-control" id="route" name="route" [(ngModel)]="data.routeId" #routeId="ngModel" (change)="onSelectRoute(data.routeId)" style="height: 37px">
+                <option value="0" >Seleccione la ruta</option>
+                <option *ngFor="let r of routes" [ngValue]="r.id">
+                  {{r.name}}
+                </option>
+              </select>
+            </div>
+            <div *ngIf="route.invalid && ( (route.dirty || route.touched))" class="alert alert-danger">
+              <div *ngIf="route.errors.required">La ruta es requerida.</div>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <button type="button" title="Nuevo punto de chequeo"  class="btn btn-primary m-b-20" (click)="openModalPoint(-1)" [disabled]="isDisable">Nuevo</button>
+          </div>
+        </div>
+      </form>
+
+      <p></p>
+      <div class="card">
+        <div class="card-body">
+          <div class="dt-responsive table-responsive">
+            <table id="tbl-pts" class="table table-striped table-bordered nowrap table-hover">
+              <thead>
+                <tr>
+                  <th>Orden</th>
+                  <th>Nombre</th>
+                  <th>Dirección</th>
+                  <th>Tiempo (min)</th>
+                  <th>Editar</th>
+                  <th>Eliminar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let e of points; let i = index">
+                  <td>{{e.order}}</td>
+                  <td>{{e.namePoint}}</td>
+                  <td>{{e.address}}</td>
+                  <td>{{e.time}}</td>
+                  <td style="text-align: center; cursor: pointer;"><a><i class="icofont icofont-edit-alt" (click)="openModalPoint(e.id)"></i></a></td>
+                  <td style="text-align: center; cursor: pointer;"><a (click)="removePt(i)"><i class="icofont icofont-trash"></i></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

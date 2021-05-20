@@ -1,0 +1,263 @@
+<!-- <ng-template #modalContent let-c="close" let-d="dismiss" id="modal-container">
+  <div class="modal-header">
+    <h3 class="modal-title">Detalle viaje # :  {{ travelId }}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="page-body">
+    <div class="card">
+      <div class="card-header">
+        <h3>Recogida de documentos</h3>
+      </div>
+      <div class="card-block">
+        <div class="dt-responsive table-responsive">
+          <table class="table table-striped table-bordered nowrap table-hover" style="font-size: 8px;border-collapse: collapse;">
+            <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Persona encargada</th>
+              <th>Direccion cita</th>
+              <th>Estado</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of traveltransitApp">
+                <td>{{ t.appointmentDate }}</td>
+                <td>{{ t.appointmentTime }}</td>
+                <td>{{ t.attendantAppointment }}</td>
+                <td>{{ t.address }}</td>
+                <td>
+                    <div *ngIf="t.attendedAppointment =='F'"><span class="label label-warning">Pendiente</span></div>
+                  <div *ngIf="t.attendedAppointment =='T'"><span class="label label-success">Realizado</span></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>  
+      <div class="card-header">
+        <h3>Cargue</h3>
+      </div>
+      <div class="card-block">
+        <div class="dt-responsive table-responsive">
+          <table class="table table-striped table-bordered nowrap table-hover table-xs" style="font-size: 8px"> 
+            <thead>
+            <tr>
+              <th>Fecha cargue</th>
+              <th># Solicitud(href)</th>
+              <th># pedido cliente</th>
+              <th>Hora inicio</th>
+              <th>Hora fin</th>
+              <th>Estado</th>
+              <th>Propietario</th>
+              <th>Dirección(ub mapa)</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let l of traveltransitLoad">
+                <td>{{ l.loadingDate }}</td>
+                <td>{{ l.travelRequestId }}</td>
+                <td>{{ l.travelRequestId }}</td>
+                <td>{{ l.loadingTimeInit }}</td>
+                <td>{{ l.loadingTimeFin }}</td>
+                <td style="font-size: 8px">
+                  <div *ngIf="l.loadMade =='F'" style="font-size: 8px"><span class="label label-warning">Pendiente</span></div>
+                  <div *ngIf="l.loadMade =='T'" style="font-size: 8px"><span class="label label-success">Realizado</span></div>
+                </td>
+                <td>{{ l.nameProperty }}</td>
+                <td>{{ l.address }}</td>
+                
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-header">
+          <h6>Datos de quien entrega</h6>
+        </div>
+
+        <div class="dt-responsive table-responsive">
+          <table class="table table-striped table-bordered nowrap table-hover">
+            <thead>
+            <tr>
+              <th>Documento</th>
+              <th>Nombres y apellidos</th>
+              <th>Telefono</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let l of traveltransitLoad">
+                <td>{{ l.Identification }}</td>
+                <td>{{ l.name }}</td>
+                <td>{{ l.phone }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+  
+
+      <div class="card-header">
+        <h3>Descargue</h3>
+      </div>
+      <div class="card-block">
+        <div class="dt-responsive table-responsive">
+          <table class="table table-striped table-bordered nowrap table-hover" style="font-size: 8px">
+            <thead>
+            <tr>
+              <th>Fecha descargue</th>
+              <th># Solicitud(href)</th>
+              <th># pedido cliente</th>
+              <th>Hora inicio</th>
+              <th>Hora fin</th>
+              <th>Estado</th>
+              <th># Contenedor</th>
+              <th>Tipo de contenedor</th>
+              <th>Propietario</th>
+              <th>Dirección</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let u of traveltransitUnl">
+                <td>{{ u.UloadingDate }}</td>
+                <td>{{ u.travelRequestId }}</td>
+                <td>{{ u.clientOrderNumber }}</td>
+                <td>{{ u.UnloadingTimeInit }}</td>
+                <td>{{ u.UnloadingTimeFin }}</td>
+                <td style="font-size: 8px">
+                  <div *ngIf="u.unLoadMade =='F'" style="font-size: 8px"><span class="label label-warning">Pendiente</span></div>
+                  <div *ngIf="u.unLoadMade =='T'" style="font-size: 8px"><span class="label label-success">Realizado</span></div>
+                </td>
+                <td>{{ u.containerNumber }}</td>
+                <td>{{ u.containertype }}</td>
+                <td>{{ u.nameProperty }}</td>
+                <td>{{ u.address }}</td>
+
+                
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-header">
+          <h6>Datos de quien entrega</h6>
+        </div>
+
+        <div class="dt-responsive table-responsive">
+          <table class="table table-striped table-bordered nowrap table-hover">
+            <thead>
+            <tr>
+              <th>Documento</th>
+              <th>Nombres y apellidos</th>
+              <th>Telefono</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let u of traveltransitUnl">
+                <td>{{ u.identification }}</td>
+                <td>{{ u.name }}</td>
+                <td>{{ u.phone }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>  
+</ng-template> -->
+
+<div class="page-body">
+  <div class="card">
+    <div class="card-header">
+      <h5>Viajes en transito</h5>
+    </div>
+    <div class="card-block">
+      <div class="dt-responsive table-responsive">
+        <!-- <table class="table table-striped table-bordered nowrap table-hover" style="font-size: 8px;border-collapse: collapse;" cellpadding="0" cellspacing="0">-->
+          <table id="base-tbl" class="table table-bordered"> 
+            <thead>
+              <tr>
+                <th style="text-align: center"># Revisión</th>
+                <th style="text-align: center">Viaje</th>
+                <th style="text-align: center">Fecha/Hora</th>
+                <th style="text-align: center">Ultimo evento</th>
+                <th style="text-align: center">Estado actual</th>
+                <th style="text-align: center">Estado siguiente</th>
+                <th style="text-align: center">Proxima cita en</th>
+                <!-- <th>Estado</th> 
+                <th style="text-align: center">Responsable</th>-->
+                <th style="text-align: center">Tipo</th>
+                <th style="text-align: center">Origen</th>
+                <th style="text-align: center">Destino</th>
+                <th style="text-align: center">Conductor</th>
+                <th style="text-align: center">Vehiculo</th>
+                <th style="text-align: center">Trailer</th>
+                <th style="text-align: center">Ultima ubicación</th>
+              </tr>
+            </thead>
+          <tbody>  
+
+            <tr *ngFor="let u of traveltransit">
+              <td style="padding-bottom: 1px;padding-top: 1px;">
+                <div class="label-icon">
+                <i class="fa fa-warning fa-10x" style="font-size: 20px;"></i>
+                  <a [routerLink]="['/home/adm/consolidatedVehicleEvents', u.travelId]" style="cursor: pointer;color:red">
+                    <label *ngIf="u.eventsTravelCount === 0" class="badge bg-default badge-bottom-right" style="cursor: pointer;">{{ u.eventsTravelCount }}</label>
+                    <label *ngIf="u.eventsTravelCount > 0" class="badge bg-danger badge-bottom-right" style="cursor: pointer;">{{ u.eventsTravelCount }}</label>
+                  </a>
+                </div>
+              </td>
+
+
+
+
+              <td (click)="openModal(modalContent,u.travelId)" style="padding: 0;text-align: center;">{{u.travelnum}}</td>
+              <td style="padding: 0;font-size: 10px;text-align: center;">{{ u.date }}</td>
+
+              <td style="padding: 0;text-align: center;">
+                <div *ngIf="u.eventDesc =='S'"><span class="label label-warning" style="font-size: 11px; padding: 0.5px;">Salida de ruta</span></div>
+                <div *ngIf="u.eventDesc =='P'"><span class="label label-danger" style="font-size: 11px; padding: 0.5px;">Punto de control o parada descando</span></div>
+                <div *ngIf="u.eventDesc =='SP'"><span class="label label-primary" style="font-size: 11px; padding: 0.5px;">Sitio prohibido o alto riesgo</span></div>
+                <div *ngIf="u.eventDesc =='LL'"><span class="label label-success" style="font-size: 11px; padding: 0.5px;">Llamada</span></div>
+                <div *ngIf="u.eventDesc =='PA'"><span class="label label-info" style="font-size: 11px; padding: 0.5px;">Panico</span></div>
+
+                <div *ngIf="u.eventDesc =='SE'"><span class="label label-default" style="font-size: 11px; padding: 0.5px;">Sin eventos</span></div>
+              </td>
+
+              <td style="padding:0px;text-align: center;"><span [ngClass]=u.classSt style="font-size: 11px; padding: 0.5px;padding: 0.5px;">{{ u.currentStatus }}</span></td>
+              <td style="padding:0px;text-align: center;"><span [ngClass]=u.classSt style="font-size: 11px; padding: 0.5px;padding: 0.5px;">{{ u.followingStatus }}</span></td>
+              <td style="padding:0px;text-align: center;"><span [ngClass]=u.classSt style="font-size: 11px; padding: 0.5px;padding: 0.5px;">{{ u.timeRemaining }}</span></td>
+
+
+              <!-- <td style="padding: 0">
+                <div *ngIf="u.statusTravelDesc =='I'"><span class="label label-primary">Invitación</span></div>
+                <div *ngIf="u.statusTravelDesc =='A'"><span class="label label-danger">Asignado</span></div>
+                <div *ngIf="u.statusTravelDesc =='P'"><span class="label label-warning">Pendiente</span></div>
+                <div *ngIf="u.statusTravelDesc =='C'"><span class="label label-success">En curso</span></div>
+              </td>
+ -->
+              <!-- <td>{{ u.statusTravelDesc }} </td>aca -->
+
+
+              <!-- <td style="padding: 0;font-size: 10px;text-align: center;"><span style="font-size: 11px; padding: 0.5px;">{{ u.attendantTravel }}</span></td> -->
+              <td style="padding: 0;text-align: center;"><span style="font-size: 11px; padding: 0.5px;">{{ u.serviceType }}</span></td>
+              <td style="padding: 0;font-size: 10px;text-align: center;"><span style="font-size: 11px; padding: 0.5px;">{{ u.origin }}</span></td>
+              <td style="padding: 0;font-size: 10px;text-align: center;"><span style="font-size: 11px; padding: 0.5px;">{{ u.destination }}</span></td>
+              <td style="padding: 0;text-align: center;"><a [routerLink]="['/home/dr/tercero/', u.driverId]" target="_blank" style="font-size: 11px; padding: 0.5px;">{{ u.driver }}</a></td>              
+              <td style="padding: 0;text-align: center;"><a [routerLink]="['/home/dr/vehiculo/', u.vehicleId]" target="_blank" style="font-size: 11px; padding: 0.5px;">{{ u.vehicle }}</a></td>
+              <td style="padding: 0;text-align: center;"><span style="font-size: 11px; padding: 0.5px;">{{ u.trailerPlate }}</span></td>
+
+              <td style="padding: 0;text-align: center;">                
+                <a style="font-size: 11px; padding: 0.5px;font-size: 8px" href="https://www.google.com/maps?q={{ u.lonUl }},{{ u.latUl }}" target="_blank" >Ver ubicacion <i class="ti-location-pin"></i></a>                
+              </td>
+            </tr>          
+          </tbody>
+          <tfoot>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

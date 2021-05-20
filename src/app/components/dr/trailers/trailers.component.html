@@ -1,0 +1,43 @@
+<!-- Page-header end -->
+<!-- Page-body start -->
+<div class="page-body">
+  <!-- Base Style table start -->
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de trailers</h5>
+      <span>Esta es la lista de trailers.</span>
+    </div>
+    <div class="card-block">
+      <button type="button" [routerLink]="['/home/dr/trailer', '-1']" class="btn btn-primary m-b-20" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">+ Nuevo trailer</button>
+      <div class="table-responsive">
+        <table id="base-tbl" class="table">
+          <thead>
+          <tr>
+            <th>Editar</th>
+            <th>Placa</th>
+            <th>Propietario</th>
+            <th>Modelo</th>
+            <th>Número de ejes</th>
+            <th>Número de chasis</th>
+            <th>Marca</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let e of trailers; let i = index">
+            <td><a (click)="edit(i)" style="cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a></td>
+            <td>{{e.plate}}</td>
+            <td>{{e.propertyName}}</td>
+            <td>{{e.model}}</td>
+            <td>{{e.axisNumber}}</td>
+            <td>{{e.chassisNumber}}</td>
+            <td>{{e.brandName}}</td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Base Style table end -->
+</div>

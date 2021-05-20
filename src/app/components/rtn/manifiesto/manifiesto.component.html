@@ -1,0 +1,958 @@
+<ng-template #modalContentCargue let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f1.form.valid && crearActualizarCargue(); f1.form.valid && c('Al guardar')" #f1="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar cargue</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Fecha de cargue</label>
+        <div  class="col-7">
+          <!--<input type="date" class="form-control" id="fechaCargue" name="fechaCargue" [(ngModel)]="cargue.loadFullDate" placeholder="Digite la fecha hora de cargue" required #loadFullDate="ngModel">-->
+          <span class="input-group-addon" (click)="d2.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+          <input type="text" class="form-control" placeholder="yyyy-mm-dd" style="width:90%;padding:4px;" id="fechaCargue" name="fechaCargue" [(ngModel)]="cargueExp.loadDate" ngbDatepicker #d2="ngbDatepicker" (keyup)="onKey()" required #loadDate="ngModel">
+          <div *ngIf="loadDate.invalid && ( (loadDate.dirty || loadDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="loadDate.errors.required">
+              La fecha de cargue es requerida.
+            </div>
+            <div *ngIf="isValidDate(cargueExp.loadDate)==false">
+                El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Hora de cargue</label>
+        <div  class="col-7">
+          <input type="time" class="form-control" id="horaCargue" name="horaCargue" [(ngModel)]="cargue.loadTime" required #horaCargue="ngModel" />
+          <div *ngIf="horaCargue.invalid && ( (horaCargue.dirty || horaCargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="horaCargue.errors.required">
+              La hora de cargue es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Fecha salida de cargue</label>
+        <div  class="col-7">
+          <span class="input-group-addon" (click)="d3.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+          <input type="text" class="form-control" placeholder="yyyy-mm-dd" style="width:90%;padding:4px;" id="fechaSalidaCargue" name="fechaSalidaCargue" [(ngModel)]="cargueExp.loadDepartureDate" ngbDatepicker #d3="ngbDatepicker" (keyup)="onKey()" required #loadDepartureDate="ngModel">
+          <!--<input type="date" class="form-control" id="horaSalidaCargue" name="horaSalidaCargue" [(ngModel)]="cargue.loadDepartureTime" #loadDepartureTime="ngModel" placeholder="Digite la hora salida de cargue" required>-->
+          <div *ngIf="loadDepartureDate.invalid && ( (loadDepartureDate.dirty || loadDepartureDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="loadDepartureDate.errors.required">
+              La fecha de salida de cargue es requerida.
+            </div>
+            <div *ngIf="isValidDate(cargueExp.loadDepartureDate)==false">
+                El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Hora salida de cargue</label>
+        <div  class="col-7">
+          <input type="time" class="form-control" id="horaSalidaCargue" name="horaSalidaCargue" [(ngModel)]="cargue.loadDepartureTime" required #horaSalidaCargue="ngModel" />
+          <div *ngIf="horaSalidaCargue.invalid && ( (horaSalidaCargue.dirty || horaSalidaCargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="horaSalidaCargue.errors.required">
+              La hora salida de cargue es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+<ng-template #modalContentDescargue let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f1.form.valid && crearActualizarDescargue(); f1.form.valid && c('Al guardar')" #f1="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar descargue</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Fecha de descargue</label>
+        <div  class="col-7">
+          <!--<input type="date" class="form-control" id="fechaDescargue" name="fechaDesCargue" [(ngModel)]="descargue.unloadFullDate" placeholder="Digite la fecha hora de descargue" required #unloadFullDate="ngModel">-->
+          <span class="input-group-addon" (click)="d4.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+          <input type="text" class="form-control" placeholder="yyyy-mm-dd" style="width:90%;padding:4px;" id="fechaDescargue" name="fechaDescargue" [(ngModel)]="descargueExp.unloadDate" ngbDatepicker #d4="ngbDatepicker" (keyup)="onKey()" required #unloadDate="ngModel">
+          <div *ngIf="unloadDate.invalid && ( (unloadDate.dirty || unloadDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="unloadDate.errors.required">
+              La fecha hora de descargue es requerida.
+            </div>
+            <div *ngIf="isValidDate(descargueExp.unloadDate)==false">
+                El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Hora de descargue</label>
+        <div  class="col-7">
+          <input type="time" class="form-control" id="horaDescargue" name="horaDescargue" [(ngModel)]="descargue.unloadTime" required #horaDescargue="ngModel" />
+          <div *ngIf="horaDescargue.invalid && ( (horaDescargue.dirty || horaDescargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="horaDescargue.errors.required">
+              La hora de descargue es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Fecha salida de descargue</label>
+        <div  class="col-7">
+          <span class="input-group-addon" (click)="d5.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+          <input type="text" class="form-control" placeholder="yyyy-mm-dd" style="width:90%;padding:4px;" id="fechaDescargue" name="fechaDescargue" [(ngModel)]="descargueExp.unloadDepartureDate" ngbDatepicker #d5="ngbDatepicker" (keyup)="onKey()" required #unloadDepartureDate="ngModel">
+          <!--<input type="date" class="form-control" id="horaSalidaDescargue" name="horaSalidaDescargue" [(ngModel)]="descargue.unloadDepartureTime" #unloadDepartureTime="ngModel" placeholder="Digite la hora salida de descargue" required>-->
+
+          <div *ngIf="unloadDepartureDate.invalid && ( (unloadDepartureDate.dirty || unloadDepartureDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="unloadDepartureDate.errors.required">
+              La fecha de salida de descargue es requerida.
+            </div>
+            <div *ngIf="isValidDate(descargueExp.unloadDepartureDate)==false">
+                El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Hora de salida de descargue</label>
+        <div  class="col-7">
+          <input type="time" class="form-control" id="horaSalidaDescargue" name="horaSalidaDescargue" [(ngModel)]="descargue.unloadDepartureTime" required #horaSalidaDescargue="ngModel" />
+          <div *ngIf="horaSalidaDescargue.invalid && ( (horaSalidaDescargue.dirty || horaSalidaDescargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="horaSalidaDescargue.errors.required">
+              La hora de salida de descargue es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label"># Contenedor</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="numeroContenedor" name="numeroContenedor" [(ngModel)]="descargue.containerNumber" placeholder="Digite el número de contenedor" required #numeroContenedor="ngModel">
+          <div *ngIf="numeroContenedor.invalid && ( (numeroContenedor.dirty || numeroContenedor.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="numeroContenedor.errors.required">
+              El número de contenedor es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Tipo de contenedor</label>
+        <div class="col-7">
+          <select class="form-control" name="tipoContenedor" id="tipoContenedor" [(ngModel)]="descargue.containerTypeId" #tipoContenedor="ngModel" required>
+            <option value="" disabled>Seleccione el tipo</option>
+            <option *ngFor="let co of tiposContenedor" [ngValue]="co.id">
+              {{co.Description}}
+            </option>
+          </select>
+          <div *ngIf="tipoContenedor.invalid && ( (tipoContenedor.dirty || tipoContenedor.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="tipoContenedor.errors.required">
+              El tipo de contenedor es requerido.
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Propietario</label>
+        <div class="col-7">
+          <select class="form-control" name="propietario" id="propietario" [(ngModel)]="descargue.ownerDevolutionId" #propietario="ngModel" (ngModelChange)="obtenerDireccionesPropietario($event)" required>
+            <option value="" disabled>Seleccione el propietario</option>
+            <option *ngFor="let p of propietarios" [ngValue]="p.id">
+              {{p.identification}} - {{p.name}}
+            </option>
+          </select>
+          <div *ngIf="propietario.invalid && ( (propietario.dirty || propietario.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="propietario.errors.required">
+              El propietario es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Direcciones propietario</label>
+        <div class="col-7">
+          <select class="form-control" name="propietarioDir" id="propietarioDir" [(ngModel)]="descargue.devolutionBranchId" #propietarioDir="ngModel" required>
+            <option value="" disabled>Seleccione la dirección</option>
+            <option *ngFor="let s of surcursalesPropietario" [ngValue]="s.id">
+              {{ s.address}}
+            </option>
+          </select>
+          <div *ngIf="propietarioDir.invalid && ( (propietarioDir.dirty || propietarioDir.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="propietarioDir.errors.required">
+              La dirección del propietario es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Fecha de devolución</label>
+        <div  class="col-7">
+          <!--<input type="date" class="form-control" id="fechaDevolucion" name="fechaDevolucion" [(ngModel)]="descargue.devolutionFullTime" #devolutionFullTime="ngModel" placeholder="Digite la fecha hora de devolución" required>-->
+          <span class="input-group-addon" (click)="d6.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+          <input type="text" class="form-control" placeholder="yyyy-mm-dd" style="width:90%;padding:4px;" id="fechaDevolucion" name="fechaDevolucion" [(ngModel)]="descargueExp.unloadDevolutionDate" ngbDatepicker #d6="ngbDatepicker" (keyup)="onKey()" required #unloadDevolutionDate="ngModel">
+          <div *ngIf="unloadDevolutionDate.invalid && ( (unloadDevolutionDate.dirty || unloadDevolutionDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="unloadDevolutionDate.errors.required">
+              La fecha de devolución es requerida.
+            </div>
+            <div *ngIf="isValidDate(descargueExp.unloadDevolutionDate)==false">
+                El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Hora de devolución</label>
+        <div  class="col-7">
+          <input type="time" class="form-control" id="horaDevolucion" name="horaDevolucion" [(ngModel)]="descargue.unloadDevolutionTime" required #horaDevolucion="ngModel" />
+          <div *ngIf="horaDevolucion.invalid && ( (horaDevolucion.dirty || horaDevolucion.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="horaDevolucion.errors.required">
+              La hora de devolución es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+<ng-template #modalContentConexo let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f1.form.valid && crearActualizarConexo(); f1.form.valid && c('Al guardar')" #f1="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar conexo</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Servicio</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="servicio" name="servicio" [(ngModel)]="conexo.service" placeholder="Digite el servicio" required #servicio="ngModel">
+          <div *ngIf="servicio.invalid && ( (servicio.dirty || servicio.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="servicio.errors.required">
+              El servicio es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Valor venta</label>
+        <div  class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-cur-dollar"></i></span>
+          <input type="text" class="form-control" id="saleValue" name="saleValue" style="width:90%;padding:4px;" [(ngModel)]="conexoAux.saleValue" #saleValue="ngModel" onkeyup="formatSaleValue()" (ngModelChange)="formatSaleValue()" pattern="(?:- ?)?\d{1,3}(?:\,\d{3})*(?:,\d+)?" placeholder="Digite el valor de venta" required>
+          <div *ngIf="saleValue.invalid && ( (saleValue.dirty || saleValue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="saleValue.errors.required">
+              El valor de venta es requerido.
+            </div>
+            <div *ngIf="saleValue.invalid&&conexoAux.saleValue!=''">
+                El valor de venta debe ser númerico.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Valor contratado</label>
+        <div  class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-cur-dollar"></i></span>
+          <input type="text" class="form-control" id="contractValue" name="contractValue" style="width:90%;padding:4px;" [(ngModel)]="conexoAux.contractValue" #contractValue="ngModel" onkeyup="formatContractValue()" (ngModelChange)="formatContractValue()" pattern="(?:- ?)?\d{1,3}(?:\,\d{3})*(?:,\d+)?" placeholder="Digite el valor contratado" required>
+          <div *ngIf="contractValue.invalid && ( (contractValue.dirty || contractValue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="contractValue.errors.required">
+              El valor contratado es requerido.
+            </div>
+            <div *ngIf="contractValue.invalid&&conexoAux.contractValue!=''">
+                El valor contratado debe ser númerico.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+<div class="page-body">
+<div class="card-block">
+    <div class="row">
+        <div class="col-lg-12">
+          <div class="md-tabs md-card-tabs">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs  tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#home1" role="tab">Información general</a>
+                </li>
+                <li class="nav-item" [hidden]="hideConsignmentContent">
+                    <a class="nav-link" data-toggle="tab" href="#consignment" role="tab">Remesas</a>
+                </li>
+                <li class="nav-item" [hidden]="hideManifestRelatedContent">
+                    <a class="nav-link" data-toggle="tab" href="#manifiestRelated" role="tab">Conexos</a>
+                </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content tabs card-block">
+                  <div class="tab-pane active" id="home1" role="tabpanel">
+                    <div class="m-t-15">
+                      <!-- personal card start -->
+                      <div class="card">
+                        <div class="tab-content tabs card-block">
+                            <div class="card-header">
+                                <h5>Creación / Edición de viaje</h5>
+                            </div>
+                              <div class="card-block">
+                                <form #manifiestoForm="ngForm" (ngSubmit)="manifiestoForm.form.valid && crearActualizarManifiesto()">
+                                  <div class="form-row col-md-12">
+                                    <div class="form-group col-md-3">
+                                      <label>Fecha</label>
+                                      <div class="input-group">
+                                        <div class="input-group-addon" (click)="d1.toggle()" >
+                                          <span class="icofont icofont-ui-calendar"></span>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fecha" name="fecha" [(ngModel)]="manifiestoExp.date" ngbDatepicker #d1="ngbDatepicker" (keyup)="onKey()" required #date="ngModel">
+                                      </div>
+                                      <div *ngIf="date.invalid && ((date.dirty || date.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="date.errors.required">
+                                          La fecha es requerida.
+                                        </div>
+                                        <div *ngIf="isValidDate(manifiestoExp.date)==false">
+                                            El valor de la fecha no es válida.
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label for="inputAddress">Origen</label>
+                                      <div class="input-group">
+                                        <select class="form-control" name="origenM" id="origenM" [(ngModel)]="manifiesto.originCityId" #origenM="ngModel" (ngModelChange)="obtenerCiudadOrigenManifiesto($event)" required>
+                                          <option value="" disabled>Seleccione el origen</option>
+                                          <option *ngFor="let o of origenManifiesto" [ngValue]="o.id" >
+                                            {{ o.description }} - {{ o.departmentName }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div *ngIf="origenM.invalid && ((origenM.dirty || origenM.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="origenM.errors.required">
+                                            El origen es requerido.
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label for="inputAddress">Destino</label>
+                                      <div class="input-group">
+                                        <select class="form-control" name="destinoM" id="destinoM" [(ngModel)]="manifiesto.destinationCityId" #destinoM="ngModel" (ngModelChange)="obtenerCiudadDestinoManifiesto($event)" required>
+                                          <option value="" disabled>Seleccione el destino</option>
+                                          <option *ngFor="let d of destinoManifiesto" [ngValue]="d.id" >
+                                            {{ d.description }} - {{ d.departmentName }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div *ngIf="destinoM.invalid && ((destinoM.dirty || destinoM.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="destinoM.errors.required">
+                                            El destino es requerido.
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label for="inputAddress">Ruta</label>
+                                      <div class="input-group">
+                                        <select class="form-control" name="ruta" id="ruta" [(ngModel)]="manifiesto.routeId" #ruta="ngModel" required>
+                                          <option value="" disabled>Seleccione la ruta</option>
+                                          <option *ngFor="let r of rutas" [ngValue]="r.id" >
+                                            {{ r.name }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div *ngIf="ruta.invalid && ((ruta.dirty || ruta.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="ruta.errors.required">
+                                            La ruta es requerida.
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="form-row col-md-12">
+                                    <div class="form-group col-md-4">
+                                      <label>Asesor</label>
+                                      <div class="input-group">
+                                        <span class="input-group-addon"><i class="icofont icofont-user-alt-3"></i></span>
+                                        <input type="text" class="form-control" id="asesor" name="asesor" [(ngModel)]="manifiesto.advisor" #asesor="ngModel" placeholder="Digite el nombre del asesor" required>
+                                      </div>
+
+                                      <div *ngIf="asesor.invalid && ((asesor.dirty || asesor.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="asesor.errors.required">
+                                          El asesor es requerido.
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                      <label for="inputAddress">Riesgo</label>
+                                      <div class="input-group">
+                                        <select class="form-control" name="riesgo" id="riesgo" [(ngModel)]="manifiesto.riskId" #riesgo="ngModel" required>
+                                          <option value="" disabled>Seleccione el riesgo</option>
+                                          <option *ngFor="let r of riesgos" [ngValue]="r.id" >
+                                            {{ r.Description }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div *ngIf="riesgo.invalid && ((riesgo.dirty || riesgo.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="riesgo.errors.required">
+                                            El riesgo es requerido.
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                      <label for="inputAddress">Tipo de servicio</label>
+                                      <div class="input-group">
+                                        <select class="form-control" name="tiposervicio" id="tiposervicio" [(ngModel)]="manifiesto.serviceTypeId" #tiposervicio="ngModel" required>
+                                          <option value="" disabled>Seleccione el tipo de servicio</option>
+                                          <option *ngFor="let t of tiposServicio" [ngValue]="t.id" >
+                                            {{ t.Description }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div *ngIf="tiposervicio.invalid && ((tiposervicio.dirty || tiposervicio.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="tiposervicio.errors.required">
+                                            El tipo de servicio es requerido.
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="form-row col-md-12">
+                                    <div class="form-group col-md-3">
+                                      <label for="inputAddress">Vehiculo</label>
+                                      <div class="input-group">
+                                        <select class="form-control" name="vehiculo" id="vehiculo" [(ngModel)]="manifiesto.vehicleId" #vehiculo="ngModel" required (ngModelChange)="cargarInfoVehiculo($event)">
+                                          <option value="" disabled>Seleccione la marca del vehículo</option>
+                                          <option *ngFor="let v of vehiculos" [ngValue]="v.id" >
+                                            {{ v.plate }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div *ngIf="vehiculo.invalid && ((vehiculo.dirty || vehiculo.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="vehiculo.errors.required">
+                                            El vehiculo es requerido.
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label>Conductor</label>
+                                        <div class="input-group">
+                                          <input type="text" class="form-control" id="conductor" name="conductor" disabled="" [(ngModel)]="manifiesto.driver" #driver="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label>Propietario</label>
+                                        <div class="input-group">
+                                          <input type="text" class="form-control" id="propietario" name="propietario" disabled="" [(ngModel)]="manifiesto.owner" #owner="ngModel">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label for="inputAddress">Tipo vehiculo</label>
+                                      <div class="input-group">
+                                        <!--<div class="input-group">
+                                          <input type="text" class="form-control" id="tipovehiculo" name="tipovehiculo" disabled="" [(ngModel)]="manifiesto.vehicleType" #tipoVehiculo="ngModel">
+                                        </div>-->
+                                        <select class="form-control" name="tipovehiculo" id="tipovehiculo" [(ngModel)]="manifiesto.vehicleTypeId" #tipovehiculo="ngModel" required>
+                                          <option value="" disabled>Seleccione el tipo de vehículo</option>
+                                          <option *ngFor="let t of tiposVehiculo" [ngValue]="t.id" >
+                                            {{ t.description }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                      <div *ngIf="tipovehiculo.invalid && ((tipovehiculo.dirty || tipovehiculo.touched) || guardarManifiesto)" class="alert alert-danger">
+                                        <div *ngIf="tipovehiculo.errors.required">
+                                            El tipo de vehiculo es requerido.
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-row col-md-12">
+
+                                    <div class="form-group col-md-4">
+                                      <label>Requerimientos</label>
+                                      <div class="input-group">
+                                        <angular2-multiselect id="multiselect" name="multiselect" [data]="itemList"
+                                          [(ngModel)]="selectedItems"
+                                          [settings]="settings"
+                                          (onSelect)="onItemSelect($event)"
+                                          (onDeSelect)="OnItemDeSelect($event)">
+                                         </angular2-multiselect>
+                                      </div>
+                                      <!--<div *ngIf="quota.invalid && ((quota.dirty || quota.touched) || guardarProveedor)" class="alert alert-danger">
+                                        <div *ngIf="quota.errors.required">
+                                          El valor del cupo es requerido.
+                                        </div>
+                                      </div>-->
+                                    </div>
+                                  </div>
+                                  <hr>
+                                  <button type="submit" id="guardarEditarManifiesto" class="btn btn-primary m-b-20" (click)="guardarManifiesto = true">Guardar</button>
+                                </form>
+                              </div>
+                          </div>
+                        </div>
+                      <!-- personal card end-->
+                    </div>
+                  </div>
+                <div class="tab-pane" id="consignment" role="tabpanel">
+                  <div class="m-t-15">
+                    <!-- personal card start -->
+                    <div class="card">
+                      <div class="tab-content tabs card-block">
+                        <!--<ul class="nav nav-tabs  tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#home2" role="tab">Remesas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#load" role="tab">Cargues</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#unload" role="tab">Descargues</a>
+                            </li>
+                          </ul>-->
+                          <div class="card-header">
+                            <h5>Creación / Edición de remesa</h5>
+                          </div>
+                          <div class="card-block" [hidden]="hideAddEditCosignment">
+                            <form  name="form" (ngSubmit)="f1.form.valid && crearActualizarRemesa(f1); f1.form.valid && c('Al guardar')" #f1="ngForm" novalidate>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-4">
+                                  <label># Pedido Cliente</label>
+                                  <div  class="input-group">
+                                    <input type="text" class="form-control" id="pedidoCliente" name="pedidoCliente" [(ngModel)]="remesa.clientOrderNumber" placeholder="Digite el número de pedido de cliente" required #pedidoCliente="ngModel">
+                                  </div>
+                                  <div *ngIf="pedidoCliente.invalid && ( (pedidoCliente.dirty || pedidoCliente.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="pedidoCliente.errors.required">
+                                      El pedido de cliente es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Origen</label>
+                                  <div  class="input-group">
+                                    <select class="form-control" name="origen" id="origen" [(ngModel)]="remesa.cosignmentOriginCityId" #origen="ngModel" required>
+                                      <option value="" disabled>Seleccione el origen</option>
+                                      <option *ngFor="let or of origenRemesa" [ngValue]="or.id" >
+                                          {{ or.description }} - {{ or.departmentName }}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="origen.invalid && ( (origen.dirty || origen.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="origen.errors.required">
+                                      El origen es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Destino</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="destino" id="destino" [(ngModel)]="remesa.cosignmentDestinationCityId" #destino="ngModel" required>
+                                      <option value="" disabled>Seleccione el destino</option>
+                                      <option *ngFor="let dr of destinoRemesa" [ngValue]="dr.id" >
+                                        {{ dr.description }} - {{ dr.departmentName }}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="destino.invalid && ( (destino.dirty || destino.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="destino.errors.required">
+                                      El destino es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-4">
+                                  <label>Remitente</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="remitente" id="remitente" [(ngModel)]="remesa.senderId" #remitente="ngModel" (ngModelChange)="obtenerDireccionesRemitente($event)" required>
+                                      <option value="" disabled>Seleccione el remitente</option>
+                                      <option *ngFor="let r of remitentes" [value]="r.id">
+                                        {{r.identification}} - {{r.name}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="remitente.invalid && ( (remitente.dirty || remitente.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="remitente.errors.required">
+                                      El remitente es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Direcciones remitente</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="remitenteDir" id="remitenteDir" [(ngModel)]="remesa.senderBranchId" #remitenteDir="ngModel" (ngModelChange)="obtenerInfoDirRemitente($event)" required>
+                                      <option value="" disabled>Seleccione la dirección</option>
+                                      <option *ngFor="let s of surcursalesRemitente" [ngValue]="s.id">
+                                        {{ s.address}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="remitenteDir.invalid && ( (remitenteDir.dirty || remitenteDir.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="remitenteDir.errors.required">
+                                      La dirección del remitente es requerida.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Teléfono remitente</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="remitenteTelefono" name="remitenteTelefono" disabled="" [(ngModel)]="remesa.senderPhone" #senderPhone="ngModel">
+                                   </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-4">
+                                  <label>Ciudad remitente</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="remitenteCiudad" name="remitenteCiudad" disabled="" [(ngModel)]="remesa.senderCity" #senderCity="ngModel">
+                                   </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Destinatario</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="destinatario" id="destinatario" [(ngModel)]="remesa.receiverId" #destinatario="ngModel" (ngModelChange)="obtenerDireccionesDestinatario($event)" required>
+                                      <option value="" disabled>Seleccione el destinatario</option>
+                                      <option *ngFor="let d of destinatarios" [ngValue]="d.id">
+                                        {{d.identification}} - {{d.name}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="destinatario.invalid && ( (destinatario.dirty || destinatario.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="destinatario.errors.required">
+                                      El destinatario es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Direcciones destinatario</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="destinatarioDir" id="destinarioDir" [(ngModel)]="remesa.receiverBranchId" #destinarioDir="ngModel" (ngModelChange)="obtenerInfoDirDestinatario($event)" required>
+                                      <option value="" disabled>Seleccione la dirección</option>
+                                      <option *ngFor="let d of surcursalesDestinatario" [ngValue]="d.id">
+                                        {{d.address}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="destinarioDir.invalid && ( (destinarioDir.dirty || destinarioDir.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="destinarioDir.errors.required">
+                                      La dirección del destinario es requerida.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-4">
+                                  <label>Teléfono destinatario</label>
+                                  <div class="input-group">
+                                   <input type="text" class="form-control" id="destinarioTelefono" name="destinarioTelefono" disabled="" [(ngModel)]="remesa.receiverPhone" #receiverPhone="ngModel">
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Ciudad destinatario</label>
+                                  <div class="input-group">
+                                   <input type="text" class="form-control" id="destinarioCiudad" name="destinarioCiudad" disabled="" [(ngModel)]="remesa.receiverCity" #receiverCity="ngModel">
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Producto</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="producto" id="producto" [(ngModel)]="remesa.productId" #producto="ngModel" required>
+                                      <option value="" disabled>Seleccione el producto</option>
+                                      <option *ngFor="let p of productos" [ngValue]="p.id">
+                                        {{ p.Description}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="producto.invalid && ( (producto.dirty || producto.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="producto.errors.required">
+                                      El producto es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-4">
+                                  <label>Tipo empaque</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="tipoEmpaque" id="tipoEmpaque" [(ngModel)]="remesa.packageTypeId" #tipoEmpaque="ngModel" required>
+                                      <option value="" disabled>Seleccione el tipo</option>
+                                      <option *ngFor="let t of tiposEmpaque" [ngValue]="t.id">
+                                        {{ t.Description}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="tipoEmpaque.invalid && ( (tipoEmpaque.dirty || tipoEmpaque.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="tipoEmpaque.errors.required">
+                                      El tipo de empaque es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Cantidad</label>
+                                  <div class="input-group">
+                                    <input type="number" class="form-control" id="cantidad" name="cantidad" [(ngModel)]="remesa.quantity" placeholder="Digite la cantidad" required #cantidad="ngModel">
+                                  </div>
+                                  <div *ngIf="cantidad.invalid && ( (cantidad.dirty || cantidad.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="cantidad.errors.required">
+                                      La cantidad es requerida.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>Volumen</label>
+                                  <div class="input-group">
+                                    <input type="number" class="form-control" id="volumen" name="volumen" [(ngModel)]="remesa.volume" placeholder="Digite el volumen" required #volumen="ngModel">
+                                  </div>
+                                  <div *ngIf="volumen.invalid && ( (volumen.dirty || volumen.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="volumen.errors.required">
+                                      El volumen es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-6">
+                                  <label>Peso</label>
+                                  <div class="input-group">
+                                    <input type="number" class="form-control" id="peso" name="peso" [(ngModel)]="remesa.weight" placeholder="Digite el peso" required #peso="ngModel">
+                                  </div>
+                                  <div *ngIf="peso.invalid && ( (peso.dirty || peso.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="peso.errors.required">
+                                      El peso es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label># Póliza</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="numeroPoliza" name="numeroPoliza" [(ngModel)]="remesa.policyNumber" placeholder="Digite el número de póliza" required #numeroPoliza="ngModel">
+                                  </div>
+                                  <div *ngIf="numeroPoliza.invalid && ( (numeroPoliza.dirty || numeroPoliza.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="numeroPoliza.errors.required">
+                                      El número de póliza es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-6">
+                                  <label>Valor asegurado</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-cur-dollar"></i></span>
+                                    <input type="text" class="form-control" id="valorAsegurado" name="valorAsegurado" [(ngModel)]="remesaAux.insuranceValue" onkeyup="formatInsuranceValue()" (ngModelChange)="formatInsuranceValue()" pattern="(?:- ?)?\d{1,3}(?:\,\d{3})*(?:,\d+)?" placeholder="Digite el valor asegurado" required #insuranceValue="ngModel">
+                                  </div>
+                                  <div *ngIf="insuranceValue.invalid && ( (insuranceValue.dirty || insuranceValue.touched) || f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="insuranceValue.errors.required">
+                                      El valor asegurado es requerido.
+                                    </div>
+                                    <div *ngIf="insuranceValue.invalid&&remesaAux.insuranceValue!=''">
+                                      El valor de venta debe ser númerico.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label>Valor carga</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-cur-dollar"></i></span>
+                                    <input type="text" class="form-control" id="valorCarga" name="valorCarga" [(ngModel)]="remesaAux.freightValue" onkeyup="formatFreightValue()" (ngModelChange)="formatFreightValue()" pattern="(?:- ?)?\d{1,3}(?:\,\d{3})*(?:,\d+)?" placeholder="Digite el valor de la carga" required #freightValue="ngModel">
+                                  </div>
+                                  <div *ngIf="freightValue.invalid && ( (freightValue.dirty || freightValue.touched) ||f1.submitted)" class="alert alert-danger">
+                                    <div *ngIf="freightValue.errors.required">
+                                      El valor de la carga es requerido.
+                                    </div>
+                                    <div *ngIf="freightValue.invalid&&remesaAux.freightValue!=''">
+                                      El valor de la carga debe ser númerico.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <hr>
+                              <button type="submit" id="guardarEditarRemesa" class="btn btn-primary m-b-20">Guardar</button>
+                              <button type="button" title="Atrás"  class="btn btn-primary m-b-20" (click)="atras(f1)">Atrás</button>
+                            </form>
+                          </div>
+                          <div class="card-block" [hidden]="hideConsignmentList">
+                            <div class="card-footer text-center">
+                              <button type="button" class="btn btn-primary m-b-20" (click)="nuevaRemesa()">+Nuevo</button>
+                            </div>
+                            <div class="dt-responsive table-responsive">
+                              <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                                <thead>
+                                  <tr>
+                                    <th># Pedido cliente</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th># Póliza</th>
+                                    <th>Producto</th>
+                                    <th>Tipo de empaque</th>
+                                    <th></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let c of remesas; let i = index">
+                                    <td>{{c.clientOrderNumber}}</td>
+                                    <td>{{c.originCity}} - {{c.originDeparment}}</td>
+                                    <td>{{c.destinationCity}} - {{c.destinationDeparment}}</td>
+                                    <td>{{c.policyNumber}}</td>
+                                    <td>{{c.product}}</td>
+                                    <td>{{c.packageType}}</td>
+                                    <td>
+                                      <!--<a (click)="openModalRemesa(modalContentRemesa,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>-->
+                                      <a (click)="editarRemesa(i)" style="cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div id="loadUnloadContainer" [hidden]="hideAddEditLoadUnload">
+                            <div style="margin:10px auto;text-align:center;">
+                              <button type="button" class="btn btn-outline-primary" (click)="isCollapsedCargue = !isCollapsedCargue"
+                                      [attr.aria-expanded]="!isCollapsedCargue" aria-controls="collapseExample">
+                                Cargues
+                              </button>
+                            </div>
+                            <div [ngbCollapse]="isCollapsedCargue">
+                              <div class="tab-content tabs card-block">
+                                <div class="card-header">
+                                  <h5>Creación / Edición de cargue</h5>
+                                </div>
+                                <div class="card-footer text-center">
+                                  <button type="button" class="btn btn-primary m-b-20" (click)="openModalCargue(modalContentCargue,-1)">+Nuevo cargue</button>
+                                </div>
+                                <div class="card-block">
+                                  <div class="dt-responsive table-responsive">
+                                    <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>Fecha/hora de cargue</th>
+                                          <th>Fecha/hora de salida de cargue</th>
+                                          <th>Acción</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let ca of cargues; let i = index">
+                                          <td>{{ca.loadDate}} {{ca.loadTime}}</td>
+                                          <td>{{ca.loadDepartureDate}} {{ca.loadDepartureTime}}</td>
+                                          <td>
+                                            <a (click)="openModalCargue(modalContentCargue,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                            <a (click)="borrarCargue(i);" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-trash"></i></a>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div style="margin:10px auto;text-align:center;">
+                              <button type="button" class="btn btn-outline-primary" (click)="isCollapsedDescargue = !isCollapsedDescargue"
+                                      [attr.aria-expanded]="!isCollapsedDescargue" aria-controls="collapseExample">
+                                Descargues
+                              </button>
+                            </div>
+                            <div [ngbCollapse]="isCollapsedDescargue">
+                              <div class="tab-content tabs card-block">
+                                <div class="card-header">
+                                  <h5>Creación / Edición de descargue</h5>
+                                </div>
+                                <div class="card-footer text-center">
+                                  <button type="button" class="btn btn-primary m-b-20" (click)="openModalDescargue(modalContentDescargue,-1)">+Nuevo descargue</button>
+                                </div>
+                                <div class="card-block">
+                                  <div class="dt-responsive table-responsive">
+                                    <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>Fecha/hora de descargue</th>
+                                          <th>Fecha/hora de salida de descargue</th>
+                                          <th># Contenedor</th>
+                                          <th>Tipo</th>
+                                          <th>Propietario</th>
+                                          <th>Dirección de devolución</th>
+                                          <th>Fecha/hora de devolución</th>
+                                          <th>Acción</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let de of descargues; let i = index">
+                                          <td>{{de.unloadDate}} {{de.unloadTime}}</td>
+                                          <td>{{de.unloadDepartureDate}} {{de.unloadDepartureTime}}</td>
+                                          <td>{{de.containerNumber}}</td>
+                                          <td>{{de.type}}</td>
+                                          <td>{{de.ownerName}}</td>
+                                          <td>{{de.address}}</td>
+                                          <td>{{de.unloadDevolutionDate}} {{de.unloadDevolutionTime}}</td>
+                                          <td>
+                                            <a (click)="openModalDescargue(modalContentDescargue,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                            <a (click)="borrarDescargue(i);" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-trash"></i></a>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                           </div>
+                    </div>
+                  </div>
+                 </div>
+                </div>
+                <div class="tab-pane" id="manifiestRelated" role="tabpanel">
+                  <div class="m-t-15">
+                    <div class="card">
+                      <div class="tab-content tabs card-block">
+                            <div class="card-header">
+                              <h5>Creación / Edición de conexo</h5>
+                            </div>
+                            <div class="card-footer text-center">
+                                <button type="button" class="btn btn-primary m-b-20" (click)="openModalConexo(modalContentConexo,-1)">+Nuevo</button>
+                            </div>
+                            <div class="card-block">
+                              <div class="dt-responsive table-responsive">
+                                <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th>Servicio</th>
+                                      <th>Valor venta</th>
+                                      <th>Valor contratado</th>
+                                      <th>Acción</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr *ngFor="let c of conexos; let i = index">
+                                      <td>{{c.service}}</td>
+                                      <td><!--{{c.saleValue}}--> {{ c.saleValue | currency }}</td>
+                                      <td><!--{{c.contractValue}}-->  {{ c.contractValue | currency }}</td>
+                                      <td>
+                                        <a (click)="openModalConexo(modalContentConexo,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                        <a (click)="borrarConexo(i);" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-trash"></i></a>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                         </div>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+     </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1179 @@
+
+<ng-template #modalUpdateLicense let-c="close" let-d="dismiss">
+     <form (ngSubmit)="saveUpdateCat();" #contactForm="ngForm">
+      <div class="modal-header">
+        <h4 class="modal-title">Agregar / Modificar categoria de licencia </h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="c('Close click')">&times;</button>
+      </div>
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-4">
+
+
+          <label>Codigo categoria</label>
+          <div class="input-group">
+            <ng-select class="custom" name="categoryCode" id="categoryCode" [items]="categoriasLicencia"
+               [virtualScroll]="true"
+               [loading]="loading2"
+               bindLabel="code"
+               bindValue="pk"
+               placeholder="Seleccione la categoria"
+               [(ngModel)]="categoriasLicencia.id"
+               (change)="obtenerCategoriaId($event.id)"
+               #categoryCode="ngModel">
+               <ng-template ng-header-tmp>
+                  <small class="form-text text-muted">{{lugarDocumentoBuffer.length}} de {{categoriasLicencia.length}}</small>
+               </ng-template>
+               <ng-template ng-option-tmp let-item="item" let-index="index">{{item.code}}</ng-template>
+            </ng-select>
+          </div>
+        </div>
+
+
+        <div class="form-group col-md-4">
+          <label for="inputAddress">Vigencia</label>
+          <div class="input-group">
+            <div class="input-group-addon" (click)="d3.toggle()" >
+              <span class="icofont icofont-ui-calendar"></span>
+            </div>
+            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="expirationDate" name="expirationDate" [(ngModel)]="categoria.expirationDate" ngbDatepicker #d3="ngbDatepicker" (ngModelChange)="onChange($event)" (keyup)="onKey()"  #expirationDate="ngModel" required>
+          </div>
+          <div *ngIf="expirationDate.invalid && ((expirationDate.dirty || expirationDate.touched) || guardarCategoria)" class="alert alert-danger">
+            <div *ngIf="expirationDate.errors.required">
+              La fecha de vigencia es requerida.
+            </div>
+            <div *ngIf="isValidDate_1(categoriasLicencia.expirationDate)==false">
+                El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label>Tipo servicio</label>
+          <div class="input-group">
+            <span class="input-group-addon" style="float:left;"><i class="fa fa-industry"></i></span>
+            <input disabled="true" type="text" class="form-control" id="typeService" name="typeService" [(ngModel)]="categoria.typeService" placeholder="Digite el nombre de la empresa" #typeService="ngModel">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-12">
+          <label>Clase de vehículo</label>
+          <div class="input-group">
+            <textarea disabled="true" id="limitProp" name="limitProp" rows="4" cols="80" #vehicleClass="ngModel" [(ngModel)]='categoria.description' > {{ categoria.description }} </textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary m-b-20" (click)="guardarCategoria = true">Guardar</button>
+      </div>
+    </form>
+</ng-template>
+
+<ng-template #modalContent let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f.form.valid && crearActualizarCuenta(); f.form.valid && c('Al guardar')" #f="ngForm" novalidate>
+      <div class="modal-header">
+        <h4 class="modal-title">Crear / modificar Cuenta</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-6">
+          <label>Banco</label>
+          <div class="input-group">
+            <span class="input-group-addon" style="float:left;"><i class="fa fa-bank"></i></span>
+            <input type="text" class="form-control" id="bank" name="name" [(ngModel)]="cuentaTercero.bank" placeholder="Digite el banco" required #bank="ngModel">
+            <div *ngIf="bank.invalid && ( (bank.dirty || bank.touched) || f.submitted)" class="alert alert-danger">
+              <div *ngIf="bank.errors.required">
+                El banco es requerido.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label>Número de la cuenta</label>
+          <div class="input-group">
+            <span class="input-group-addon" style="float:left;"><i class="icofont icofont-social-slack"></i></span>
+            <input type="text" class="form-control" id="accountNumber" name="accountNumber" [(ngModel)]="cuentaTercero.accountNumber" placeholder="Digite el número de la cuenta" required #accountNumber="ngModel">
+            <div *ngIf="accountNumber.invalid && ( (accountNumber.dirty || accountNumber.touched) || f.submitted)" class="alert alert-danger">
+              <div *ngIf="accountNumber.errors.required">
+                La número de la cuenta es requerida.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label>Nombre de la cuenta</label>
+          <div class="input-group">
+            <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-user"></i></span>
+            <input type="text" class="form-control" id="accountName" name="accountName" [(ngModel)]="cuentaTercero.accountName" placeholder="Digite el nombre de la cuenta" required #accountName="ngModel">
+            <div *ngIf="accountName.invalid && ( (accountName.dirty || accountName.touched) || f.submitted)" class="alert alert-danger">
+              <div *ngIf="accountName.errors.required">
+                La nombre de la cuenta es requerida.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label>Tipo</label>
+          <div class="input-group">
+            <span class="input-group-addon" style="float:left;"></span>
+            <select class="form-control" name="accounttype" id="accounttype" [(ngModel)]="cuentaTercero.accountTypeId" #accounttype="ngModel" required>
+              <option value="" disabled>Seleccione el tipo de cuenta</option>
+              <option *ngFor="let tipoCuenta of tiposCuenta" [ngValue]="tipoCuenta.id">
+                {{ tipoCuenta.description}}
+              </option>
+            </select>
+            <div *ngIf="accounttype.invalid && ( (accounttype.dirty || accounttype.touched) || f.submitted)" class="alert alert-danger">
+              <div *ngIf="accounttype.errors.required">
+                El tipo de cuenta es requerida.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #modalContent1 let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f1.form.valid && crearActualizarContacto(); f1.form.valid && c('Al guardar')" #f1="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar contacto</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="form-row col-md-12">
+      <div class="form-group col-md-6">
+        <label>Nombre(s) y Apellido(s)</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-user"></i></span>
+          <input type="text" class="form-control" id="name" name="name" [(ngModel)]="contactoTercero.name" placeholder="Digite el nombre" required #name="ngModel">
+          <div *ngIf="name.invalid && ( (name.dirty || name.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="name.errors.required">
+              El nombre es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Profesión</label>
+        <div class="input-group">
+        <span class="input-group-addon" style="float:left;"><i class="icofont icon-user-md"></i></span>
+          <input type="text" class="form-control" id="occupation" name="occupation" [(ngModel)]="contactoTercero.occupation" placeholder="Digite la profesión" required #occupation="ngModel">
+          <div *ngIf="occupation.invalid && ( (occupation.dirty || occupation.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="occupation.errors.required">
+              La profesión es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label>Empresa donde labora</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="fa fa-industry"></i></span>
+          <input type="text" class="form-control" id="workplace" name="workplace" [(ngModel)]="contactoTercero.workplace" placeholder="Digite el nombre de la empresa" #workplace="ngModel">
+        </div>
+      </div>
+
+      <div class="form-group col-md-3">
+        <label>Teléfono donde labora</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-phone"></i></span>
+          <input type="text" class="form-control" id="workphone" name="workphone" [(ngModel)]="contactoTercero.workphone" placeholder="Digite el teléfono" #workphone="ngModel">
+        </div>
+      </div>
+
+      <div class="form-group col-md-3">
+        <label>Teléfono casa</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-phone"></i></span>
+          <input type="text" class="form-control" id="phone" name="phone" [(ngModel)]="contactoTercero.phone" placeholder="Digite el teléfono" required #phone="ngModel">
+          <div *ngIf="phone.invalid && ( (phone.dirty || phone.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="phone.errors.required">
+              El teléfono es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-3">
+        <label>Celular</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-mobile-phone"></i></span>
+          <input type="text" class="form-control" id="cellphone" name="cellphone" [(ngModel)]="contactoTercero.cellphone" placeholder="Digite el celular" required #cellphone="ngModel">
+          <div *ngIf="cellphone.invalid && ( (cellphone.dirty || cellphone.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="cellphone.errors.required">
+              El celular es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-3">
+        <label>Teléfono alternativo</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-phone-circle"></i></span>
+          <input type="text" class="form-control" id="optionalphone" name="optionalphone" [(ngModel)]="contactoTercero.optionalphone" placeholder="Digite el teléfono" #optionalphone="ngModel">
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Dirección casa</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-home"></i></span>
+          <input type="text" class="form-control" id="address" name="address" [(ngModel)]="contactoTercero.address" placeholder="Digite la dirección" required #address="ngModel">
+          <div *ngIf="address.invalid && ( (address.dirty || address.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="address.errors.required">
+              La dirección es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label>Correo</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-email"></i></span>
+          <input type="email" class="form-control" id="correo" name="correo" [(ngModel)]="contactoTercero.email" placeholder="Digite el correo" #correo="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+
+          <div *ngIf="correo.invalid && ( (correo.dirty || correo.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="correo.errors.pattern">
+              Formato de correo incorrecto.
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label>Parentesco</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"><i class="fa fa-users"></i></span>
+          <input type="text" class="form-control" id="relationship" name="relationship" [(ngModel)]="contactoTercero.relationship" placeholder="Digite el parentesco" required #relationship="ngModel">
+          <div *ngIf="relationship.invalid && ( (relationship.dirty || relationship.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="relationship.errors.required">
+              El parentesco es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label>Tipo</label>
+        <div class="input-group">
+          <span class="input-group-addon" style="float:left;"></span>
+          <select class="form-control" style="height: 35px" name="type" id="type" [(ngModel)]="contactoTercero.idTypeReference" #type="ngModel" required>
+            <option value="" disabled>Seleccione el tipo</option>
+            <option *ngFor="let tipoReferencia of tipos" [ngValue]="tipoReferencia.id">
+              {{ tipoReferencia.description}}
+            </option>
+          </select>
+          <div *ngIf="type.invalid && ( (type.dirty || type.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="type.errors.required">
+              El tipo es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+
+<div class="page-body">
+<div class="card-block">
+    <div class="row">
+      <div class="col-lg-12" [hidden]="hideContentPicture">
+        <div class="cover-profile">
+          <div class="profile-bg-img">
+            <img class="profile-bg-img img-fluid" src="assets/images/user-profile/bg-img1.jpg" alt="bg-img">
+            <div class="card-block user-info">
+              <div class="col-md-12">
+                <div class="col-xl-3 col-lg-4 col-md-4 col-xs-12">
+                  <div class="social-timeline-left">
+                    <div class="card">
+
+                      <div class="social-profile" style="padding-bottom: 15px">
+                        <img class="img-fluid width-100" [src]="terceroImg" alt="">
+                        <div class="profile-hvr m-t-15" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">
+                          <label for="file">
+                            <i class="icofont icofont-ui-edit p-r-10"></i>
+                            <input type="file" style="display:none" id="file" (change)="handleFileInput($event.target.files)" [(ngModel)]="tercero.img">
+                          </label>
+                          <label for="upload">
+                            <i class="icofont icofont-ui-delete"></i>
+                            <input type="button" style="display:none" id="upload" (click)="removeImage()">
+                          </label>
+                        </div>
+                        <div class="media-body row">
+                          <div>
+                              <div>
+                                  <h6 style="color: black;">{{tercero.name }}</h6>
+                                  <!--<h6 style="color: black;">Conductor</h6>-->
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+        <div class="col-lg-12">
+          <div class="md-tabs md-card-tabs">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs  tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#home1" role="tab">Información básica</a>
+                </li>
+                <li class="nav-item" [hidden]="hideThirdAccountContent">
+                    <a class="nav-link" data-toggle="tab" href="#accountClient" role="tab">Cuentas bancarias</a>
+                </li>
+                <li class="nav-item" [hidden]="hideThirdContactContent">
+                    <a class="nav-link" data-toggle="tab" href="#contactClient" role="tab">Contactos</a>
+                </li>
+                <li class="nav-item" [hidden]="hideThirdBranchContent">
+                    <a class="nav-link" data-toggle="tab" href="#branchClient" role="tab">Surcursales</a>
+                </li>
+            </ul>
+
+
+
+            <div class="tab-content tabs card-block">
+
+              <div class="tab-pane active" id="home1" role="tabpanel">
+                <form #terceroForm="ngForm" (ngSubmit)="terceroForm.form.valid && crearActualizarTercero()">
+                
+                  <div [@fadeInOutTranslate] class="m-t-15">
+                    <div class="card">
+                      <div class="tab-content tabs card-block">
+                        <div class="card-header">
+                          <h5>Creación / Edición de tercero</h5>
+                        </div>
+                        <div class="card-block">                     
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                              <label>Tipo de tercero</label>
+                              <div class="input-group">
+                                <dual-list id="list" name="list" [source]="source" [(destination)]="selectedItemList" [format]="format" (click)="getSeletedItems()"></dual-list>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-6" [hidden]="hideCtrlForm">
+                              <label>Documento</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <input type="text" class="form-control" id="identification" name="identification" [(ngModel)]="tercero.identification" placeholder="Digite el documento" required #identification="ngModel">
+                              </div>
+                              <div *ngIf="identification.invalid && ((identification.dirty || identification.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="identification.errors.required">
+                                  El documento es requerido
+                                </div>
+                              </div>
+                              <div [hidden]="hideRegimenCtrl">
+                                <label >Regimen</label>
+                                <div class="input-group">
+                                  <select class="form-control" name="regimeid" id="regimeid"  [(ngModel)]="tercero.regimeId" #regimeid="ngModel" >
+                                    <option value="" disabled>Seleccione el régimen</option>
+                                    <option *ngFor="let r of regimenes" [ngValue]="r.id">
+                                      {{r.description}}
+                                    </option>
+                                  </select>
+                                </div>
+                                <div *ngIf="regimeid.invalid && ( (regimeid.dirty || regimeid.touched) || guardarCliente)" class="alert alert-danger">
+                                  <div *ngIf="regimeid.errors.required">
+                                    El régimen es requerido.
+                                  </div>
+                                </div>
+                              </div>
+                              <label>Lugar del documento</label>
+                              <div class="input-group">
+                                <ng-select class="custom" name="documentPlace" id="documentPlace" [items]="lugarDocumento"
+                                  [virtualScroll]="true" [loading]="loading2" bindLabel="cityName" bindValue="pk" placeholder="Seleccione la ciudad" [(ngModel)]="tercero.identificationPlaceId" (scrollToEnd)="fetchMoreLugarDocumento($event)"  (ngModelChange)="obtenerDepartamento($event)" #documentPlace="ngModel" required>
+                                  <ng-template ng-header-tmp>
+                                    <small class="form-text text-muted">{{lugarDocumentoBuffer.length}} de {{lugarDocumento.length}}</small>
+                                  </ng-template>
+                                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                                    {{item.cityName}}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+                              <div *ngIf="documentPlace.invalid && ( (documentPlace.dirty || documentPlace.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="documentPlace.errors.required">
+                                  Lugar de documento es requerido.
+                                </div>
+                              </div>
+                              <label for="input-group">Departamento</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="department1" name="department1" [(ngModel)]="terceroExp.deparment1" disabled="">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row col-md-12" [hidden]="hideCtrlForm">
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">Nombre y apellidos/Razón social</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="nombre" name="nombre" [(ngModel)]="tercero.name" required #name="ngModel" placeholder="Digite el nombre de la empresa o razón social">
+                              </div>
+                              <div *ngIf="name.invalid && ((name.dirty || name.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="name.errors.required">
+                                  El nombre de la empresa ó razón social es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">Nombre de contacto</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="contact" name="contact" [(ngModel)]="tercero.contact" #contact="ngModel" placeholder="Digite el contacto">
+                              </div>
+                              <div *ngIf="contact.invalid && ((contact.dirty || contact.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="contact.errors.required">
+                                  El contacto es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row col-md-12" [hidden]="hideCtrlDriver">
+                            <div class="form-group col-md-5">
+                              <label for="inputAddress">Fecha de nacimiento</label>
+                              <div class="input-group">
+                                <div class="input-group-addon" (click)="d.toggle()" >
+                                  <span class="icofont icofont-ui-calendar"></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="birthDate" name="birthDate" [(ngModel)]="terceroExp.birthDate" ngbDatepicker #d="ngbDatepicker" (ngModelChange)="onChange($event)" (keyup)="onKey()" required #birthDate="ngModel">
+                              </div>
+                              <div *ngIf="birthDate.invalid && ( (birthDate.dirty || birthDate.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="birthDate.errors.required">
+                                  La fecha de nacimiento es requerida.
+                                </div>
+                                <div *ngIf="isValidDate_1(terceroExp.birthDate)==false">
+                                  El valor de la fecha de nacimiento no es válida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-5">
+                              <label for="inputAddress">Lugar de nacimiento</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+                                <input type="text" class="form-control" id="birthPlace" name="birthPlace" [(ngModel)]="tercero.birthPlace" placeholder="Digite el lugar de nacimiento" required #birthPlace="ngModel">
+                              </div>
+                              <div *ngIf="birthPlace.invalid && ( (birthPlace.dirty || birthPlace.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="birthPlace.errors.required">
+                                  El lugar de nacimiento es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-2 ">
+                              <label for="inputAddress">Edad</label>
+                              <input type="text" class="form-control" id="inputyears" disabled="" value="">
+                            </div>
+                          </div>
+                          <div class="form-row col-md-12" [hidden]="hideCtrlForm">
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Dirección</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-home"></i></span>
+                                <input type="text" class="form-control" id="address" name="address" [(ngModel)]="tercero.address" required #address="ngModel" placeholder="Digite la dirección">
+                              </div>
+                              <div *ngIf="address.invalid && ((address.dirty || address.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="address.errors.required">
+                                  La dirección es requerida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label for="inputAddress">Ciudad</label>
+                              <div class="input-group">
+                                <ng-select class="custom" name="cityId" id="cityId" [items]="ciudades"
+                                  [virtualScroll]="true"
+                                  [loading]="loading1"
+                                  bindLabel="cityName"
+                                  bindValue="pk"
+                                  placeholder="Seleccione la ciudad"
+                                  [(ngModel)]="tercero.cityId"
+                                  (scrollToEnd)="fetchMoreCiudad($event)" #cityId="ngModel" (ngModelChange)="obtenerBarriosCiudad($event)" required>
+                                  <ng-template ng-header-tmp>
+                                  <small class="form-text text-muted">{{ciudadesBuffer.length}} de {{ciudades.length}}</small>
+                                  </ng-template>
+                                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                                    {{item.cityName}}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+                              <div *ngIf="cityId.invalid && ( (cityId.dirty || cityId.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="cityId.errors.required">
+                                  La ciudad es requerida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label for="input-group">Departamento</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="department2" name="department2" [(ngModel)]="terceroExp.deparment2" disabled="">
+                              </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                              <label for="inputAddress">Barrio</label>
+                              <div class="input-group">
+                                <select class="form-control" name="districtid" id="districtid" [(ngModel)]="tercero.districtId" #districtid="ngModel" required>
+                                  <option value="" disabled>Seleccione el barrio</option>
+                                  <option *ngFor="let b of barrios" [ngValue]="b.id">
+                                    {{ b.description}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="districtid.invalid && ( (districtid.dirty || districtid.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="districtid.errors.required">
+                                  El barrio es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row col-md-12" [hidden]="hideCtrlDriver">
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">Estado civil</label>
+                              <div class="input-group">
+                                <select class="form-control" name="maritalstatus" id="maritalstatus" [(ngModel)]="tercero.maritalStatusId" #maritalstatus="ngModel" required>
+                                  <option value="" disabled>Seleccione el estado civil</option>
+                                  <option *ngFor="let estado of estadosCivil" [ngValue]="estado.id">
+                                    {{ estado.description}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="maritalstatus.invalid && ( (maritalstatus.dirty || maritalstatus.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="maritalstatus.errors.required">
+                                  El estado civil es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">RH</label>
+                              <div class="input-group">
+                                <select class="form-control" name="rhType" id="rhType" [(ngModel)]="terceroExp.rhType" required #rhType="ngModel">
+                                  <option value="" disabled>Seleccione el RH</option>
+                                  <option *ngFor="let r of tiposRH" [ngValue]="r.id">
+                                    {{r.description}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="rhType.invalid && ( (rhType.dirty || rhType.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="rhType.errors.required">
+                                  El RH es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row col-md-12" [hidden]="hideCtrlForm">
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">E-mail</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-ui-email"></i></span>
+                                <input type="text" class="form-control" id="correoTercero" name="correoTercero" [(ngModel)]="tercero.email" required #correoTercero="ngModel" placeholder="Digite el correo" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                              </div>
+                              <div *ngIf="(correoTercero.invalid && this.validatemail == 0) && ((correoTercero.dirty || correoTercero.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="correoTercero.errors.required">
+                                  El correo es requerido
+                                </div>
+                                <div *ngIf="correoTercero.errors.pattern">
+                                  Formato de correo incorrecto.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-6" [hidden]="hideRegimenCtrl">
+                              <label for="inputAddress">Sitio web</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="website" name="website" [(ngModel)]="tercero.website" #website="ngModel" placeholder="Digite el sitio web">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row col-md-12" [hidden]="hideCtrlForm">
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Celular</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-mobile-phone"></i></span>
+                                <input type="text" class="form-control" id="phone1" name="phone1" [(ngModel)]="tercero.phone1" placeholder="Digite el número de celular" required  #phone1="ngModel" placement="top"  ngbPopover="Con este número de telefono tendra acceso a las opciones de la app móvil">
+                              </div>
+                              <div *ngIf="phone1.invalid && ( (phone1.dirty || phone1.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="phone1.errors.required">
+                                  El celular es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Telefono fijo</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-phone"></i></span>
+                                <input type="text" class="form-control" id="phone2" name="phone2" [(ngModel)]="tercero.phone2" placeholder="Digite el telefono" #phone2="ngModel" required >
+                              </div>
+                              <div *ngIf="phone2.invalid && ( (phone2.dirty || phone2.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="phone2.errors.required">
+                                  El telefono es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Telefono alternativo</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-phone-circle"></i></span>
+                                <input type="text" class="form-control" id="phone3" name="phone3" [(ngModel)]="tercero.phone3" placeholder="Digite el telefono" #phone3="ngModel">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row col-md-12" [hidden]="hideCtrlThird">
+                            <div class="form-group col-md-2">
+                              <label>Valor cupo</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="quota" name="quota" [(ngModel)]="terceroExp.quota" #quota="ngModel" onkeyup="format_()" (ngModelChange)="format_()" pattern="(?:- ?)?\d{1,3}(?:\,\d{3})*(?:,\d+)?" placeholder="Digite el valor del cupo" required>
+                              </div>
+                              <div *ngIf="quota.invalid && ((quota.dirty || quota.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="quota.errors.required">
+                                  El valor del cupo es requerido.
+                                </div>
+                                <div *ngIf="quota.invalid&&terceroExp.quota!=''">
+                                  El valor del cupo debe ser númerico.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                              <label>Plazo (días)</label>
+                              <div class="input-group">
+                                <input type="number" step="1" min="1" class="form-control" id="deadline" name="deadline" [(ngModel)]="tercero.deadLine" #deadline="ngModel" placeholder="Digite el plazo" required>
+                              </div>
+                              <div *ngIf="deadline.invalid && ( (deadline.dirty || deadline.touched) || guardarCliente)"
+                                class="alert alert-danger">
+                                <div *ngIf="deadline.errors.required">
+                                  El plazo es requerido
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                              <label>Aplica retención</label>
+                              <div class="form-group row">
+                                <div class="checkbox-fade fade-in-primary">
+                                  <label>
+                                    <div class="col-sm-10">
+                                      <input class="border-checkbox" type="checkbox" id="checkboxRetencion" name="checkboxRetencion" #applyRetention="ngModel" [(ngModel)]="tercero.applyRetention">
+                                      <span class="cr">
+                                        <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                      </span>
+                                      <label *ngIf="tercero.applyRetention" class="border-checkbox-label" for="checkboxRetencion">Si</label>
+                                      <label *ngIf="!tercero.applyRetention" class="border-checkbox-label" for="checkboxRetencion">No</label>
+                                    </div>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                              <div [hidden]="hideCtrlProvider">
+                                <label>Factura IVA</label>
+                                <div class="form-group row">
+                                  <div class="checkbox-fade fade-in-primary">
+                                    <label>
+                                      <div class="col-sm-10">
+                                        <input class="border-checkbox" type="checkbox" id="checkboxIVA" name="checkboxIVA" #billHasIVA="ngModel" [(ngModel)]="tercero.billHasIVA">
+                                        <span class="cr">
+                                          <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                        </span>
+                                        <label *ngIf="tercero.billHasIVA" class="border-checkbox-label" for="checkboxIVA">Si</label>
+                                        <label *ngIf="!tercero.billHasIVA" class="border-checkbox-label" for="checkboxIVA">No</label>
+                                      </div>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label>PUC</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="userPUC" name="userPUC" #userPUC="ngModel" [(ngModel)]="tercero.userPUC" placeholder="Digite el PUC" required>
+                              </div>
+                              <div *ngIf="userPUC.invalid && ((userPUC.dirty || userPUC.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="userPUC.errors.required">
+                                  El PUC es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>                          
+                          <div class="form-row col-md-12" [hidden]="hideCtrlClient">
+                            <div class="form-group col-md-2">
+                              <label>Retención CREE</label>
+                              <div class="form-group row">
+                                <div class="checkbox-fade fade-in-primary">
+                                  <label>
+                                    <div class="col-sm-10">
+                                        <input class="border-checkbox" type="checkbox" id="checkboxRetencionCREE" name="checkboxRetencionCREE" #retentionCREE="ngModel" [(ngModel)]="tercero.retentionCREE">
+                                        <span class="cr">
+                                          <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                        </span>
+                                        <label *ngIf="tercero.retentionCREE" class="border-checkbox-label" for="checkboxRetencionCREE">Si</label>
+                                        <label *ngIf="!tercero.retentionCREE" class="border-checkbox-label" for="checkboxRetencionCREE">No</label>
+                                    </div>
+                                    </label>
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label>Descuento</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="discount" name="discount" #discount="ngModel" [(ngModel)]="tercero.discount" min="0" max="100" placeholder="Digite el descuento" pattern="^$|^([0-9]|[1-9][0-9]|[1][0][0])?" required onKeyPress="if(this.value.length==3) return false;">
+                              </div>
+
+                              <div *ngIf="discount.invalid && ((discount.dirty || discount.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="discount.errors.required">
+                                  El descuento es requerido.
+                                </div>
+                                <div *ngIf="discount.errors.pattern">
+                                  El descuento debe estar entre 0 y 100.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label>Asesor</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-user-alt-3"></i></span>
+                                <input type="text" class="form-control" id="advisor" name="advisor" #advisor="ngModel" [(ngModel)]="tercero.advisor" placeholder="Digite el nombre del asesor" required>
+                              </div>
+
+                              <div *ngIf="advisor.invalid && ((advisor.dirty || advisor.touched) || guardarCliente)" class="alert alert-danger">
+                                <div *ngIf="advisor.errors.required">
+                                  El asesor es requerido.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-2">
+                              <label>Certificado Basc</label>
+                              <div class="form-group row">
+                                <div class="checkbox-fade fade-in-primary">
+                                  <label>
+                                    <div class="col-sm-10">
+                                        <input class="border-checkbox" type="checkbox" id="checkboxBascCertificate" name="checkboxBascCertificate" #bascCertificate="ngModel" [(ngModel)]="tercero.bascCertificate">
+                                        <span class="cr">
+                                          <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                        </span>
+                                        <label *ngIf="tercero.bascCertificate" class="border-checkbox-label" for="checkboxBascCertificate">Si</label>
+                                        <label *ngIf="!tercero.bascCertificate" class="border-checkbox-label" for="checkboxBascCertificate">No</label>
+                                    </div>
+                                    </label>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row col-md-12" [hidden]="hideCtrlProvider">
+                            <div class="form-group col-md-4">
+                              <label>Servicios</label>
+                              <div class="input-group">
+                                <angular2-multiselect id="multiselect" name="multiselect" [data]="itemList"
+                                  [(ngModel)]="selectedItems"
+                                  [settings]="settings"
+                                  (onSelect)="onItemSelect($event)"
+                                  (onDeSelect)="onItemDeSelect($event)">
+                                 </angular2-multiselect>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group row" [hidden]="hideCtrlForm">
+                            <label class="col-sm-2 col-form-label">Estado</label>
+                            <div class="col-sm-10">
+
+                              <input class="border-checkbox" type="checkbox" id="checkboxStatus" name="checkboxStatus" #status="ngModel" [(ngModel)]="tercero.status">
+                              <label *ngIf="tercero.status" class="border-checkbox-label" for="checkboxStatus">Activo</label>
+                              <label *ngIf="!tercero.status" class="border-checkbox-label" for="checkboxStatus">Inactivo</label>
+                            </div>
+                          </div>
+                        </div>                      
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <div class="tab-content tabs card-block" [hidden]="hideContentPicture">
+                    <div class="tab-pane active" id="home1" role="tabpanel">
+                      <div [@fadeInOutTranslate] class="m-t-15">
+                        <div class="card">
+                          <div class="tab-content tabs card-block">
+                            <div class="card-header">
+                              <h5>Información licencia</h5>
+                            </div>
+                            <div class="card-block">
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-4">
+                                  <label>Número de licencia</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                    <input type="text" class="form-control" id="licenseNumber" name="licenseNumber" [(ngModel)]="tercero.identification" placeholder="Digite el documento" disabled="true" #licenseNumber="ngModel">
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label for="inputAddress">Fecha de expedición</label>
+                                  <div class="input-group">
+                                    <div class="input-group-addon" (click)="d1.toggle()" >
+                                      <span class="icofont icofont-ui-calendar"></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="expeditionDate" name="expeditionDate" [(ngModel)]="terceroExp.expeditionDate" ngbDatepicker #d1="ngbDatepicker" (ngModelChange)="onChange($event)" (keyup)="onKey()" #expeditionDate="ngModel" required>
+                                  </div>
+                                  <div *ngIf="expeditionDate.invalid && ( (expeditionDate.dirty || expeditionDate.touched) || guardarCliente)" class="alert alert-danger">
+                                    <div *ngIf="expeditionDate.errors.required">
+                                      La fecha de expedición es requerida.
+                                    </div>
+                                    <div *ngIf="isValidDate_1(terceroExp.expeditionDate)==false">
+                                      El valor de la fecha de expedición no es válida.
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label for="inputAddress">Sangre RH</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="rhType2" id="rhType2" [(ngModel)]="terceroExp.rhType" #rhType2="ngModel" disabled="true">
+                                      <option value="" disabled>RH</option>
+                                      <option *ngFor="let r of tiposRH" [ngValue]="r.id">
+                                        {{r.description}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-12">
+                                  <label>Restricciones del conductor</label>
+                                  <div class="input-group">
+                                    <textarea id="mobRestr" name="mobRestr" rows="6" cols="80" #mobilityRestriction="ngModel" [(ngModel)]='tercero.mobilityRestriction'> </textarea>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-12">
+                                  <label>Organismo de transito expedidor</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                    <ng-select class="custom" id="transitId" name="transitId" [items]="agenciasTransito"
+                                       [virtualScroll]="true"
+                                       [loading]="loading"
+                                       [clearSearchOnAdd]="True"
+                                       bindLabel="description"
+                                       bindValue="pk"
+                                       placeholder="Seleccione el organismo de transito"
+                                       [(ngModel)]="tercero.transitAgency"
+                                       (scrollToEnd)="fetchMore($event)" #transitId="ngModel" required>
+                                       <!--
+                                      <ng-template ng-header-tmp>
+                                        <small class="form-text text-muted">{{propietariosBuffer.length}} de {{agenciasTransito.length}}</small>
+                                      </ng-template>
+                                        -->
+                                      <ng-template ng-option-tmp let-item="item" let-index="index">
+                                        {{item.description}}
+                                      </ng-template>
+                                    </ng-select>
+                                  </div>
+                                  <div *ngIf="transitId.invalid && ((transitId.dirty || transitId.touched) || guardarCliente)" class="alert alert-danger">
+                                    <div *ngIf="transitId.errors.required">
+                                      El organismo de transito es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-row col-md-6">
+                                  <label>Categorias autorizadas</label>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <div id="btn-content">
+                                    <button type="button" title="Nuevo punto de chequeo"  class="btn btn-info m-b-20" (click)="openModalLicense(-1)" >Adicionar Categoria</button>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group col-md-12">
+                                <div class="input-group">
+                                  <table id="base-tbl" class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col" style="text-align: center; font-size: 10px;">CATEGORIA</th>
+                                        <th scope="col" style="text-align: center; font-size: 10px;">CLASE DE VEHICULO</th>
+                                        <th scope="col" style="text-align: center; font-size: 10px;">VIGENCIA</th>
+                                        <th scope="col" style="text-align: center; font-size: 10px;">SERVICIO</th>
+                                        <th scope="col" style="text-align: center; font-size: 10px;">Editar</th>
+                                        <th scope="col" style="text-align: center; font-size: 10px;">Eliminar</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody id="rowsRoutes">
+                                      <tr *ngFor="let m of licenses; let i = index">
+                                        <td style="text-align: center;">{{ m.codeLicense }}</td>
+                                        <td class="descriptionRoute1">{{ m.descriptionLicense }}</td>
+                                        <td style="text-align: center;">{{ m.expirationDate}}</td>
+                                        <td style="text-align: center;">{{ m.typeService}}</td>
+                                        <td style="text-align: center;"><a (click)="openModalLicense(m.idlicThird)" style="cursor: pointer; "><i class="icofont icofont-edit-alt"></i></a></td>
+                                        <td style="text-align: center;"><a (click)="removeCat(m.idlicThird)"style="cursor: pointer;"><i class="icofont icofont-trash"></i></a>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <button type="submit" id="guardarEditarTercero" class="btn btn-primary m-b-20" (click)="guardarCliente = true" [hidden]="hideCtrlForm" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">Guardar</button>
+                  <button type="button" title="Atrás"  class="btn btn-primary m-b-20" (click)="back()">Atrás</button>
+                </form>
+              </div>    
+
+
+
+                
+                <div class="tab-pane" id="accountClient" role="tabpanel">
+                  <div [@fadeInOutTranslate] class="m-t-15">
+                    <!-- personal card start -->
+                    <div class="card">
+                      <div class="tab-content tabs card-block">
+                            <div class="card-header">
+                              <h5>Creación / Edición de cuenta</h5>
+                            </div>
+                            <div class="card-footer text-center">
+                                <button type="button" class="btn btn-primary m-b-20" (click)="openModal(modalContent,-1)" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">+Nuevo</button>
+                            </div>
+                            <div class="card-block">
+                              <div class="dt-responsive table-responsive">
+                                <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th>Banco</th>
+                                      <th>Tipo</th>
+                                      <th>Número de la cuenta</th>
+                                      <th>Nombre de la cuenta</th>
+                                      <th>Acción</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr *ngFor="let cuenta of cuentasTercero; let i = index">
+                                      <td>{{cuenta.bank}}</td>
+                                      <td>{{cuenta.accountTypeName}}</td>
+                                      <td>{{cuenta.accountNumber}}</td>
+                                      <td>{{cuenta.accountName}}</td>
+                                      <td>
+                                        <a (click)="openModal(modalContent,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                        <a (click)="borrarCuenta(i);" style="padding-right: 15px;cursor: pointer;" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true"><i class="icofont icofont-trash"></i></a>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+
+                              </div>
+                         </div>
+                    </div>
+                  </div>
+                 </div>
+                </div>
+                <div class="tab-pane" id="contactClient" role="tabpanel">
+                  <div [@fadeInOutTranslate] class="m-t-15">
+                    <!-- personal card start -->
+                    <div class="card">
+                      <div class="tab-content tabs card-block">
+                            <div class="card-header">
+                              <h5>Creación / Edición de contacto</h5>
+                            </div>
+                            <div class="card-footer text-center">
+                                <button type="button" class="btn btn-primary m-b-20" (click)="openModal_(modalContent1,-1)" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">+Nuevo</button>
+                            </div>
+                            <div class="card-block">
+                              <div class="dt-responsive table-responsive">
+                                <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th>Nombre</th>
+                                      <th>Ocupación</th>
+                                      <th>Empresa</th>
+                                      <th>Teléfono empresa</th>
+                                      <th>Teléfono casa</th>
+                                      <th>Celular</th>
+                                      <th>Teléfono alternativo</th>
+                                      <th>Dirección casa</th>
+                                      <th>Correo</th>
+                                      <th>Parentesco</th>
+                                      <th>Tipo</th>
+                                      <th>Acción</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr *ngFor="let c of contactosTercero; let i = index">
+                                      <td>{{c.name}}</td>
+                                      <td>{{c.occupation}}</td>
+                                      <td>{{c.workplace}}</td>
+                                      <td>{{c.workphone}}</td>
+                                      <td>{{c.phone}}</td>
+                                      <td>{{c.cellphone}}</td>
+                                      <td>{{c.optionalphone}}</td>
+                                      <td>{{c.address}}</td>
+                                      <td>{{c.email}}</td>
+                                      <td>{{c.relationship}}</td>
+                                      <td>{{c.nameTypeReference}}</td>
+                                      <td>
+                                        <a (click)="openModal_(modalContent1,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                        <a (click)="borrarContacto(i);" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-trash" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true"></i></a>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+
+                              </div>
+                         </div>
+                    </div>
+                  </div>
+                 </div>
+                </div>
+                <div class="tab-pane" id="branchClient" role="tabpanel">
+                  <div [@fadeInOutTranslate] class="m-t-15">
+                    <div class="card" id="surcursal-card">
+                      <div class="tab-content tabs card-block">
+                        <div class="card-header">
+                          <h5>Creación / Edición de Surcursal</h5>
+                        </div>
+                          <div class="card-block" [hidden]="hideAddEditBranch">
+                            <form #clientSurcursalForm="ngForm" (ngSubmit)="clientSurcursalForm.valid && crearActualizarSurcursal()">
+
+                            <div class="form-row col-md-12">
+                              <div class="form-group col-md-3">
+                                <label>Nombre</label>
+                                <div  class="input-group">
+                                  <input type="text" class="form-control" id="nombreSurcursal" name="nombreSurcursal" [(ngModel)]="surcursalTercero.name" placeholder="Digite el nombre de surcursal" required #nombreSurcursal="ngModel">
+                                  <div *ngIf="nombreSurcursal.invalid && ( (nombreSurcursal.dirty || nombreSurcursal.touched) || guardarSurcursal)" class="alert alert-danger">
+                                    <div *ngIf="nombreSurcursal.errors.required">
+                                      El nombre de surcursal es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <label>Teléfono</label>
+                                <div  class="input-group">
+                                  <span class="input-group-addon" style="float:left;"><i class="icofont icofont-phone"></i></span>
+                                  <input type="text" class="form-control" id="phone" name="phone" [(ngModel)]="surcursalTercero.phone" placeholder="Digite el telefono" required #phone="ngModel">
+                                  <div *ngIf="phone.invalid && ( (phone.dirty || phone.touched) || guardarSurcursal)" class="alert alert-danger">
+                                    <div *ngIf="phone.errors.required">
+                                      El teléfono es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="form-group col-md-3">
+                                <label>Dirección</label>
+                                <div  class="input-group">
+                                  <input type="text" class="form-control" id="direccion" name="direccion" [(ngModel)]="surcursalTercero.address" placeholder="Digite la dirección" required #direccion="ngModel">
+                                  <div *ngIf="direccion.invalid && ( (direccion.dirty || direccion.touched) || guardarSurcursal)" class="alert alert-danger">
+                                    <div *ngIf="direccion.errors.required">
+                                      La dirección es requerida.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="form-group col-md-3">
+                                <label>Ciudad</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon" style="float:left;"><i class="fa fa-globe"></i></span>
+                                  <ng-select class="custom" name="cityid" id="cityid" [items]="ciudadesSurcursal"
+                                     [virtualScroll]="true"
+                                     [loading]="loading3"
+                                     bindLabel="cityName"
+                                     bindValue="pk"
+                                     placeholder="Seleccione la ciudad"
+                                     [(ngModel)]="surcursalTercero.cityId"
+                                     (scrollToEnd)="fetchMoreCiudadSurcursal($event)" #cityid="ngModel" (ngModelChange)="obtenerDep($event)" required>
+                                     <ng-template ng-header-tmp>
+                                        <small class="form-text text-muted">{{ciudadesSurcursalBuffer.length}} de {{ciudadesSurcursal.length}}</small>
+                                     </ng-template>
+                                     <ng-template ng-option-tmp let-item="item" let-index="index">
+                                       {{item.cityName}}
+                                    </ng-template>
+                                  </ng-select>
+                                </div>
+                                <div *ngIf="cityid.invalid && ( (cityid.dirty || cityid.touched) || guardarSurcursal)" class="alert alert-danger">
+                                  <div *ngIf="cityid.errors.required">
+                                    La ciudad es requerida.
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-row col-md-12">
+                              <div class="form-group col-md-4">
+                                <label for="input-group">Departamento</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon" style="float:left;"><i class="fa fa-globe"></i></span>
+                                  <input type="text" class="form-control" id="department2" name="department2" [(ngModel)]="surcursalTercero.deparment" disabled="">
+                                </div>
+                              </div>
+                              <div class="form-group col-md-8">
+                                <label>Ubicación</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon" style="float:left;"><i class="icofont icofont-location-pin"></i></span>
+                                  <input type="text" class="form-control" id="location" name="location" placeholder="Digite la ubicación" [(ngModel)]="surcursalTercero.location" #location="ngModel">
+                                </div>
+                              </div>
+                            </div>
+                            <button type="submit" id="guardarEditarSurcursal" class="btn btn-primary m-b-20" (click)="guardarSurcursal = true" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">Guardar</button>
+                            <button type="button" title="Borrar punto de interés actual"  class="btn btn-primary m-b-20" style="background-color:#ff5370;border-color: #ff5370;" (click)="borrarUbicacion()" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">Borrar</button>
+                            <button type="button" title="Atrás"  class="btn btn-primary m-b-20" (click)="atras()">Atrás</button>
+                          </form>
+                          <div id="map" class="set-map"></div>
+                          </div>
+                          <div class="card-block" [hidden]="hideBranchesList">
+                            <div class="card-footer text-center">
+                              <button type="button" class="btn btn-primary m-b-20" (click)="nuevaSurcursal()" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">+Nuevo</button>
+                            </div>
+                            <div class="dt-responsive table-responsive">
+                              <table id="base-style-1" class="table table-striped table-bordered nowrap table-hover">
+                                <thead>
+                                  <tr>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                    <th>Ciudad</th>
+                                    <th>Departamento</th>
+                                    <th>Acción</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let s of surcursalesTercero; let i = index">
+                                    <td>{{s.name}}</td>
+                                    <td>{{s.phone}}</td>
+                                    <td>{{s.address}}</td>
+                                    <td>{{s.city}}</td>
+                                    <td>{{s.department}}</td>
+                                    <td>
+                                      <a (click)="editarSurcursal(i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                      <a (click)="borrarSurcursal(i);" style="padding-right: 15px;cursor: pointer;" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true"><i class="icofont icofont-trash"></i></a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+
+
+        </div>
+     </div>
+    </div>                                                    <!-- Row end -->
+  </div>
+</div>

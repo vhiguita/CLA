@@ -1,0 +1,27 @@
+.danger{
+	background-color: #E71212;
+	border-radius: 4px;
+    font-size: 75%;
+    padding: 4px 5px;
+    margin-right: 5px;
+    font-weight: 400;
+    color: #fff!important;
+}
+.warning{
+	background-color: #FF5733;
+	border-radius: 4px;
+    font-size: 75%;
+    padding: 4px 5px;
+    margin-right: 5px;
+    font-weight: 400;
+    color: #fff!important;
+}
+.info{
+	background-color: #007bff;
+	border-radius: 4px;
+    font-size: 75%;
+    padding: 3px 3px;
+    margin-right: 5px;
+    font-weight: 400;
+    color: #fff!important;
+}

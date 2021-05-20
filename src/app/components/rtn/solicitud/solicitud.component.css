@@ -1,0 +1,25 @@
+.multiselect-style{
+  width: 500px;
+  height: auto;
+}
+.ng-select.custom {
+    min-height: 0px;
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+}
+.ng-select.custom .ng-select-container  {
+    min-height: 0px;
+    border-radius: 0;
+}
+.ng-select.custom_1 {
+    min-height: 0px;
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.ng-select.custom_1 .ng-select-container  {
+    min-height: 0px;
+    border-radius: 0;
+}

@@ -1,0 +1,7 @@
+.datatable-scroll { width: 100% !important; }
+
+.datatable-header {
+  .datatable-header-cell {
+      font-weight: bold;
+  }
+}

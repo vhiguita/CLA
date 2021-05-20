@@ -1,0 +1,41 @@
+#btn-div{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.multiselect-style{
+  width: 500px;
+  height: auto;
+}
+.ng-select.custom {
+    min-height: 0px;
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+}
+.ng-select.custom .ng-select-container  {
+    min-height: 0px;
+    border-radius: 0;
+}
+.ng-select.custom_1 {
+    min-height: 0px;
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+.ng-select.custom_1 .ng-select-container  {
+    min-height: 0px;
+    border-radius: 0;
+}
+#legend {
+    line-height: 18px;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    padding: 10px;
+    margin: 10px;
+    border: 3px solid #000;
+}
+#legend h3 {
+     margin-top: 0;
+}

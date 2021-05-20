@@ -1,0 +1,41 @@
+<div class="page-body">
+  <!-- Base Style table start -->
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de contenedores</h5>
+      <span>Esta es la lista de contenedores.</span>
+    </div>
+    <div class="card-block">
+      <button type="button" id="addVehiculo" [routerLink]="['/home/dr/contenedor', '-1']" class="btn btn-primary m-b-20">+ Nuevo contenedor</button>
+      <div class="table-responsive">
+        <table id="base-tbl" class="table">
+          <thead>
+            <tr>
+            <th>Placa</th>
+            <th>Conductor</th>
+            <th>Cilindraje</th>
+            <th>Asesor</th>
+            <th>Tipo</th>
+            <th>Capacidad</th>
+            <th>Editar</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            <!--<tr *ngFor="let e of contenedores; let i = index">
+              <td>{{e.plate}}</td>
+              <td>{{e.model}}</td>
+              <td>{{e.displacement}}</td>
+              <td>{{e.brandName}}</td>
+              <td>{{e.vehicleType}}</td>
+              <td>{{e.colorName}}</td>
+              <td><a (click)="edit(i)" style="cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a></td>
+            </tr>-->
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Base Style table end -->
+</div>

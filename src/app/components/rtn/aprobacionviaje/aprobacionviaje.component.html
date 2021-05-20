@@ -1,0 +1,289 @@
+<ng-template #modalContentCargue let-c="close" let-d="dismiss" id="modal-container">
+    <div class="modal-header">
+      <h4 class="modal-title">Lista de cargues</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row col-md-12">
+        <div class="dt-responsive table-responsive">
+          <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+            <thead>
+              <tr>
+                <th>Fecha/hora de cargue</th>
+                <th>Fecha/hora de salida de cargue</th>
+                <th>Propietario</th>
+                <th>Dirección de cargue</th>
+                <th>Cedula</th>
+                <th>Nombre</th>
+                <th>Telefono</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ca of cargues; let i = index">
+                <td>{{ca.loadDate}} {{ca.loadTime}}</td>
+                <td>{{ca.loadDepartureDate}} {{ca.loadDepartureTime}}</td>
+                <td>{{ca.ownerName}}</td>
+                <td>{{ca.address}}</td>
+                <td>{{ca.receiverIdentificationLoad}}</td>
+                <td>{{ca.receiverNameLoad}}</td>
+                <td>{{ca.receiverPhoneLoad}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</ng-template>
+<ng-template #modalContentDescargue let-c="close" let-d="dismiss" id="modal-container">
+  <div class="modal-header">
+    <h4 class="modal-title">Lista de descargues</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-row col-md-12">
+      <div class="dt-responsive table-responsive">
+        <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+          <thead>
+            <tr>
+              <th>Fecha/hora de descargue</th>
+              <th>Fecha/hora de salida de descargue</th>
+              <th># Contenedor</th>
+              <th>Tipo</th>
+              <th>Propietario</th>
+              <th>Dirección de devolución</th>
+              <th>Fecha/hora de devolución</th>
+              <th>Cedula</th>
+              <th>Nombre</th>
+              <th>Telefono</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let de of descargues; let i = index">
+              <td>{{de.unloadDate}} {{de.unloadTime}}</td>
+              <td>{{de.unloadDepartureDate}} {{de.unloadDepartureTime}}</td>
+              <td>{{de.containerNumber}}</td>
+              <td>{{de.containerType}}</td>
+              <td>{{de.ownerName}}</td>
+              <td>{{de.address}}</td>
+              <td>{{de.unloadDevolutionDate}} {{de.unloadDevolutionTime}}</td>
+              <td>{{de.receiverIdentificationUnload}}</td>
+              <td>{{de.receiverNameUnload}}</td>
+              <td>{{de.receiverPhoneUnload}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<div class="page-body">
+      <div class="card">
+        <div class="card-header">
+          <h5>Lista de viajes</h5>
+          <span>Esta es la lista de viajes pendientes por aprobar</span>
+        </div>
+        <div class="card-block">
+          <div class="dt-responsive table-responsive">
+            <ngx-datatable
+              style="width: 100%"
+              class="material"
+              [messages]="messages_1"
+              [rows]="manifiestos"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="50"
+              [scrollbarH]="true"
+              [selected]="selected"
+              [selectionType]="'single'"
+              (activate)="onActivate($event)"
+              (select)='onSelect($event)'
+              >
+              <ngx-datatable-column name="# Viaje" prop="id" [width]="100"></ngx-datatable-column>
+              <ngx-datatable-column name="Fecha" prop="date" [width]="200"></ngx-datatable-column>
+              <ngx-datatable-column name="Fecha recogida de documentos" prop="travelAppointmentDate" [width]="300"></ngx-datatable-column>
+              <ngx-datatable-column name="Tipo de servicio" prop="serviceType" [width]="100"></ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h5>Vehículo</h5>
+        </div>
+        <div class="card-block">
+          <div class="dt-responsive table-responsive">
+            <table id="tbl-pts" class="table table-striped table-bordered nowrap table-hover">
+              <thead>
+                <tr>
+                  <th style="width:77px;">Conductor</th>
+                  <th>Nombre</th>
+                  <th>Tipo vehiculo</th>
+                  <th>Placa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let e of vehiculo; let i = index">
+                  <td><img src="{{e.urlImage}}" class="img-fluid" style="height:77px;width:77px;"></td>
+                  <td>{{e.driver}}</td>
+                  <td>{{e.vehicleType}}</td>
+                  <td>{{e.plate}}</td>
+                </tr>
+              </tbody>
+            </table>
+           </div>
+       </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h5>Lista de solicitudes</h5>
+        </div>
+        <div class="card-block">
+          <div class="dt-responsive table-responsive">
+            <ngx-datatable
+              style="width: 100%"
+              class="table table-striped table-bordered nowrap table-hover"
+              [messages]="messages_1"
+              [rows]="rows"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="50"
+              [scrollbarH]="true">
+              <ngx-datatable-column name="# Solicitud" prop="sequence" [width]="100"></ngx-datatable-column>
+              <ngx-datatable-column name="Cliente" prop="clientName" [width]="300"></ngx-datatable-column>
+              <ngx-datatable-column name="Cargues" prop="id">
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <a (click)="openModalCargue(modalContentCargue,value)" style="cursor: pointer;" title="Ver"><i class="icofont icofont-eye-alt"></i></a>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Descargues" prop="id">
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <a (click)="openModalDescargue(modalContentDescargue,value)" style="cursor: pointer;" title="Ver"><i class="icofont icofont-eye-alt"></i></a>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Fecha/hora solicitud" prop="travelRequestDate" [width]="400"></ngx-datatable-column>
+              <ngx-datatable-column name="Origen" prop="origin" [width]="300"></ngx-datatable-column>
+              <ngx-datatable-column name="Destino" prop="destination" [width]="300"></ngx-datatable-column>
+              <ngx-datatable-column name="Tipo de vehículo" prop="vehicleType"></ngx-datatable-column>
+              <ngx-datatable-column name="Tipo de empaque" prop="packageType"></ngx-datatable-column>
+              <ngx-datatable-column name="Peso" prop="weight"></ngx-datatable-column>
+              <ngx-datatable-column name="Volumen" prop="volume"></ngx-datatable-column>
+              <ngx-datatable-column name="Mercancía" prop="productName"></ngx-datatable-column>
+              <ngx-datatable-column name="Valor" prop="merchandiseValue">
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                  <div>{{value | currency}}</div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+          <div class="card-header">
+            <h5>Ruta</h5>
+          </div>
+          <div class="card-block">
+            <div class="form-row col-md-12">
+              <div class="form-group col-md-3">
+                <label for="inputAddress">Ciudad origen</label>
+                <div class="input-group">
+                  <ng-select class="custom" name="origenV" id="origenV" [items]="origenViaje"
+                     [virtualScroll]="true"
+                     [loading]="loadingOrigen"
+                     bindLabel="cityName"
+                     bindValue="pk"
+                     placeholder="Seleccione el origen"
+                     [(ngModel)]="origenViajeId"
+                     (scrollToEnd)="fetchMoreOrigin($event)" #origenS="ngModel" (ngModelChange)="obtenerDepartamentoOrigenViaje($event)">
+                     <ng-template ng-header-tmp>
+                        <small class="form-text text-muted">{{origenViajeBuffer.length}} de {{origenViaje.length}}</small>
+                     </ng-template>
+                     <ng-template ng-option-tmp let-item="item" let-index="index">
+                       {{item.cityName}}
+                    </ng-template>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="input-group">Departamento origen</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="department1" name="department1" [(ngModel)]="deparment1" disabled="">
+                </div>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="inputAddress">Ciudad Destino</label>
+                <div class="input-group">
+                  <ng-select class="custom" name="origenD" id="origenD" [items]="destinoViaje"
+                     [virtualScroll]="true"
+                     [loading]="loadingDestino"
+                     bindLabel="cityName"
+                     bindValue="pk"
+                     placeholder="Seleccione el destino"
+                     [(ngModel)]="destinoViajeId"
+                     (scrollToEnd)="fetchMoreDestination($event)" #origenS="ngModel" (ngModelChange)="obtenerDepartamentoDestinoViaje($event)">
+                     <ng-template ng-header-tmp>
+                        <small class="form-text text-muted">{{destinoViajeBuffer.length}} de {{destinoViaje.length}}</small>
+                     </ng-template>
+                     <ng-template ng-option-tmp let-item="item" let-index="index">
+                       {{item.cityName}}
+                    </ng-template>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="input-group">Departamento destino</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="department1" name="department1" [(ngModel)]="deparment2" disabled="">
+                </div>
+              </div>
+            </div>
+            <div class="form-row col-md-12">
+                <div class="form-group col-md-4">
+                  <label for="input-group">Ruta</label>
+                  <div class="input-group">
+                    <select class="form-control" name="ruta" id="ruta" [(ngModel)]="routeId" #ruta="ngModel" (change)="seleccionarRuta(routeId)">
+                      <option value="" disabled>Seleccione la ruta</option>
+                      <option *ngFor="let r of rutas" [ngValue]="r.id" >
+                        {{ r.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="trazarRuta()">Trazar ruta a partir de seleccionada</button>
+            <button type="button" class="btn btn-primary m-b-20" style="background-color:#ff5370;border-color: #ff5370;" (click)="borrarRuta()">Borrar</button>
+            <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="guardarRuta()">Guardar como nueva</button>
+            <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="actualizarRuta()">Actualizar</button>
+           <div id="travel_data"></div>
+           <div id="map" class="set-map"></div>
+           <div id="legend"></div>
+          </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h5>Condiciones</h5>
+        </div>
+        <div class="card-block">
+          <div class="form-row col-md-12">
+            <angular2-multiselect id="multiselect" name="multiselect" [data]="itemList"
+              [(ngModel)]="selectedItems"
+              [settings]="settings"
+              (onSelect)="onItemSelect($event)"
+              (onDeSelect)="onItemDeSelect($event)">
+             </angular2-multiselect>
+         </div>
+        </div>
+      </div>
+      <div id="btn-div">
+        <button type="button" class="btn btn-primary m-b-20" (click)="approveTravel()" style="margin:5px;">Aprobar</button>
+        <button type="button" class="btn btn-primary m-b-20" style="background-color:#ff5370;border-color:#ff5370;margin:5px;" (click)="rejectTravel()">Rechazar</button>
+      </div>
+  <!-- Base Style table end -->
+</div>

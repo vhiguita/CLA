@@ -1,0 +1,115 @@
+<div class="page-body">
+  <div class="card-block">
+      <div class="row">
+          <div class="col-lg-12">
+            <div class="md-tabs md-card-tabs">
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs  tabs" role="tablist">
+                  <li class="nav-item">
+                      <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Solicitudes</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" data-toggle="tab" href="#travelRecords" role="tab">Historial</a>
+                  </li>
+              </ul>
+              <!-- Tab panes -->
+              <div class="tab-content tabs card-block">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                      <div class="m-t-15">
+                        <div class="card">
+                          <div class="card-header">
+                            <h5>Lista de solicitudes</h5>
+                            <!-- <span>Esta es la lista de solicitudes</span> -->
+                          </div>
+                          <div class="card-block">
+                            <button type="button" id="addEmpresa" [routerLink]="['/home/rtn/solicitud','-1']" class="btn btn-primary m-b-20">+ Nueva solicitud</button>
+                            <div class="dt-responsive table-responsive">
+                              <ngx-datatable
+                                style="width: 100%"
+                                class="table table-striped table-bordered nowrap table-hover"
+                                [messages]="messages_1"
+                                [rows]="solicitudes"
+                                [columnMode]="'force'"
+                                [headerHeight]="50"
+                                [footerHeight]="50"
+                                [rowHeight]="50"
+                                [scrollbarH]="true">
+								                <ngx-datatable-column name="Estado" prop="travelStatus">
+                                  <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div *ngIf="value=='R'"><span class="label label-danger">Rechazada</span></div>
+                                    <div *ngIf="value=='A'"><span class="label label-success">Aceptada</span></div>
+                                    <div *ngIf="value=='P'"><span class="label label-warning">Por confirmar</span></div>
+                                    <div *ngIf="value=='C'"><span class="label label-default">Anulada</span></div>
+                                    <div *ngIf="value=='N'">Pendiente</div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column name="" sortable="false" prop="id">
+                                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                     <a (click)="edit(value)" style="cursor: pointer;" title="Ver" *ngIf="getTravelRequestStatus(value)=='P' || getTravelRequestStatus(value)=='A' || getTravelRequestStatus(value)=='C'"><i class="icofont icofont-eye-alt"></i></a>
+                                     <a (click)="edit(value)" style="cursor: pointer;" title="Editar" *ngIf="getTravelRequestStatus(value)=='N' || getTravelRequestStatus(value)=='R'"><i class="icofont icofont-edit-alt"></i></a>
+                                     <a (click)="cancelarSolicitud(value)" style="cursor: pointer;" *ngIf="getTravelRequestStatus(value)=='R'" title="Anular"><i class="icofont icofont-close"></i></a>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column name="# Solicitud" prop="sequence" [width]="100"></ngx-datatable-column>
+                                
+
+                                <ngx-datatable-column name="Cliente" prop="clientName" [width]="300"></ngx-datatable-column>
+                                <ngx-datatable-column name="Fecha/hora solicitud" prop="travelRequestFullDate" [width]="400"></ngx-datatable-column>
+                                <ngx-datatable-column name="Origen" prop="origin" [width]="300"></ngx-datatable-column>
+                                <ngx-datatable-column name="Destino" prop="destination" [width]="300"></ngx-datatable-column>
+                                <ngx-datatable-column name="Tipo de vehículo" prop="bodyWork"></ngx-datatable-column>
+
+                                <ngx-datatable-column name="Tipo de empaque" prop="packageType"></ngx-datatable-column>
+                                <ngx-datatable-column name="Peso" prop="weight"></ngx-datatable-column>
+                                <ngx-datatable-column name="Volumen" prop="volume"></ngx-datatable-column>
+                                <ngx-datatable-column name="Mercancía" prop="productName"></ngx-datatable-column>
+                                <ngx-datatable-column name="Valor" prop="merchandiseValue">
+                                  <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div>{{value | currency}}</div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+
+                              </ngx-datatable>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane" id="travelRecords" role="tabpanel">
+                      <div class="m-t-15">
+                        <div class="card">
+                          <div class="tab-content tabs card-block">
+                                <div class="card-header">
+                                  <h5></h5>
+                                </div>
+                                <div class="card-block">
+                                  <div class="dt-responsive table-responsive">
+                                    <ngx-datatable
+                                      #mydatatable
+                                      style="width: 100%"
+                                      class="table table-striped table-bordered nowrap table-hover"
+                                      [messages]="messages_1"
+                                      [rows]="historialSolicitudes"
+                                      [headerHeight]="50"
+                                      [columnMode]="'force'"
+                                      [footerHeight]="50"
+                                      [rowHeight]="50"
+                                      [scrollbarH]="true">
+                                      <ngx-datatable-column name="#Solicitud" prop="requestNumber"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Nombre usuario" prop="userName" [width]="300"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Tipo de rechazo" prop="rejectionType" [width]="300"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Fecha" prop="date" [width]="300"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Observaciones" prop="comment" [width]="400"></ngx-datatable-column>
+                                   </ngx-datatable>
+                                  </div>
+                             </div>
+                           </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+      </div>
+</div>

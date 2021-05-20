@@ -1,0 +1,19 @@
+.content{
+  text-align: center;
+  width: 60px;
+  font-size: 20px;
+  color: #fff;
+  background-color: rgba(0,0,0,.61);
+  transition: all .3s ease-in-out;
+}
+.ng-select.custom {
+    min-height: 0px;
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+}
+.ng-select.custom .ng-select-container  {
+    min-height: 0px;
+    border-radius: 0;
+}

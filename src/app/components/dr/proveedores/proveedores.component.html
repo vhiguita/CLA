@@ -1,0 +1,48 @@
+<!-- Page-header end -->
+<!-- Page-body start -->
+<div class="page-body">
+  <!-- Base Style table start -->
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de proveedores</h5>
+      <span>Esta es la lista de proveedores.</span>
+    </div>
+    <div class="card-block">
+      <button type="button" [routerLink]="['/home/dr/proveedor', '-1']" class="btn btn-primary m-b-20">+ Nuevo proveedor</button>
+      <div class="table-responsive">
+        <table id="base-tbl" class="table">
+          <thead>
+          <tr>
+            <th>Identificación</th>
+            <th>Nombre o razón social</th>
+            <th>Dirección</th>
+            <th>Ciudad</th>
+            <th>Celular</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th>Editar</th>
+            <th></th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let e of proveedores; let i = index">
+            <td>{{e.identification}}</td>
+            <td>{{e.name}}</td>
+            <td>{{e.address}}</td>
+            <td>{{e.city}}</td>
+            <td>{{e.phone1}}</td>
+            <td>{{e.phone2}}</td>
+            <td>{{e.email}}</td>
+            <td>{{e.status ? 'Activo' : 'Inactivo'}}</td>
+            <td><a (click)="edit(i)" style="cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a></td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Base Style table end -->
+</div>

@@ -1,0 +1,491 @@
+<ng-template #modalContentCargue let-c="close" let-d="dismiss" id="modal-container">
+    <div class="modal-header">
+      <h4 class="modal-title">Lista de cargues</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row col-md-12">
+        <div class="dt-responsive table-responsive">
+          <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+            <thead>
+              <tr>
+                <th>Fecha/hora de cargue</th>
+                <th>Fecha/hora de salida de cargue</th>
+                <th>Propietario</th>
+                <th>Dirección de cargue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ca of cargues; let i = index">
+                <td>{{ca.loadDate}} {{ca.loadTime}}</td>
+                <td>{{ca.loadDepartureDate}} {{ca.loadDepartureTime}}</td>
+                <td>{{ca.ownerName}}</td>
+                <td>{{ca.address}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</ng-template>
+<ng-template #modalContentDescargue let-c="close" let-d="dismiss" id="modal-container">
+  <div class="modal-header">
+    <h4 class="modal-title">Lista de descargues</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-row col-md-12">
+      <div class="dt-responsive table-responsive">
+        <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+          <thead>
+            <tr>
+              <th>Fecha/hora de descargue</th>
+              <th>Fecha/hora de salida de descargue</th>
+              <th># Contenedor</th>
+              <th>Tipo</th>
+              <th>Propietario</th>
+              <th>Dirección de devolución</th>
+              <th>Fecha/hora de devolución</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let de of descargues; let i = index">
+              <td>{{de.unloadDate}} {{de.unloadTime}}</td>
+              <td>{{de.unloadDepartureDate}} {{de.unloadDepartureTime}}</td>
+              <td>{{de.containerNumber}}</td>
+              <td>{{de.containerType}}</td>
+              <td>{{de.ownerName}}</td>
+              <td>{{de.address}}</td>
+              <td>{{de.unloadDevolutionDate}} {{de.unloadDevolutionTime}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<div class="page-body">
+  <div class="card-block">
+      <div class="row">
+          <div class="col-lg-12">
+            <div class="md-tabs md-card-tabs">
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs  tabs" role="tablist">
+                  <li class="nav-item">
+                      <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Viajes</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" data-toggle="tab" href="#travelRecords" role="tab">Historial</a>
+                  </li>
+              </ul>
+              <!-- Tab panes -->
+              <div class="tab-content tabs card-block">
+                    <div class="tab-pane active" id="home" role="tabpanel">
+                      <div class="m-t-15">
+                      <div class="tab-content tabs card-block">
+                        <div class="card">
+                          <div class="card-header">
+                            <h5>Lista de viajes</h5>
+                            <span>Esta es la lista de viajes rechazados</span>
+                          </div>
+                          <div class="card-block">
+                            <div class="dt-responsive table-responsive">
+                              <ngx-datatable
+                                style="width: 100%"
+                                class="material"
+                                [messages]="messages_1"
+                                [rows]="manifiestosRechazados"
+                                [columnMode]="'force'"
+                                [headerHeight]="50"
+                                [footerHeight]="50"
+                                [rowHeight]="50"
+                                [scrollbarH]="true"
+                                [selected]="selectedTravel"
+                                [selectionType]="'single'"
+                                (activate)="onActivate($event)"
+                                (select)='onSelect($event)'>
+                                <ngx-datatable-column name="# Viaje" prop="id" [width]="100"></ngx-datatable-column>
+                                <ngx-datatable-column name="Fecha" prop="date" [width]="200"></ngx-datatable-column>
+                                <ngx-datatable-column name="Fecha recogida de documentos" prop="travelAppointmentDate" [width]="300"></ngx-datatable-column>
+                                <ngx-datatable-column name="Tipo de servicio" prop="serviceType" [width]="100"></ngx-datatable-column>
+                              </ngx-datatable>
+                            </div>
+                           </div>
+                         </div>
+                         <div class="card">
+                              <div class="card-header">
+                                <h5>Lista de solicitudes</h5>
+                              </div>
+                            <div class="card-block">
+                              <div class="dt-responsive table-responsive">
+                                <ngx-datatable
+                                  style="width: 100%"
+                                  class="table table-striped table-bordered nowrap table-hover"
+                                  [messages]="messages_1"
+                                  [rows]="rows"
+                                  [columnMode]="'force'"
+                                  [headerHeight]="50"
+                                  [footerHeight]="50"
+                                  [rowHeight]="50"
+                                  [selected]="selected"
+                                  [selectionType]="'checkbox'"
+                                  [displayCheck]="displayCheck"
+                                  (activate)="onActivate2($event)"
+                                  (select)='onSelect2($event)'
+                                  [scrollbarH]="true">
+                                  <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false">
+                                      <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                                        <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/>
+                                      </ng-template>
+                                      <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                                        <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/>
+                                      </ng-template>
+                                  </ngx-datatable-column>
+                                  <ngx-datatable-column name="# Solicitud" prop="sequence" [width]="100"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Cliente" prop="clientName" [width]="300"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Fecha/hora solicitud" prop="travelRequestDate" [width]="400"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Origen" prop="origin" [width]="300"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Destino" prop="destination" [width]="300"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Tipo de vehículo" prop="vehicleType"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Tipo de empaque" prop="packageType"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Peso" prop="weight"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Volumen" prop="volume"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Mercancía" prop="productName"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Valor" prop="merchandiseValue">
+                                    <ng-template let-value="value" ngx-datatable-cell-template>
+                                      <div>{{value | currency}}</div>
+                                    </ng-template>
+                                  </ngx-datatable-column>
+                                  <ngx-datatable-column name="Cargues" prop="id">
+                                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                        <a (click)="openModalCargue(modalContentCargue,value)" style="cursor: pointer;" title="Ver"><i class="icofont icofont-eye-alt"></i></a>
+                                    </ng-template>
+                                  </ngx-datatable-column>
+                                  <ngx-datatable-column name="Descargues" prop="id">
+                                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                        <a (click)="openModalDescargue(modalContentDescargue,value)" style="cursor: pointer;" title="Ver"><i class="icofont icofont-eye-alt"></i></a>
+                                    </ng-template>
+                                  </ngx-datatable-column>
+                                </ngx-datatable>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card">
+                              <div class="card-header">
+                                <h5>Ruta</h5>
+                              </div>
+                              <div class="card-block">
+                                  <div class="form-row col-md-12">
+                                    <div class="form-group col-md-3">
+                                      <label for="inputAddress">Ciudad origen</label>
+                                      <div class="input-group">
+                                        <ng-select class="custom" name="origenV" id="origenV" [items]="origenViaje"
+                                           [virtualScroll]="true"
+                                           [loading]="loadingOrigen"
+                                           bindLabel="cityName"
+                                           bindValue="pk"
+                                           placeholder="Seleccione el origen"
+                                           [(ngModel)]="origenViajeId"
+                                           (scrollToEnd)="fetchMoreOrigin($event)" #origenS="ngModel" (ngModelChange)="obtenerDepartamentoOrigenViaje($event)">
+                                           <ng-template ng-header-tmp>
+                                              <small class="form-text text-muted">{{origenViajeBuffer.length}} de {{origenViaje.length}}</small>
+                                           </ng-template>
+                                           <ng-template ng-option-tmp let-item="item" let-index="index">
+                                             {{item.cityName}}
+                                          </ng-template>
+                                        </ng-select>
+                                     </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label for="input-group">Departamento origen</label>
+                                      <div class="input-group">
+                                        <input type="text" class="form-control" id="department1" name="department1" [(ngModel)]="deparment1" disabled="">
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label for="inputAddress">Ciudad Destino</label>
+                                      <div class="input-group">
+                                        <ng-select class="custom" name="origenD" id="origenD" [items]="destinoViaje"
+                                           [virtualScroll]="true"
+                                           [loading]="loadingDestino"
+                                           bindLabel="cityName"
+                                           bindValue="pk"
+                                           placeholder="Seleccione el destino"
+                                           [(ngModel)]="destinoViajeId"
+                                           (scrollToEnd)="fetchMoreDestination($event)" #origenS="ngModel" (ngModelChange)="obtenerDepartamentoDestinoViaje($event)">
+                                           <ng-template ng-header-tmp>
+                                              <small class="form-text text-muted">{{destinoViajeBuffer.length}} de {{destinoViaje.length}}</small>
+                                           </ng-template>
+                                           <ng-template ng-option-tmp let-item="item" let-index="index">
+                                             {{item.cityName}}
+                                          </ng-template>
+                                        </ng-select>
+                                      </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                      <label for="input-group">Departamento destino</label>
+                                      <div class="input-group">
+                                        <input type="text" class="form-control" id="department1" name="department1" [(ngModel)]="deparment2" disabled="">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="form-row col-md-12">
+                                      <div class="form-group col-md-4">
+                                        <label for="input-group">Ruta</label>
+                                        <div class="input-group">
+                                          <select class="form-control" name="ruta" id="ruta" [(ngModel)]="routeId" #ruta="ngModel" (change)="seleccionarRuta(routeId)">
+                                            <option value="" disabled>Seleccione la ruta</option>
+                                            <option *ngFor="let r of rutas" [ngValue]="r.id" >
+                                              {{ r.name }}
+                                            </option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div class="form-group col-md-4">
+                                            <label for="inputAddress">Tipo de servicio</label>
+                                            <div class="input-group">
+                                              <select class="form-control" name="tipoServicio" id="tipoServicio" [(ngModel)]="solicitudExp.serviceTypeId" #tipoServicio="ngModel" required>
+                                                <option value="" disabled>Seleccione el tipo de servicio</option>
+                                                <option *ngFor="let t of tiposServicio" [ngValue]="t.id" >
+                                                  {{ t.Description }}
+                                                </option>
+                                              </select>
+                                            </div>
+                                       </div>
+                                  </div>
+                                  <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="trazarRuta()">Trazar ruta a partir de seleccionada</button>
+                                  <button type="button" class="btn btn-primary m-b-20" style="background-color:#ff5370;border-color: #ff5370;" (click)="borrarRuta()">Borrar</button>
+                                  <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="guardarRuta()">Guardar como nueva</button>
+                                  <button type="button" id="addEmpresa"  class="btn btn-primary m-b-20" (click)="actualizarRuta()">Actualizar</button>
+                                  <div id="map" class="set-map"></div>
+                                  <div id="legend"></div>
+                              </div>
+                          </div>
+                          <div class="card">
+                            <div class="card-header">
+                              <h5>Fecha / hora para la programación de recogida de documentos</h5>
+                            </div>
+                            <div class="card-block">
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-3">
+                                  <label for="inputAddress">Fecha</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon" (click)="d1.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+                                    <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaSolicitud" name="fechaSolicitud" [(ngModel)]="manifiestoExp.appointmentDate" ngbDatepicker #d1="ngbDatepicker" (keyup)="onKey()" #appointmentDate="ngModel">
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-3">
+                                  <label>Hora</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-clock-time"></i></span>
+                                    <input type="time" class="form-control" id="horaCita" name="horaCita" [(ngModel)]="manifiestoExp.appointmentTime" required #horaCita="ngModel" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card">
+                            <div class="card-header">
+                              <h5>Búsqueda manual</h5>
+                            </div>
+                            <div class="card-block">
+                              <form #vehiculoForm="ngForm" (ngSubmit)="vehiculoForm.form.valid && buscarVehiculo()">
+                                <div class="form-row col-md-12">
+                                  <div class="form-group col-md-4">
+                                    <label># Placa</label>
+                                    <div  class="input-group">
+                                      <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="vehiculoExp.plate" placeholder="Digite el número de placa" #placa="ngModel">
+                                    </div>
+                                  </div>
+                                  <div class="form-group col-md-4">
+                                    <label>Cedula conductor</label>
+                                    <div  class="input-group">
+                                      <input type="text" class="form-control" id="identificacion" name="identificacion" [(ngModel)]="vehiculoExp.driverIdentification" placeholder="Digite el número de conductor" #identificacion="ngModel">
+                                    </div>
+                                  </div>
+                                  <div class="form-group col-md-4">
+                                    <label>Nombre conductor</label>
+                                    <div  class="input-group">
+                                      <input type="text" class="form-control" id="nombre" name="nombre" [(ngModel)]="vehiculoExp.driverName" placeholder="Digite el nombre de conductor" #nombre="ngModel">
+                                    </div>
+                                  </div>
+                                </div>
+                                <button type="submit" id="buscarVehiculo" class="btn btn-primary m-b-20" (click)="busquedaVehiculo = true">Buscar</button>
+                                <button type="button" id="limpiar" class="btn btn-primary m-b-20" (click)="limpiar()">Limpiar</button>
+                              </form>
+
+                              <div class="dt-responsive table-responsive">
+                                <table id="tbl-pts" class="table table-striped table-bordered nowrap table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th style="width:77px;">Conductor</th>
+                                      <th>Nombre</th>
+                                      <th>Cedula</th>
+                                      <th>Tipo vehiculo</th>
+                                      <th>Placa</th>
+                                      <th> </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr *ngFor="let e of vehiculoPorPlaca; let i = index">
+                                      <td><img src="{{e.urlImage}}" class="img-fluid" style="height:77px;width:77px;"></td>
+                                      <td>{{e.driver}}</td>
+                                      <td>{{e.identification}}</td>
+                                      <td>{{e.vehicleType}}</td>
+                                      <td>{{e.plate}}</td>
+                                        <td><button type="button" id="agregarVehiculo" class="btn btn-primary m-b-20" (click)="agregarVehiculo(i)">Agregar</button></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                            <div class="card-header">
+                              <h5>Esta es la lista de vehículos según solicitud.</h5>
+                            </div>
+                            <div class="card-block">
+                              <div class="dt-responsive table-responsive">
+                                <ngx-datatable
+                                  #mydatatable
+                                  style="width: 100%"
+                                  class="table table-striped table-bordered nowrap table-hover"
+                                  [messages]="messages_1"
+                                  [rows]="vehiculos"
+                                  [headerHeight]="50"
+                                  [columnMode]="'force'"
+                                  [footerHeight]="50"
+                                  [rowHeight]="80"
+                                  [selected]="selectedVehicles"
+                                  [selectionType]="'checkbox'"
+                                  (activate)="onActivateVehicles($event)"
+                                  (select)='onSelectVehicles($event)'
+                                  [scrollbarH]="true">
+                                  <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false" [resizeable]="false">
+                                    <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+                                      <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"/>
+                                    </ng-template>
+                                    <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+                                      <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)"/>
+                                    </ng-template>
+                                  </ngx-datatable-column>
+                                  <ngx-datatable-column name="Conductor" prop="urlImage">
+                                    <ng-template let-value="value" ngx-datatable-cell-template>
+                                      <img class="img-fluid" style="height:77px;width:77px;padding: 4px;" [src]="value">
+                                    </ng-template>
+                                  </ngx-datatable-column>
+                                  <ngx-datatable-column name="Nombre" prop="driver" [width]="300"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Tipo vehículo" prop="vehicleType" [width]="300"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Placa" prop="plate" [width]="300"></ngx-datatable-column>
+                                  <ngx-datatable-column name="Respuesta" prop="status">
+                                    <ng-template let-value="value" ngx-datatable-cell-template>
+                                      <div *ngIf="value=='R'"><span class="label label-danger">Rechazado</span></div>
+                                      <div *ngIf="value=='A'"><span class="label label-success">Aceptado</span></div>
+                                      <div *ngIf="value==''"></div>
+                                    </ng-template>
+                                  </ngx-datatable-column>
+                                  <ngx-datatable-column name="" prop="id">
+                                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                        <button type="button" id="asignarVehiculo" class="btn btn-primary m-b-20" (click)="reasignarManifiesto(value)">Reasignar</button>
+                                    </ng-template>
+                                  </ngx-datatable-column>
+                               </ngx-datatable>
+                              </div>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-12">
+                                  <label>Comentarios</label>
+                                  <div class="input-group">
+                                    <textarea class="form-control" (change)="doTextareaValueChange1($event)" rows="3" cols="20" [value]="comments1">
+                                    </textarea>
+                                  </div>
+                                </div>
+                              </div>
+                              <div id="btn-div">
+                                <button type="button" class="btn btn-primary m-b-20" (click)="invitarConductores()" style="margin:5px;">Invitar</button>
+                              </div>
+                            </div>
+                          </div>
+                          <!--<div class="card">
+                              <div class="card-header">
+                                <h5>Búsqueda manual</h5>
+                              </div>
+                            <div class="card-block">
+                                <form #vehiculoForm="ngForm" (ngSubmit)="vehiculoForm.form.valid && buscarVehiculo()">
+                                  <div class="form-row col-md-12">
+                                    <div class="form-group col-md-3">
+                                      <label># Placa</label>
+                                      <div  class="input-group">
+                                        <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="vehiculoExp.plate" placeholder="Digite el número de placa" #placa="ngModel">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button type="submit" id="buscarVehiculo" class="btn btn-primary m-b-20" (click)="busquedaVehiculo = true">Buscar</button>
+                                </form>
+                                <div class="dt-responsive table-responsive">
+                                  <table id="tbl-pts" class="table table-striped table-bordered nowrap table-hover">
+                                    <thead>
+                                      <tr>
+                                        <th style="width:77px;">Conductor</th>
+                                        <th>Nombre</th>
+                                        <th>Tipo vehiculo</th>
+                                        <th>Placa</th>
+                                        <th> </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr *ngFor="let e of vehiculoPorPlaca; let i = index">
+                                        <td><img src="{{e.urlImage}}" class="img-fluid" style="height:77px;width:77px;"></td>
+                                        <td>{{e.driver}}</td>
+                                        <td>{{e.vehicleType}}</td>
+                                        <td>{{e.plate}}</td>
+                                        <td><button type="button" id="asignarVehiculo" class="btn btn-primary m-b-20" (click)="reasignarManifiestoPorPlaca(i)">Reasignar</button></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                          </div>-->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane" id="travelRecords" role="tabpanel">
+                      <div class="m-t-15">
+                        <div class="card">
+                          <div class="tab-content tabs card-block">
+                                <div class="card-header">
+                                  <h5></h5>
+                                </div>
+                                <div class="card-block">
+                                  <div class="dt-responsive table-responsive">
+                                    <ngx-datatable
+                                      #mydatatable
+                                      style="width: 100%"
+                                      class="table table-striped table-bordered nowrap table-hover"
+                                      [messages]="messages_1"
+                                      [rows]="historialViajes"
+                                      [headerHeight]="50"
+                                      [columnMode]="'force'"
+                                      [footerHeight]="50"
+                                      [rowHeight]="50"
+                                      [scrollbarH]="true">
+                                      <ngx-datatable-column name="#Viaje" prop="travelManifestId"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Nombre usuario" prop="userName" [width]="300"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Rol" prop="rol" [width]="200"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Tipo de rechazo" prop="rejectionType" [width]="300"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Fecha" prop="date" [width]="300"></ngx-datatable-column>
+                                      <ngx-datatable-column name="Observaciones" prop="comment" [width]="400"></ngx-datatable-column>
+                                   </ngx-datatable>
+                                  </div>
+                             </div>
+                           </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                 </div>
+                </div>
+              </div>
+            </div>
+</div>

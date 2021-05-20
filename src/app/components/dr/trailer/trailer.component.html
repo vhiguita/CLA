@@ -1,0 +1,651 @@
+<div class="page-body">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="md-tabs md-card-tabs">
+        <ngb-tabset>
+
+
+          <ngb-tab title="Información básica">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <!-- personal card start -->
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Creación / Edición de trailer</h5>
+                    </div>
+                      <hr>
+
+
+
+
+                      <div class="card-block">
+
+                        <form #vehiculoForm="ngForm" (ngSubmit)="vehiculoForm.form.valid && crearActualizarTrailer()" onKeypress="if(event.keyCode == 13) event.returnValue = false;" >
+
+                        
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                              <label>Numero de tarjeta de registro de remolque o semiremolque</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="reg" name="reg" [(ngModel)]="trailer.registerNumber" placeholder="Numero de registro" required #reg="ngModel">
+                              </div>
+                              <div *ngIf="reg.invalid && ((reg.dirty || reg.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="reg.errors.required">
+                                  El numero de registro es requerido
+                                </div>
+                              </div>
+                            </div> 
+                          </div>
+
+                          
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-3">
+                              <label>Placa</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-western-union-alt"></i></span>
+                                <input type="text" class="form-control" id="placa" name="placa" [(ngModel)]="trailer.plate" placeholder="Digita el numero de la plaqueta" required #plate="ngModel" (keyup)="onKey($event)">
+                              </div>
+                              <div *ngIf="plate.invalid && ((plate.dirty || plate.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="plate.errors.required">
+                                  La placa es requerida.
+                                </div>
+                              </div>
+                            </div>
+
+                            
+                            <div class="form-group col-md-3">
+                              <label>Marca</label>
+                              <div class="input-group">
+                                <ng-select class="custom" name="marca" id="marca" [items]="brands"
+                                 [virtualScroll]="true"
+                                 [loading]="loading"
+                                 bindLabel="description"
+                                 bindValue="pk"
+                                 placeholder="Seleccione la marca"
+                                 [(ngModel)]="trailer.brandId" #marca="ngModel" required>
+                                 <ng-template ng-option-tmp let-item="item" let-index="index">
+                                   {{item.description}}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+                              <div *ngIf="marca.invalid && ((marca.dirty || marca.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="marca.errors.required">
+                                  La marca es requerida.
+                                </div>
+                              </div>
+                            </div> 
+                          
+                            <div class="form-group col-md-2">
+                              <label>Modelo</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-calendar"></i></span>
+                                <input type="number" class="form-control" id="modelo" name="modelo" min="1980" max="2100" [(ngModel)]="trailer.model" required #model="ngModel" placeholder="Modelo">
+                              </div>
+                              <div *ngIf="model.invalid && ((model.dirty || model.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="model.errors.required">
+                                  El modelo es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Linea</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="linea" name="linea" [(ngModel)]="trailer.trilerLine" required #model="ngModel" placeholder="Digite la linea">
+                              </div>
+                            </div>
+                          </div> 
+                          
+                          <hr>                       
+
+                          <div class="form-row col-md-12">                            
+
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Clase de trailer</label>
+                              <div class="input-group">
+                              
+                                <ng-select class="custom" name="claseTrailer" id="claseTrailer" [items]="clasesTrailer"
+                                  [virtualScroll]="true"
+                                  [loading]="loading"
+                                  bindLabel="description"
+                                  bindValue="pk"
+                                  placeholder="Seleccione"
+                                  [(ngModel)]="trailer.trailerClass_id" #trailerClass="ngModel" 
+                                  (scrollToEnd)="fetchMore_1($event)" required>
+                                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                                    {{item.description }}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+                              <div *ngIf="trailerClass.invalid && ((trailerClass.dirty || trailerClass.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="trailerClass.errors.required">
+                                    La clase es requerida.
+                                </div>
+                              </div>
+                            </div>
+                        
+
+                             
+
+
+                            <div class="form-group col-md-3">
+                              <label for="inputAddress">Tipo carroceria</label>
+                              <div class="input-group">
+                                <ng-select class="custom" name="tipoCarroceria" id="tipoCarroceria" [items]="tiposCarroceria"
+                                 [virtualScroll]="true"
+                                 [loading]="loading"
+                                 bindLabel="description"
+                                 bindValue="pk"
+                                 placeholder="Seleccione"
+                                 [(ngModel)]="trailer.bodyWork_id" #tipoCarroceria="ngModel" 
+                                 (scrollToEnd)="fetchMore_1($event)" required>
+                                 <ng-template ng-option-tmp let-item="item" let-index="index">
+                                   {{ item.description }}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+
+                              <div *ngIf="tipoCarroceria.invalid && ( (tipoCarroceria.dirty || tipoCarroceria.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="tipoCarroceria.errors.required">El tipo de carroceria es requerido.</div>
+                              </div>
+                            </div>
+                          
+                            <div class="form-group col-md-3">
+                              <label># identificación trailer</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-social-slack"></i></span>
+                                <input type="text" class="form-control" id="chasis" name="chasis" [(ngModel)]="trailer.chassisNumber" #chassisNumber="ngModel" placeholder="Digite el número de chasis" required>
+                              </div>
+                              <div *ngIf="chassisNumber.invalid && ((chassisNumber.dirty || chassisNumber.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="chassisNumber.errors.required">
+                                 La serie de chasis es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                              <label>Numero de ejes</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="numeroEjes" name="numeroEjes" [(ngModel)]="trailer.axisNumber" #numeroEjes="ngModel" placeholder="Digite el número de ejes" required>
+                              </div>
+                              <div *ngIf="numeroEjes.invalid && ((numeroEjes.dirty || numeroEjes.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="numeroEjes.errors.required">
+                                Los ejes son requeridos.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                            
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-2">
+                              <label>Numero de llantas</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="numeroLlantas" name="numeroLlantas" [(ngModel)]="trailer.tireNumber" #tireNumber="ngModel" placeholder="Digite el número de llantas" required>
+                              </div>
+                              <div *ngIf="tireNumber.invalid && ((tireNumber.dirty || tireNumber.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="tireNumber.errors.required">
+                                Los ejes son requeridos.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                              <label>Alto total(MM)</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="alto" name="alto" [(ngModel)]="trailer.height" #height="ngModel" placeholder="Digite el alto" required>
+                              </div>
+                              <div *ngIf="height.invalid && ((height.dirty || height.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="height.errors.required">
+                                El alto es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                              <label>Ancho total (MM)</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="ancho" name="ancho" [(ngModel)]="trailer.width" #width="ngModel" placeholder="Digite el ancho" required>
+                              </div>
+                              <div *ngIf="width.invalid && ((width.dirty || width.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="width.errors.required">
+                                El ancho es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                              <label>Largo total(MM)</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="largo" name="largo" [(ngModel)]="trailer.length" #length="ngModel" placeholder="Digite el largo" required>
+                              </div>
+                              <div *ngIf="length.invalid && ((length.dirty || length.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="length.errors.required">
+                                El largo es requerido.
+                                </div>
+                              </div>
+                            </div>                     
+                          
+                               
+                            <div class="form-group col-md-2">
+                              <label>PBV maximo</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="pbv" name="pbv" [(ngModel)]="trailer.capacity" #pbv="ngModel" placeholder="Digite el PBV" required>
+                              </div>
+                              <div *ngIf="pbv.invalid && ((pbv.dirty || pbv.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="pbv.errors.required">El largo es requerido.</div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-4">
+                              <label>Propietario</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <ng-select class="custom" id="propertyId" name="propertyId" [items]="propietarios"
+                                   [virtualScroll]="true"
+                                   [loading]="loading"
+                                   [clearSearchOnAdd]="True"
+                                   bindLabel="description"
+                                   bindValue="fields.Identification"
+                                   placeholder="Seleccione el propietario"
+                                   [(ngModel)]="trailer.propertyIdentification"
+                                   (scrollToEnd)="fetchMore($event)" #propertyId="ngModel" required>
+                                  <ng-template ng-header-tmp>
+                                    <small class="form-text text-muted">{{propietariosBuffer.length}} de {{propietarios.length}}</small>
+                                  </ng-template>
+                                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                                    {{item.description}}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+                              <div *ngIf="propertyId.invalid && ((propertyId.dirty || propertyId.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="propertyId.errors.required">
+                                  El propietario es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label>Nuevo propietario</label> 
+                              <div class="input-group">
+                                <button [disabled]="isDisable" class="btn btn-default" style="font-size: 11px;" (click)="newOwner()">
+                                  Crear
+                                </button>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label>Locatario</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <ng-select class="custom" id="tenantId" name="tenantId" [items]="propietarios"
+                                   [virtualScroll]="true"
+                                   [loading]="loading"
+                                   [clearSearchOnAdd]="True"
+                                   bindLabel="description"
+                                   bindValue="fields.Identification"
+                                   placeholder="Seleccione el locatario"
+                                   [(ngModel)]="trailer.tenantIdentification"
+                                   (scrollToEnd)="fetchMore($event)" #tenantId="ngModel" required>
+                                  <ng-template ng-header-tmp>
+                                    <small class="form-text text-muted">{{propietariosBuffer.length}} de {{propietarios.length}}</small>
+                                  </ng-template>
+                                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                                    {{item.description}}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+
+                              <!--
+                              <div *ngIf="tenantId.invalid && ( (tenantId.dirty || tenantId.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="tenantId.errors.required">
+                                  El propietario es requerido.
+                                </div>
+                              </div>
+                              -->
+                            </div>
+                          </div>
+
+                          <hr>
+
+
+
+
+
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-12">
+                              <label>Limitaciones a la propiedad</label>
+                              <div class="input-group">
+                                <textarea id="limitProp" name="limitProp" rows="6" cols="80" #limitProp="ngModel" [(ngModel)]='trailer.propertyLimitations' > {{ trailer.propertyLimitations }} </textarea>
+                              </div>
+                            </div>
+                          </div>
+                          <hr>
+                          
+                          <div class="form-row col-md-12">
+
+                            <div class="form-group col-md-6">
+                              <label>Orgnanismo de transito expedidor</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <ng-select class="custom" id="transitId" name="transitId" [items]="agenciasTransito"
+                                   [virtualScroll]="true"
+                                   [loading]="loading"
+                                   [clearSearchOnAdd]="True"
+                                   bindLabel="description"
+                                   bindValue="pk"
+                                   placeholder="Seleccione el organismo de agenciasTransito"
+                                   [(ngModel)]="trailer.transitAgency"
+                                   (scrollToEnd)="fetchMore($event)" #transitId="ngModel" required>
+                                   <!--
+                                  <ng-template ng-header-tmp>
+                                    <small class="form-text text-muted">{{propietariosBuffer.length}} de {{agenciasTransito.length}}</small>
+                                  </ng-template>
+                                    -->
+                                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                                    {{item.description}}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+                              <div *ngIf="transitId.invalid && ((transitId.dirty || transitId.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="transitId.errors.required">
+                                  El organismo de transito es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+
+
+                          </div>
+
+                          
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-4">
+                              <label>Fecha registro</label>
+                              <div class="input-group">
+                                <div class="input-group-addon" (click)="d1.toggle()" >
+                                  <span class="icofont icofont-ui-calendar"></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaRegistro" name="fechaRegistro" [(ngModel)]="trailer.registrationDate" ngbDatepicker #d1="ngbDatepicker" (keyup)="onKey()" required #registrationDate="ngModel">
+                              </div>
+                              <div *ngIf="registrationDate.invalid && ((registrationDate.dirty || registrationDate.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="registrationDate.errors.required">
+                                  La fecha de registro es requerida.
+                                </div>
+                                <div *ngIf="isValidDate(trailer.registrationDate)==false">
+                                    El valor de la fecha de registro no es válida.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label>Fecha expedición</label>
+                              <div class="input-group">
+                                <div class="input-group-addon" (click)="d2.toggle()" >
+                                  <span class="icofont icofont-ui-calendar"></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaExpedicion" name="fechaExpedicion" [(ngModel)]="trailer.expeditionDate" ngbDatepicker #d2="ngbDatepicker" (keyup)="onKey()" required #expeditionDate="ngModel">
+                              </div>
+                              <div *ngIf="expeditionDate.invalid && ((expeditionDate.dirty || expeditionDate.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="expeditionDate.errors.required">
+                                  La fecha de expedición es requerida.
+                                </div>
+                                <div *ngIf="isValidDate(trailer.expeditionDate)==false">
+                                    El valor de la fecha de expedición no es válida.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label>Fecha vencimiento</label>
+                              <div class="input-group">
+                                <div class="input-group-addon" (click)="d3.toggle()" >
+                                  <span class="icofont icofont-ui-calendar"></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaVencimiento" name="fechaVencimiento" [(ngModel)]="trailer.expirationDate" ngbDatepicker #d3="ngbDatepicker" (keyup)="onKey()" required #expirationDate="ngModel">
+                              </div>
+                              <div *ngIf="expirationDate.invalid && ((expirationDate.dirty || expirationDate.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="expirationDate.errors.required">
+                                  La fecha de vencimiento es requerida.
+                                </div>
+                                <div *ngIf="isValidDate(trailer.expirationDate)==false">
+                                    El valor de la fecha de vencimiento no es válida.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-4">
+                              <label>Origen</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="origen" name="origen" [(ngModel)]="trailer.origin" #origin="ngModel" placeholder="Digite el Origen" required>
+                              </div>
+                              <div *ngIf="origin.invalid && ((origin.dirty || origin.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="origin.errors.required">
+                                  El origen es requerido.
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div class="form-group col-md-4">
+                              <label>Declaración importación</label>
+                              <div class="input-group">
+                                <input type="number" class="form-control" id="decImport" name="decImport" [(ngModel)]="trailer.importDeclaration" #importDeclaration="ngModel" placeholder="Declaracion de importación" required>
+                              </div>
+                              <div *ngIf="importDeclaration.invalid && ( (importDeclaration.dirty || importDeclaration.touched) || guardarTrailer)"
+                               class="alert alert-danger">
+                                <div *ngIf="importDeclaration.errors.required">
+                                  La Declaracion de importacion es requerida.
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label>Fecha de levante</label>
+                              <div class="input-group">
+                                <div class="input-group-addon" (click)="d4.toggle()" >
+                                  <span class="icofont icofont-ui-calendar"></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaLevante" name="fechaLevante" [(ngModel)]="trailer.releaseDate" ngbDatepicker #d4="ngbDatepicker" (keyup)="onKey()" required #releaseDate="ngModel">
+                              </div>
+                              <div *ngIf="releaseDate.invalid && ((releaseDate.dirty || releaseDate.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="releaseDate.errors.required">
+                                  La fecha de levante es requerida.
+                                </div>
+                                <div *ngIf="isValidDate(trailer.releaseDate)==false">
+                                    El valor de la fecha de levante no es válida.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <hr>
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-4">
+                              <label>Vehiculo</label>
+                              <div class="input-group">
+                                <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <ng-select class="custom" id="vehicleId" name="vehicleId" [items]="vehiculos"
+                                   [virtualScroll]="true"
+                                   [loading]="loading"
+                                   [clearSearchOnAdd]="True"
+                                   bindLabel="description"
+                                   bindValue="pk"
+                                   placeholder="Seleccione el vehiculo a asociar"
+                                   [(ngModel)]="trailer.vehicleId"
+                                   (scrollToEnd)="fetchMore($event)" #vehicleId="ngModel" required>
+                            
+                                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                                    {{item.description}}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+                              <div *ngIf="vehicleId.invalid && ( (vehicleId.dirty || vehicleId.touched) || guardarTrailer)" class="alert alert-danger">
+                                <div *ngIf="vehicleId.errors.required">
+                                  El vehículo es requerido.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!--
+                          <button type="submit" id="guardarEditarTrailer" class="btn btn-primary m-b-20" (click)="guardarTrailer = true" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">Guardar</button>
+                          -->
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-3">
+                              <button type="submit" id="guardarEditarTrailer" class="btn btn-primary m-b-20" (click)="guardarTrailer = true">
+                                Guardar
+                              </button>
+                            </div>
+
+                            <!--
+                            <div class="form-group col-md-9">
+                              <div *ngIf="guardarTrailer" class="alert alert-danger">
+                                <div *ngIf="vehicleId.errors.requireded || reg.errors.required || plate.errors.required || marca.errors.required || model.errors.required || trailerClass.errors.required || tipoCarroceria.errors.required || chassisNumber.errors.required || numeroEjes.errors.required || tireNumber.errors.required || height.errors.required || width.errors.required || length.errors.required || pbv.errors.required || propertyId.errors.required || tenantId.errors.required || transitId.errors.required || registrationDate.errors.required || expeditionDate.errors.required || expirationDate.errors.required || origin.errors.required || importDeclaration.errors.required || releaseDate.errors.required || vehicleId.errors.requireded || licenseNumber.errors.required">
+                                  Por favor ingresa los campos requeridos del formulario para poder guardar.                                
+                                </div>
+                              </div>
+                            </div>
+                            -->
+                          </div>
+
+
+
+
+
+                
+                        </form>
+
+
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+
+          
+
+            <ngb-tab title="Fotos del trailer" *ngIf="visibleTrailerPhotoContent">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                      <div class="card-header">
+                        <h5>Frontal</h5>
+                      </div>
+                      <div class="card-block">
+                      <div>
+                        <img class="img-fluid width-60" [src]="trailerImg1" alt="">
+                        <div class="content" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">
+                          <label for="fileTrailer1">
+                            <i class="icofont icofont-ui-edit p-r-10"></i>
+                            <input type="file" style="display:none" id="fileTrailer1" (change)="cargarImagen($event.target.files, 1)" [(ngModel)]="trailer.img1">
+                          </label>
+                          <label for="uploadTrailer1">
+                            <i class="icofont icofont-ui-delete"></i>
+                            <input type="button" style="display:none" id="uploadTrailer1" (click)="eliminarImagenTrailerFrontal()">
+                          </label>
+                        </div>
+                       </div>
+                      </div>
+                  </div>
+        				  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Lateral derecho</h5>
+                    </div>
+                    <div class="card-block">
+                    <div>
+                      <img class="img-fluid width-60" [src]="trailerImg2" alt="">
+                      <div class="content" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">
+                        <label for="fileTrailer2">
+                          <i class="icofont icofont-ui-edit p-r-10"></i>
+                          <input type="file" style="display:none" id="fileTrailer2" (change)="cargarImagen($event.target.files, 2)" [(ngModel)]="trailer.img2">
+                        </label>
+                        <label for="uploadTrailer2">
+                          <i class="icofont icofont-ui-delete"></i>
+                          <input type="button" style="display:none" id="uploadTrailer2" (click)="  eliminarImagenTrailerLateralDerecho()">
+                        </label>
+                      </div>
+                     </div>
+                    </div>
+                  </div>
+                	<div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Lateral izquierdo</h5>
+                    </div>
+                    <div class="card-block">
+                    <div>
+                      <img class="img-fluid width-60" [src]="trailerImg3" alt="">
+                      <div class="content" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">
+                        <label for="fileTrailer3">
+                          <i class="icofont icofont-ui-edit p-r-10"></i>
+                          <input type="file" style="display:none" id="fileTrailer3" (change)="cargarImagen($event.target.files, 3)" [(ngModel)]="trailer.img3">
+                        </label>
+                        <label for="uploadTrailer3">
+                          <i class="icofont icofont-ui-delete"></i>
+                          <input type="button" style="display:none" id="uploadTrailer3" (click)="eliminarImagenTrailerLateralIzquierdo()">
+                        </label>
+                      </div>
+                     </div>
+                    </div>
+                  </div>
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Trasera</h5>
+                    </div>
+                    <div class="card-block">
+                    <div>
+                      <img class="img-fluid width-60" [src]="trailerImg4" alt="">
+                      <div class="content" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">
+                        <label for="fileTrailer4">
+                          <i class="icofont icofont-ui-edit p-r-10"></i>
+                          <input type="file" style="display:none" id="fileTrailer4" (change)="cargarImagen($event.target.files, 4)" [(ngModel)]="trailer.img4">
+                        </label>
+                        <label for="uploadTrailer4">
+                          <i class="icofont icofont-ui-delete"></i>
+                          <input type="button" style="display:none" id="uploadTrailer4" (click)="eliminarImagenTrailerTrasero()">
+                        </label>
+                      </div>
+                     </div>
+                    </div>
+                  </div>
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Matricula</h5>
+                    </div>
+                    <div class="card-block">
+                      <img class="img-fluid width-60" [src]="licenseImg" alt="">
+                      <div class="content" *ngIf="obtenerCodigoPerfilUsuario() == 'ADMIN' || btnIsVisible == true">
+                        <label for="fileLicense">
+                          <i class="icofont icofont-ui-edit p-r-10"></i>
+                          <input type="file" style="display:none" id="fileLicense" (change)="cargarImagen($event.target.files, 5)" [(ngModel)]="trailer.registerImg">
+                        </label>
+                        <label for="uploadLicense">
+                          <i class="icofont icofont-ui-delete"></i>
+                          <input type="button" style="display:none" id="uploadLicense" (click)="eliminarImagenMatricula()">
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+            </ngb-tab>

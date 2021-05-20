@@ -1,0 +1,514 @@
+<!-- <ng-template #modalContent let-c="close" let-d="dismiss" id="modal-container">
+  <div class="modal-header">
+    <h3 class="modal-title">Revision de evento</h3>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="page-body">
+    <div class="card">
+      <div class="card-block">
+        <form #reviewForm="ngForm" (ngSubmit)="guardarRevision()">
+          <div class="form-row col-md-12">
+            <div class="form-group col-md-12">
+              <label>Observaciones</label>
+              <div class="input-group">
+                <textarea id="objReview" name="objReview" #objReview="ngModel" rows="4" cols="80" [(ngModel)]="objReview.observaciones" >{{ objReview.observaciones }}</textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-row col-md-12">
+            <div class="form-group col-md-3">
+              <button id="guardarRevision" class="btn btn-primary m-b-20">Guardar</button>
+            </div>
+          </div>
+
+        </form>      
+      </div>
+    </div>
+  </div> 
+</ng-template>
+
+
+<ng-template #modalContentAll let-c="close" let-d="dismiss" id="modal-container">
+  <div class="modal-header">
+    <h3 class="modal-title">Revision de evento</h3>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="page-body">
+    <div class="card">
+      <div class="card-block">
+        <form #reviewForm="ngForm" (ngSubmit)="guardarRevisionCheck()">
+          <div class="form-row col-md-12">
+            <div class="form-group col-md-12">
+              <label>Observaciones</label>
+              <div class="input-group">
+                <textarea id="objReviewAll" name="objReviewAll" #objReview="ngModel" rows="4" cols="80" [(ngModel)]="objReviewAll.observaciones" >{{ objReviewAll.observaciones }}</textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-row col-md-12">
+            <div class="form-group col-md-3">
+              <button id="guardarRevisionCheck" class="btn btn-primary m-b-20">Guardar</button>
+            </div>
+          </div>
+
+        </form>      
+      </div>
+    </div>
+  </div> 
+</ng-template>
+
+
+
+
+
+<div class="page-body">
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de eventos</h5>
+    </div>
+    <div class="card-block">
+      
+        <form #reportForm="ngForm" (ngSubmit)="reportForm.form.valid && filterReport()">
+          <div class="form-row col-md-12">
+            <div class="form-group col-md-4">
+              <label>Tipo de evento</label>
+              <div class="input-group">
+                <ng-select class="customEventType" name="eventType" id="eventType" 
+                  [items]="eventTypes"
+                  [virtualScroll]="true"
+                  [loading]="loading1"
+                  bindLabel="event"
+                  bindValue="id"
+                  placeholder="-Seleccione evento-"
+                  [(ngModel)]="event.id"
+                  (scrollToEnd)="fetchMore_1($event)" #id="ngModel">
+                  <ng-template ng-header-tmp>
+                    <small class="form-text text-muted">{{eventTypesBuffer.length}} de {{eventTypes.length}}</small>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{item.event}}
+                  </ng-template>
+                </ng-select>
+              </div>          
+            </div>
+
+            <div class="form-group col-md-5">
+              <label>Conductor</label>
+              <div class="input-group">
+                <ng-select class="customDriver" name="driver" id="driver" [items]="drivers"
+                  [virtualScroll]="true"
+                  [loading]="loading1"
+                  bindLabel="description"
+                  bindValue="thirdId"
+                  placeholder="-Seleccione conductor-"
+                  [(ngModel)]="event.thirdId"
+                  (scrollToEnd)="fetchMore_1($event)" #thirdId="ngModel">
+                  <ng-template ng-header-tmp>
+                    <small class="form-text text-muted">{{driversBuffer.length}} de {{drivers.length}}</small>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{item.description}}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label>Placa</label>
+              <div class="input-group">
+                <ng-select class="customPlate" name="plate" id="plate" [items]="plates"
+                  [virtualScroll]="true"
+                  [loading]="loading1"
+                  bindLabel="plate"
+                  bindValue="plateId"
+                  placeholder="-Placa-"
+                  [(ngModel)]="event.plateId"
+                  (scrollToEnd)="fetchMore_1($event)" #plate="ngModel">
+                  <ng-template ng-header-tmp>
+                    <small class="form-text text-muted">{{platesBuffer.length}} de {{plates.length}}</small>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{item.plate}}
+                  </ng-template>
+                </ng-select>
+              </div>          
+            </div>
+
+            <div class="form-group col-md-3">
+              <label >  </label>
+              <div class="input-group">
+              <button type="button" class="btn btn-primary m-b-20" (click)="filterEvent($event)">Buscar</button>
+
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="form-row col-md-12">
+          <div class="form-group col-md-3">
+            <button (click)="openModalAll(modalContentAll)"  class="btn btn-primary m-b-20">Revisar seleccionados</button>
+          </div>
+        </div>
+        <div class="dt-responsive table-responsive">
+          <table id="base-tbl" class="table">
+            <thead>
+            <tr>
+              <th>Evento</th>
+              <th><input type="checkbox" onclick="marcar(this);"/></th>
+              <th>Revisión</th>
+              <th>Viaje</th>
+              <th>Vehiculo</th>
+              <th>Conductor</th>
+              <th>Fecha/Hora</th>
+              <th>Ubicacion</th>
+            </tr>
+            </thead>
+
+            
+
+            <tbody>
+            <tr style="height: 100px;">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr *ngFor="let u of eventos" style="padding-left: 0"> 
+              <td><span [ngClass]= u.classEventType style="padding-left: 0.5;padding-right: 0.5">{{u.event}}</span></td>
+              <td *ngIf="u.valReview === 1" style="padding-right: 0; padding-left: 0"><input disabled="true" type="checkbox"/></td>
+              <td *ngIf="u.valReview === 0" style="padding-right: 0; padding-left: 0"><input type="checkbox" value="{{ u.idEvent }}" /></td>
+              <td *ngIf="u.valReview === 1">
+                <p style="text-align: center;"> 
+                  <span class="mytooltip tooltip-effect-5">
+                    <span class="tooltip-item btn btn-warning">Revisión</span>
+                    <span class="tooltip-content clearfix" style="width: 300px;font-size: 10px; position: absolute;z-index: 2;padding: 0">
+                      <span class="tooltip-text" style="text-align: center;width: 300px;padding: 0">
+                        <h6>Fecha revisión: </h6>
+                        <p style="font-size: 8px">{{ u.dateReview }}</p>
+
+                        <h6>Usuario revisión: </h6>
+                        <p style="font-size: 8px">{{ u.userReview }}</p>
+
+                        <h6>Observaciones: </h6>
+                        <p style="font-size: 8px">{{ u.reviewObservations }} </p>
+                      </span>
+                    </span>
+                  </span>
+                </p>
+              </td>
+
+              <td (click)="openModal(modalContent,u.idEvent)" *ngIf="u.valReview === 0">
+                <p style="text-align: center;">
+                  <span class="mytooltip tooltip-effect-2">
+                    <span class="tooltip-item btn btn-primary">Revisar</span>
+                  </span>
+                </p>
+              </td>
+              <td>{{u.travel}}</td>
+              <td>{{u.vehicle}}</td>
+              <td style="padding-right:0; padding-left: 0; font-size: 10px">{{u.driver}}</td>
+              <td>{{u.dateEvent}} {{u.dateTimeEvent}}</td>
+              <td>
+              <a href="https://www.google.com/maps?q={{ u.location.replace('Long:', '').replace('Lat', '').split(':')[1] }},{{ u.location.replace('Long:', '').replace('Lat', '').split(':')[0] }}" target="_blank">Ver ubicacion <i class="ti-location-pin"></i></a></td>
+              
+            </tr>
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+
+      </div> 
+    </div>
+  </div>
+</div>
+ -->
+
+<ng-template #modalContent let-c="close" let-d="dismiss">
+  <form (ngSubmit)="reviewForm1.form.valid && guardarRevision();" #reviewForm1="ngForm">
+    <div class="modal-header">
+      <h3 class="modal-title">Revisión de evento</h3>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')"><span aria-hidden="true">&times;</span></button>
+    </div>   
+    <div class="flexbox mb-4 col-sm-12">
+      <div class="form-group col-sm-12">
+        <label class="mb-0 mr-2">Tipo de revision</label>
+        <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-stop-circle"></i></span>
+          <select class="form-control" id="tipo1" name="tipo1" [(ngModel)]="objReviewOne.reviewType" #tipo1="ngModel" style="height: 37px" required>
+            <option value="" disabled="true">Seleccione el punto</option>
+            <option *ngFor="let rv of reviewType" [ngValue]="rv.id">{{ rv.event}}</option>                  
+          </select>
+        </div>
+      </div>
+      <div *ngIf="tipo1.invalid && ((tipo1.dirty || tipo1.touched) || guardarRevision)" class="alert alert-danger">
+        <div *ngIf="tipo1.errors.required">
+          Debes seleecionar un tipo.
+        </div>
+      </div>
+      <div class="form-group col-md-12">
+        <label>Observaciones</label>
+        <div class="input-group">
+          <!-- <textarea disabled="true" id="limitProp" name="limitProp" rows="4" cols="80" #vehicleClass="ngModel" [(ngModel)]='categoria.description' > {{ categoria.description }} </textarea> -->
+          <textarea id="objReviewObs" name="objReviewObs" #objReview="ngModel" rows="4" cols="80" [(ngModel)]="objReviewOne.observaciones" required="">{{ objReviewOne.observaciones }}</textarea>
+        </div>
+      </div>
+      <div *ngIf="objReview.invalid && ((objReview.dirty || objReview.touched) || guardarRevision)" class="alert alert-danger">
+        <div *ngIf="objReview.errors.required">
+          Ingresa una observación.
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer" style="text-align: right;">
+      <button id="guardarRevision" class="btn btn-primary m-b-20">Guardar</button>
+      <!-- <button id="guardarRevision" (click)="guardarRevision = true" class="btn btn-primary m-b-20">Guardar</button> -->
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #modalContentAll let-c="close" let-d="dismiss" id="modal-container">
+  <div class="modal-header">
+    <h3 class="modal-title">Revision de evento</h3>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>  
+  <div class="page-body">
+    <div class="card">
+      <div class="card-block">
+        <form #reviewForm="ngForm" (ngSubmit)="reviewForm.form.valid && guardarRevisionCheck()">
+          <div class="flexbox mb-4 col-sm-12">
+            <div class="form-group col-sm-12">
+              <label class="mb-0 mr-2">Tipo de revision</label>
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-stop-circle"></i></span>
+                <select class="form-control" id="tipo" name="tipo" [(ngModel)]="objReviewAll.reviewType" #tipo="ngModel" style="height: 37px" required>
+                  <option value="0" >Seleccione el punto</option>
+                
+                  <option *ngFor="let rv of reviewType" [ngValue]="rv.id">
+                    {{ rv.event}}
+                  </option>                  
+                </select>
+              </div>
+              <div *ngIf="tipo.invalid && ((tipo.dirty || tipo.touched) || guardarRevisionCheck)" class="alert alert-danger">
+                <div *ngIf="tipo.errors.required">
+                  Debes seleecionar un tipo.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row col-md-12">
+            <div class="form-group col-md-12">
+              <label>Observaciones</label>
+              <div class="input-group">
+                <!-- <textarea disabled="true" id="limitProp" name="limitProp" rows="4" cols="80" #vehicleClass="ngModel" [(ngModel)]='categoria.description' > {{ categoria.description }} </textarea> -->
+                <textarea id="objReviewAll" name="objReviewAll" #objReview1="ngModel" rows="4" cols="80" [(ngModel)]="objReviewAll.observaciones" required="">{{ objReviewAll.observaciones }}</textarea>
+              </div>
+            </div>
+            <div *ngIf="objReview1.invalid && ((objReview1.dirty || objReviewAll.touched) || guardarRevisionCheck)" class="alert alert-danger">
+              <div *ngIf="objReview1.errors.required">
+                Ingresa una observación.
+              </div>
+            </div>
+          </div>
+          <div class="form-row col-md-12">
+            <div class="form-group col-md-3">
+              <button id="guardarRevisionCheck" class="btn btn-primary m-b-20">Guardar</button>
+            </div>
+          </div>
+
+        </form>      
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+
+
+
+<div class="page-body">
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de eventos</h5>
+    </div>
+    <div class="card-block">
+      
+        <form #reportForm="ngForm" (ngSubmit)="reportForm.form.valid && filterReport()">
+          <div class="form-row col-md-12">
+            <div class="form-group col-md-4">
+              <label>Tipo de evento</label>
+              <div class="input-group">
+                <ng-select class="customEventType" name="eventType" id="eventType" 
+                  [items]="eventTypes"
+                  [virtualScroll]="true"
+                  [loading]="loading1"
+                  bindLabel="event"
+                  bindValue="id"
+                  placeholder="-Seleccione evento-"
+                  [(ngModel)]="event.id"
+                  (scrollToEnd)="fetchMore_1($event)" #id="ngModel">
+                  <ng-template ng-header-tmp>
+                    <small class="form-text text-muted">{{eventTypesBuffer.length}} de {{eventTypes.length}}</small>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{item.event}}
+                  </ng-template>
+                </ng-select>
+              </div>          
+            </div>
+
+            <div class="form-group col-md-5">
+              <label>Conductor</label>
+              <div class="input-group">
+                <ng-select class="customDriver" name="driver" id="driver" [items]="drivers"
+                  [virtualScroll]="true"
+                  [loading]="loading1"
+                  bindLabel="description"
+                  bindValue="thirdId"
+                  placeholder="-Seleccione conductor-"
+                  [(ngModel)]="event.thirdId"
+                  (scrollToEnd)="fetchMore_1($event)" #thirdId="ngModel">
+                  <ng-template ng-header-tmp>
+                    <small class="form-text text-muted">{{driversBuffer.length}} de {{drivers.length}}</small>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{item.description}}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label>Placa</label>
+              <div class="input-group">
+                <ng-select class="customPlate" name="plate" id="plate" [items]="plates"
+                  [virtualScroll]="true"
+                  [loading]="loading1"
+                  bindLabel="plate"
+                  bindValue="plateId"
+                  placeholder="-Placa-"
+                  [(ngModel)]="event.plateId"
+                  (scrollToEnd)="fetchMore_1($event)" #plate="ngModel">
+                  <ng-template ng-header-tmp>
+                    <small class="form-text text-muted">{{platesBuffer.length}} de {{plates.length}}</small>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-index="index">
+                    {{item.plate}}
+                  </ng-template>
+                </ng-select>
+              </div>          
+            </div>
+
+            <div class="form-group col-md-3">
+              <label >  </label>
+              <div class="input-group">
+              <!-- <a _ngcontent-c2="" class="btn btn-primary m-b-20" (click)="filterEvent($event)">
+                &nbsp;Buscar
+              </a> -->
+
+              <button type="button" class="btn btn-primary m-b-20" (click)="filterEvent($event)">Buscar</button>
+
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="form-row col-md-12">
+          <div class="form-group col-md-3">
+            <button (click)="openModalAll(modalContentAll)"  class="btn btn-Dark m-b-20">Revisar seleccionados</button>
+          </div>
+        </div>
+        <div class="dt-responsive table-responsive">
+          <table id="base-tbl" class="table">
+            <thead>
+            <tr>
+              <th><input type="checkbox" onclick="marcar(this);"/></th>
+              <th>Revisión</th>
+              <th>Evento</th>
+              <th>Viaje</th>
+              <th>Vehiculo</th>
+              <th>Conductor</th>
+              <th>Fecha/Hora</th>
+              <th>Ubicacion</th>
+            </tr>
+            </thead>
+
+            
+
+            <tbody>
+            <tr style="height: 100px;">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr *ngFor="let u of eventos" style="padding-left: 0"> 
+              <td *ngIf="u.valReview === 1" style="padding-right: 0; padding-left: 0"><input disabled="true" type="checkbox"/></td>
+              <td *ngIf="u.valReview === 0" style="padding-right: 0; padding-left: 0"><input type="checkbox" value="{{ u.idEvent }}" /></td>
+
+              <td *ngIf="u.valReview === 1">
+                <p style="text-align: center;"> 
+                  <span class="mytooltip tooltip-effect-5" placement="right">
+                    <i class="fa fa-check-circle" style="color: #12279C; font-size: 30px"></i>
+                    <span class="tooltip-content clearfix" style="width: 300px;font-size: 10px; position: absolute;z-index: 2;padding: 0">
+                      <span class="tooltip-text" style="text-align: center;width: 300px;padding: 0">
+                        <h6>Fecha revisión: </h6>
+                        <p style="font-size: 8px">{{ u.dateReview }}</p>
+
+                        <h6>Usuario revisión: </h6>
+                        <p style="font-size: 8px">{{ u.userReview }}</p>
+
+                        <h6>Observaciones: </h6>
+                        <p style="font-size: 8px">{{ u.reviewObservations }} </p>
+                      </span>
+                    </span>
+                  </span>
+                </p>
+              </td>
+
+              <td (click)="openModal(modalContent,u.idEvent)" *ngIf="u.valReview === 0">
+                <p style="text-align: center;cursor: pointer;">
+                  <a href="javascript:" placement="right" ngbTooltip="Ir a revisar!">
+                    <i class="fa fa-times-circle" style="color: #EC2C35; font-size: 30px"></i>
+                  </a>
+                </p>
+              </td>
+              
+              <td><span [ngClass]=u.classEventType>{{u.event}}</span></td>
+              
+              
+              <td>{{u.travel}}</td>
+              <td>{{u.vehicle}}</td>
+              <td style="padding-right:0; padding-left: 0; font-size: 10px">{{u.driver}}</td>
+              <td>{{u.dateEvent}} {{u.dateTimeEvent}}</td>
+              <!--<td>{{ u.location.replace('Long:', '').replace('Lat', '') }}</td>-->
+              <td>
+              <a href="https://www.google.com/maps?q={{ u.location.replace('Long:', '').replace('Lat', '').split(':')[1] }},{{ u.location.replace('Long:', '').replace('Lat', '').split(':')[0] }}" target="_blank">Ver ubicacion <i class="ti-location-pin"></i></a></td>
+              
+            </tr>
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+
+      </div> 
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="page-body">
+  <div class="card">
+    <div class="card-header">
+      <h5>Lista de eventos</h5>
+    </div>
+    <div class="card-block">
+        <div class="dt-responsive table-responsive">
+          <table id="base-tbl" class="table">
+            <thead>
+	            <tr>
+	              <th>Eventos</th>
+	              <th>Vehiculo</th>
+	              <th>Conductor</th>
+	            </tr>
+            </thead>        
+
+            <tbody>
+              <tr  *ngFor="let i of vehiclesEvents"> 
+              	<td style="padding-bottom: 1px;padding-top: 1px;">
+              		<div class="label-icon">
+          				<i class="fa fa-warning fa-10x" style="font-size: 20px;"></i>
+          				  <a [routerLink]="['/home/adm/vehicleEvents', i.idVehicle]" style="cursor: pointer;color:red">
+                      <label *ngIf="i.countEvents === 0" class="badge bg-default badge-bottom-right" style="cursor: pointer;">{{ i.countEvents }}</label>
+                      <label *ngIf="i.countEvents > 0" class="badge bg-danger badge-bottom-right" style="cursor: pointer;">{{ i.countEvents }}</label>
+            				</a>
+              		</div>
+              	</td>
+              	<td style="padding-bottom: 0;padding-top: 0" >{{ i.plate }}</td>
+              	<td style="padding-bottom: 0;padding-top: 0">{{ i.driverName }}</td>              
+              </tr>
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+
+      </div> 
+    </div>
+  </div>
+</div>

@@ -1,0 +1,892 @@
+<ng-template #modalContentCargue let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f1.form.valid && crearActualizarCargue(); f1.form.valid && c('Al guardar')" #f1="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar cargue</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-3">
+          <label>Fecha de cargue</label>
+          <div class="input-group">
+            <span class="input-group-addon" (click)="d2.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaCargue" name="fechaCargue" [(ngModel)]="cargueExp.loadDate" ngbDatepicker #d2="ngbDatepicker" (keyup)="onKey()" required #loadDate="ngModel">
+          </div>
+          <div *ngIf="loadDate.invalid && ( (loadDate.dirty || loadDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="loadDate.errors.required">
+              La fecha de cargue es requerida.
+            </div>
+            <div *ngIf="isValidDate(cargueExp.loadDate)==false">
+              El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label>Hora de cargue</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-clock-time"></i></span>
+            <input type="time" class="form-control" id="horaCargue" name="horaCargue" [(ngModel)]="cargue.loadTime" required #horaCargue="ngModel" />
+            <div *ngIf="horaCargue.invalid && ( (horaCargue.dirty || horaCargue.touched) || f1.submitted)" class="alert alert-danger">
+              <div *ngIf="horaCargue.errors.required">
+                La hora de cargue es requerida.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label>Fecha salida de cargue</label>
+          <div class="input-group">
+            <span class="input-group-addon" (click)="d3.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaSalidaCargue" name="fechaSalidaCargue" [(ngModel)]="cargueExp.loadDepartureDate" ngbDatepicker #d3="ngbDatepicker" (keyup)="onKey()" required #loadDepartureDate="ngModel">
+          </div>
+          <div *ngIf="loadDepartureDate.invalid && ( (loadDepartureDate.dirty || loadDepartureDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="loadDepartureDate.errors.required">
+              La fecha de salida de cargue es requerida.
+            </div>
+            <div *ngIf="isValidDate(cargueExp.loadDepartureDate)==false">
+              El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label>Hora salida</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-clock-time"></i></span>
+            <input type="time" class="form-control" id="horaSalidaCargue" name="horaSalidaCargue" [(ngModel)]="cargue.loadDepartureTime" required #horaSalidaCargue="ngModel" />
+          </div>
+          <div *ngIf="horaSalidaCargue.invalid && ( (horaSalidaCargue.dirty || horaSalidaCargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="horaSalidaCargue.errors.required">
+              La hora salida de cargue es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-6">
+          <label>Tercero</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-ui-user"></i></span>
+            <ng-select class="custom_1" name="propietarioCargue" id="propietarioCargue" [items]="propietariosCargue"
+              [virtualScroll]="true"
+              [loading]="loading1"
+              bindLabel="description"
+              bindValue="pk"
+              placeholder="Seleccione el tercero"
+              [(ngModel)]="cargue.loadOwnerId"
+              (scrollToEnd)="fetchMore_1($event)" #propietarioCargue="ngModel" (ngModelChange)="obtenerDireccionesPropietarioCargue($event)" required>
+                <ng-template ng-header-tmp>
+                  <small class="form-text text-muted">{{propietariosCargueBuffer.length}} de {{propietariosCargue.length}}</small>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  {{item.description}}
+                </ng-template>
+            </ng-select>
+          </div>
+          <div *ngIf="propietarioCargue.invalid && ( (propietarioCargue.dirty || propietarioCargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="propietarioCargue.errors.required">
+              El propietario es requerido.
+            </div>
+          </div>          
+        </div>
+
+        <div class="form-group col-md-6">
+          <label>Sedes</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-home"></i></span>
+            <select class="form-control" name="propietarioDirCargue" id="propietarioDirCargue" [(ngModel)]="cargue.loadBranchId" #propietarioDirCargue="ngModel" (ngModelChange)="obtenerInfoDirCargue($event)" required>
+              <option value="" disabled>Seleccione la sede</option>
+              <option *ngFor="let s of surcursalesPropietarioCargue" [ngValue]="s.id">
+                {{ s.name}}
+              </option>
+            </select>
+          </div>
+          <div *ngIf="propietarioDirCargue.invalid && ( (propietarioDirCargue.dirty || propietarioDirCargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="propietarioDirCargue.errors.required">
+              El nombre de la sede es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-4">
+          <label>Dirección</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-street-view"></i></span>
+            <input type="text" class="form-control" id="nombreSedeCargue" name="nombreSedeCargue" disabled="" [(ngModel)]="cargue.loadName" #loadName="ngModel">
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label>Teléfono</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-phone"></i></span>
+            <input type="text" class="form-control" id="destinarioTelefono" name="destinarioTelefono" disabled="" [(ngModel)]="cargue.loadPhone" #loadPhone="ngModel">
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label >Ciudad</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+            <input type="text" class="form-control" id="destinarioCiudad" name="destinarioCiudad" disabled="" [(ngModel)]="cargue.loadCity" #loadCity="ngModel">
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <span><h4>Datos de quien entrega.</h4></span>
+      <hr>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-4">
+          <label>Cedula</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="cedulaCargue" name="cedulaCargue" [(ngModel)]="cargue.receiverIdentificationLoad" placeholder="Digite el número de cedula" required #cedulaCargue="ngModel">
+          </div>
+          <div *ngIf="cedulaCargue.invalid && ( (cedulaCargue.dirty || cedulaCargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="cedulaCargue.errors.required">
+              La cedula es requerida
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label>Nombre</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="nombreCargue" name="nombreCargue" [(ngModel)]="cargue.receiverNameLoad" placeholder="Digite el nombre" required #nombreCargue="ngModel">
+          </div>
+          <div *ngIf="nombreCargue.invalid && ( (nombreCargue.dirty || nombreCargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="nombreCargue.errors.required">
+              El nombre es requerido
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label>Teléfono</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="telCargue" name="telCargue" [(ngModel)]="cargue.receiverPhoneLoad" placeholder="Digite el teléfono" required #telCargue="ngModel">
+          </div>
+          <div *ngIf="telCargue.invalid && ( (telCargue.dirty || telCargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="telCargue.errors.required">
+              El teléfono es requerido
+            </div>
+          </div>
+        </div>
+       </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20" *ngIf="btnIsVisible == true">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+
+
+  </form>
+</ng-template>
+
+<ng-template #modalContentDescargue let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f1.form.valid && crearActualizarDescargue(); f1.form.valid && c('Al guardar')" #f1="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar descargue</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-3">
+          <label>Fecha de descargue</label>
+          <div class="input-group">
+            <span class="input-group-addon" (click)="d4.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaDescargue" name="fechaDescargue" [(ngModel)]="descargueExp.unloadDate" ngbDatepicker #d4="ngbDatepicker" (keyup)="onKey()" required #unloadDate="ngModel">
+          </div>
+          <div *ngIf="unloadDate.invalid && ( (unloadDate.dirty || unloadDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="unloadDate.errors.required">
+              La fecha hora de descargue es requerida.
+            </div>
+            <div *ngIf="isValidDate(descargueExp.unloadDate)==false">
+              El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label>Hora descargue</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-clock-time"></i></span>
+            <input type="time" class="form-control" id="horaDescargue" name="horaDescargue" [(ngModel)]="descargue.unloadTime" required #horaDescargue="ngModel" />
+          </div>
+          <div *ngIf="horaDescargue.invalid && ( (horaDescargue.dirty || horaDescargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="horaDescargue.errors.required">
+              La hora de descargue es requerida.
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-3">
+          <label>Fecha salida descargue</label>
+          <div class="input-group">
+            <span class="input-group-addon" (click)="d5.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaDescargue" name="fechaDescargue" [(ngModel)]="descargueExp.unloadDepartureDate" ngbDatepicker #d5="ngbDatepicker" (keyup)="onKey()" required #unloadDepartureDate="ngModel">
+          </div>
+          <div *ngIf="unloadDepartureDate.invalid && ( (unloadDepartureDate.dirty || unloadDepartureDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="unloadDepartureDate.errors.required">
+              La fecha de salida de descargue es requerida.
+            </div>
+            <div *ngIf="isValidDate(descargueExp.unloadDepartureDate)==false">
+              El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label>Hora de salida</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-clock-time"></i></span>
+            <input type="time" class="form-control" id="horaSalidaDescargue" name="horaSalidaDescargue" [(ngModel)]="descargue.unloadDepartureTime" required #horaSalidaDescargue="ngModel" />
+            <div *ngIf="horaSalidaDescargue.invalid && ( (horaSalidaDescargue.dirty || horaSalidaDescargue.touched) || f1.submitted)" class="alert alert-danger">
+              <div *ngIf="horaSalidaDescargue.errors.required">
+                La hora de salida de descargue es requerida.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-4">
+          <label># Contenedor</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="numeroContenedor" name="numeroContenedor" [(ngModel)]="descargue.containerNumber" placeholder="Digite el número de contenedor" required #numeroContenedor="ngModel">
+          </div>
+          <div *ngIf="numeroContenedor.invalid && ( (numeroContenedor.dirty || numeroContenedor.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="numeroContenedor.errors.required">
+              El número de contenedor es requerido.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label>Tipo de contenedor</label>
+          <div class="input-group">
+            <select class="form-control" name="tipoContenedor" id="tipoContenedor" [(ngModel)]="descargue.containerTypeId" #tipoContenedor="ngModel" required>
+              <option value="" disabled>Seleccione el tipo</option>
+              <option *ngFor="let co of tiposContenedor" [ngValue]="co.id">
+                {{co.Description}}
+              </option>
+            </select>
+          </div>
+          <div *ngIf="tipoContenedor.invalid && ( (tipoContenedor.dirty || tipoContenedor.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="tipoContenedor.errors.required">
+              El tipo de contenedor es requerido.
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label>Tercero</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-ui-user"></i></span>
+            <ng-select class="custom_1" name="propietario" id="propietario" [items]="propietarios"
+               [virtualScroll]="true"
+               [loading]="loading2"
+               bindLabel="description"
+               bindValue="pk"
+               placeholder="Seleccione el tercero"
+               [(ngModel)]="descargue.ownerDevolutionId"
+               (scrollToEnd)="fetchMore_2($event)" #propietario="ngModel" (ngModelChange)="obtenerDireccionesPropietario($event)" required>
+               <ng-template ng-header-tmp>
+                  <small class="form-text text-muted">{{propietariosBuffer.length}} de {{propietarios.length}}</small>
+               </ng-template>
+               <ng-template ng-option-tmp let-item="item" let-index="index">
+                 {{item.description}}
+              </ng-template>
+            </ng-select>
+          </div>
+          <div *ngIf="propietario.invalid && ( (propietario.dirty || propietario.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="propietario.errors.required">
+              El propietario es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-4">
+          <label>Sede</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-home"></i></span>
+            <select class="form-control" name="propietarioDir" id="propietarioDir" [(ngModel)]="descargue.devolutionBranchId" #propietarioDir="ngModel" (ngModelChange)="obtenerInfoDirDescargue($event)" required>
+              <option value="" disabled>Seleccione la sede</option>
+              <option *ngFor="let s of surcursalesPropietario" [ngValue]="s.id">{{s.name}}</option>
+            </select>
+          </div>
+          <div *ngIf="propietarioDir.invalid && ( (propietarioDir.dirty || propietarioDir.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="propietarioDir.errors.required">
+              La sede es requerida.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label>Dirección</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-street-view"></i></span>
+            <input type="text" class="form-control" id="nombreSedeDescargue" name="nombreSedeDescargue" disabled="" [(ngModel)]="descargue.unloadName" #loadName="ngModel">
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="col-5 col-form-label">Teléfono</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-phone"></i></span>
+            <input type="text" class="form-control" id="sedeTelefono" name="sedeTelefono" disabled="" [(ngModel)]="descargue.unloadPhone" #loadPhone="ngModel">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-4">
+          <label>Ciudad</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-world"></i></span>
+            <input type="text" class="form-control" id="sedeCiudad" name="sedeCiudad" disabled="" [(ngModel)]="descargue.unloadCity" #loadCity="ngModel">
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label>Fecha de devolución contenedor</label>
+          <div class="input-group">
+            <span class="input-group-addon" (click)="d6.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+            <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaDevolucion" name="fechaDevolucion" [(ngModel)]="descargueExp.unloadDevolutionDate" ngbDatepicker #d6="ngbDatepicker" (keyup)="onKey()" required #unloadDevolutionDate="ngModel">
+          </div>
+          <div *ngIf="unloadDevolutionDate.invalid && ( (unloadDevolutionDate.dirty || unloadDevolutionDate.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="unloadDevolutionDate.errors.required">
+              La fecha de devolución es requerida.
+            </div>
+            <div *ngIf="isValidDate(descargueExp.unloadDevolutionDate)==false">
+              El valor de la fecha no es válida.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label>Hora de devolución contenedor</label>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icofont icofont-clock-time"></i></span>
+              <input type="time" class="form-control" id="horaDevolucion" name="horaDevolucion" [(ngModel)]="descargue.unloadDevolutionTime" required #horaDevolucion="ngModel" />
+          </div>
+          <div *ngIf="horaDevolucion.invalid && ( (horaDevolucion.dirty || horaDevolucion.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="horaDevolucion.errors.required">
+              La hora de devolución es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <span><h4>Datos de quien recibe.</h4></span>
+      <hr>
+
+      <div class="form-row col-md-12">
+        <div class="form-group col-md-4">
+          <label>Cedula</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="cedulaDescargue" name="cedulaDescargue" [(ngModel)]="descargue.receiverIdentificationUnload" placeholder="Digite el número de cedula" required #cedulaDescargue="ngModel">
+          </div>
+          <div *ngIf="cedulaDescargue.invalid && ( (cedulaDescargue.dirty || cedulaDescargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="cedulaDescargue.errors.required">
+              La cedula es requerida
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label>Nombre</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="nombreDescargue" name="nombreDescargue" [(ngModel)]="descargue.receiverNameUnload" placeholder="Digite el nombre" required #nombreDescargue="ngModel">
+          </div>
+          <div *ngIf="nombreDescargue.invalid && ( (nombreDescargue.dirty || nombreDescargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="nombreDescargue.errors.required">
+              El nombre es requerido
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label>Teléfono</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="telDescargue" name="telDescargue" [(ngModel)]="descargue.receiverPhoneUnload" placeholder="Digite el teléfono" required #telDescargue="ngModel">
+          </div>
+          <div *ngIf="telDescargue.invalid && ( (telDescargue.dirty || telDescargue.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="telDescargue.errors.required">
+              El teléfono es requerido
+            </div>
+          </div>
+        </div>
+       </div>
+      </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20" *ngIf="btnIsVisible == true">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+
+
+
+<div class="page-body">
+  <div class="card-block">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="md-tabs md-card-tabs">
+          <ul class="nav nav-tabs  tabs" role="tablist">
+            <li class="nav-item">
+              <a id="titleHome1" class="nav-link active" data-toggle="tab" href="#home1" role="tab">Información general</a>
+            </li>
+            <li class="nav-item" [hidden]="hideSection">
+              <a id="titleConsignment" class="nav-link" data-toggle="tab" href="#consignment" role="tab">Cargues</a>
+            </li>
+            <li class="nav-item" [hidden]="hideSection">
+              <a class="nav-link" data-toggle="tab" href="#manifiestRelated" role="tab">Descargues</a>
+            </li>
+          </ul>
+
+          <div class="tab-content tabs card-block">
+            <div class="tab-pane active" id="home1" role="tabpanel">
+              <div class="m-t-15">
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Creación / Edición de solicitud</h5>
+                    </div>
+                    <div class="card-block">
+                      <form #manifiestoForm="ngForm" (ngSubmit)="manifiestoForm.form.valid && crearActualizarSolicitud()">
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-4">
+                            <label>Cliente</label>
+                            <div class="input-group">
+                              <ng-select class="custom" name="cliente" id="cliente" [items]="clientes"
+                                 [virtualScroll]="true"
+                                 [loading]="loading"
+                                 bindLabel="description"
+                                 bindValue="thirdId"
+                                 placeholder="Seleccione el cliente"
+                                 [(ngModel)]="solicitud.clientId"
+                                 (scrollToEnd)="fetchMore($event)" #cliente="ngModel" required>
+                                 <ng-template ng-header-tmp>
+                                    <small class="form-text text-muted">{{clientesBuffer.length}} de {{clientes.length}}</small>
+                                 </ng-template>
+                                 <ng-template ng-option-tmp let-item="item" let-index="index">
+                                   {{item.description}}
+                                </ng-template>
+                              </ng-select>
+                            </div>
+                            <div *ngIf="cliente.invalid && ( (cliente.dirty || cliente.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="cliente.errors.required">
+                                El cliente es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="inputAddress">Ciudad origen</label>
+                            <div class="input-group">
+                              <ng-select class="custom" name="origenS" id="origenS" [items]="origenSolicitud"
+                                 [virtualScroll]="true"
+                                 [loading]="loadingOrigen"
+                                 bindLabel="cityName"
+                                 bindValue="pk"
+                                 placeholder="Seleccione el origen"
+                                 [(ngModel)]="solicitud.originCityId"
+                                 (scrollToEnd)="fetchMoreOrigin($event)" #origenS="ngModel" required (ngModelChange)="obtenerDepOrigen($event)">
+                                 <ng-template ng-header-tmp>
+                                    <small class="form-text text-muted">{{origenSolicitudBuffer.length}} de {{origenSolicitud.length}}</small>
+                                 </ng-template>
+                                 <ng-template ng-option-tmp let-item="item" let-index="index">
+                                   {{item.cityName}}
+                                </ng-template>
+                              </ng-select>
+                            </div>
+                            <div *ngIf="origenS.invalid && ((origenS.dirty || origenS.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="origenS.errors.required">
+                                  El origen es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="input-group">Departamento origen</label>
+                            <div class="input-group">
+                              <input type="text" class="form-control" id="department1" name="department1" [(ngModel)]="solicitud.deparment1" disabled="">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-4">
+                            <label for="inputAddress">Ciudad destino</label>
+                            <div class="input-group">
+                              <ng-select class="custom" name="destinoS" id="destinoS" [items]="destinoSolicitud"
+                                 [virtualScroll]="true"
+                                 [loading]="loadingDestino"
+                                 bindLabel="cityName"
+                                 bindValue="pk"
+                                 placeholder="Seleccione el destino"
+                                 [(ngModel)]="solicitud.destinationCityId"
+                                 (scrollToEnd)="fetchMoreDestination($event)" #destinoS="ngModel" required (ngModelChange)="obtenerDepDestino($event)">
+                                 <ng-template ng-header-tmp>
+                                    <small class="form-text text-muted">{{destinoSolicitudBuffer.length}} de {{destinoSolicitud.length}}</small>
+                                 </ng-template>
+                                 <ng-template ng-option-tmp let-item="item" let-index="index">
+                                    {{item.cityName}}
+                                </ng-template>
+                              </ng-select>
+                            </div>
+                            <div *ngIf="destinoS.invalid && ((destinoS.dirty || destinoS.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="destinoS.errors.required">
+                                  El destino es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="input-group">Departamento destino</label>
+                            <div class="input-group">
+                              <input type="text" class="form-control" id="department2" name="department2" [(ngModel)]="solicitud.deparment2" disabled="">
+                            </div>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="input-group">N° pedido cliente</label>
+                            <div class="input-group">
+                              <input type="text" class="form-control" id="numeroPedido" name="numeroPedido" [(ngModel)]="solicitud.clientOrderNumber" #numeroPedido="ngModel" required>
+                            </div>
+                            <div *ngIf="numeroPedido.invalid && ( (numeroPedido.dirty || numeroPedido.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="numeroPedido.errors.required">
+                                El número de pedido es requerido.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-6">
+                            <label>Mercancía</label>
+                            <div class="input-group">
+                              <select class="form-control" name="producto" id="producto" [(ngModel)]="solicitud.productId" #producto="ngModel" required>
+                                <option value="" disabled>Seleccione la mercancía</option>
+                                <option *ngFor="let p of productos" [ngValue]="p.id">
+                                  {{ p.Description}}
+                                </option>
+                              </select>
+                            </div>
+                            <div *ngIf="producto.invalid && ( (producto.dirty || producto.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="producto.errors.required">
+                                La mercancía es requerida.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-6">
+                            <label>Valor mercancía</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-cur-dollar"></i></span>
+                              <input type="text" class="form-control" id="valorCarga" name="valorCarga" [(ngModel)]="solicitudExp.merchandiseValue" onkeyup="formatMerchandiseValue()" (ngModelChange)="formatMerchandiseValue()" pattern="(?:- ?)?\d{1,3}(?:\,\d{3})*(?:,\d+)?" placeholder="Digite el valor de la mercancía" required #merchandiseValue="ngModel">
+                            </div>
+                            <div *ngIf="merchandiseValue.invalid && ( (merchandiseValue.dirty || merchandiseValue.touched) ||guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="merchandiseValue.errors.required">
+                                El valor de la mercancía es requerido.
+                              </div>
+                              <div *ngIf="merchandiseValue.invalid&&solicitudExp.merchandiseValue!=''">
+                                El valor de la mercancía debe ser númerico.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-6">
+                            <label>Valor tárifa</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-cur-dollar"></i></span>
+                              <input type="text" class="form-control" id="valorTarifa" name="valorTarifa" [(ngModel)]="solicitudExp.rateValue" onkeyup="formatRateValue()" (ngModelChange)="formatRateValue()" pattern="(?:- ?)?\d{1,3}(?:\,\d{3})*(?:,\d+)?" placeholder="Digite el valor de la tárifa" required #rateValue="ngModel">
+                            </div>
+                            <div *ngIf="rateValue.invalid && ( (rateValue.dirty || rateValue.touched) ||guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="rateValue.errors.required">
+                                El valor de la tárifa es requerido.
+                              </div>
+                              <div *ngIf="rateValue.invalid&&solicitudExp.rateValue!=''">
+                                El valor de la tárifa debe ser númerico.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-6">
+                            <label>Valor flete</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-cur-dollar"></i></span>
+                              <input type="text" class="form-control" id="valorFlete" name="valorFlete" [(ngModel)]="solicitudExp.freightValue" onkeyup="formatFreightValue()" (ngModelChange)="formatFreightValue()" pattern="(?:- ?)?\d{1,3}(?:\,\d{3})*(?:,\d+)?" placeholder="Digite el valor del flete" required #freightValue="ngModel">
+                            </div>
+                            <div *ngIf="freightValue.invalid && ( (freightValue.dirty || freightValue.touched) ||guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="freightValue.errors.required">
+                                El valor del flete es requerido.
+                              </div>
+                              <div *ngIf="freightValue.invalid&&solicitudExp.freightValue!=''">
+                                El valor del flete debe ser númerico.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-row col-md-12">
+
+                        <!--
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">Tipo vehiculo</label>
+                              <div class="input-group">
+                                <select class="form-control" name="tipovehiculo" id="tipovehiculo" [(ngModel)]="solicitud.vehicleTypeId" #tipovehiculo="ngModel" required>
+                                  <option value="" disabled>Seleccione el tipo de vehículo</option>
+                                  <option *ngFor="let t of tiposVehiculo" [ngValue]="t.id" >
+                                    {{ t.description }}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="tipovehiculo.invalid && ((tipovehiculo.dirty || tipovehiculo.touched) || guardarSolicitud)" class="alert alert-danger">
+                                <div *ngIf="tipovehiculo.errors.required">
+                                    El tipo de vehiculo es requerido.
+                                </div>
+                              </div>
+                            </div>
+                        -->
+                            <div class="form-group col-md-6">
+                              <label>Tipo vehiculo</label>
+                              <div class="input-group">
+                                <ng-select class="custom" name="tipovehiculo" id="tipovehiculo" [items]="tiposVehiculo"
+                                 [virtualScroll]="true"
+                                 [loading]="loading"
+                                 bindLabel="description"
+                                 bindValue="pk"
+                                 placeholder="Seleccione el tipo"
+                                 [(ngModel)]="solicitud.bodyWorkId" #tipovehiculo="ngModel" required>
+                                 <ng-template ng-option-tmp let-item="item" let-index="index">
+                                   {{item.description}}
+                                  </ng-template>
+                                </ng-select>
+                              </div>
+                              <!--
+                              <div *ngIf="tipovehiculo.invalid && ((tipovehiculo.dirty || tipovehiculo.touched) || guardarSolicitud)" class="alert alert-danger">
+                                <div *ngIf="tipovehiculo.errors.required">
+                                    El tipo de vehiculo es requerido.
+                                </div>
+                              </div>
+                              -->
+                            </div>
+
+
+
+                            <div class="form-group col-md-6">
+                              <label>Tipo empaque</label>
+                              <div class="input-group">
+                                <select class="form-control" name="tipoEmpaque" id="tipoEmpaque" [(ngModel)]="solicitud.packageTypeId" #tipoEmpaque="ngModel" required>
+                                  <option value="" disabled>Seleccione el tipo</option>
+                                  <option *ngFor="let t of tiposEmpaque" [ngValue]="t.id">
+                                    {{ t.Description}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="tipoEmpaque.invalid && ( (tipoEmpaque.dirty || tipoEmpaque.touched) || guardarSolicitud)" class="alert alert-danger">
+                                <div *ngIf="tipoEmpaque.errors.required">
+                                  El tipo de empaque es requerido.
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-3">
+                            <label>Peso (kg)</label>
+                            <div class="input-group">
+                              <input type="number" class="form-control" id="peso" name="peso" [(ngModel)]="solicitud.weight" placeholder="Digite el peso" required #peso="ngModel">
+                            </div>
+                            <div *ngIf="peso.invalid && ( (peso.dirty || peso.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="peso.errors.required">
+                                El peso es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-3">
+                            <label>Volumen (m3)</label>
+                            <div class="input-group">
+                              <input type="number" class="form-control" id="volumen" name="volumen" [(ngModel)]="solicitud.volume" placeholder="Digite el volumen" required #volumen="ngModel">
+                            </div>
+                            <div *ngIf="volumen.invalid && ( (volumen.dirty || volumen.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="volumen.errors.required">
+                                El volumen es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-3">
+                            <label>Escolta</label>
+                            <div class="input-group">
+                              <input class="border-checkbox" type="checkbox" id="guardIsRequired" name="guardIsRequired" #guardIsRequired="ngModel" [(ngModel)]="solicitud.guardIsRequired">
+                              <label *ngIf="solicitud.guardIsRequired" class="border-checkbox-label" for="checkboxGuardIsRequired">Si</label>
+                              <label *ngIf="!solicitud.guardIsRequired" class="border-checkbox-label" for="checkboxGuardIsRequired">No</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-5">
+                            <label>Observaciones</label>
+                            <div class="input-group">
+                              <textarea class="form-control" (change)="doTextareaValueChange($event)" rows="3" cols="20" [value]="solicitud.comment">
+                              </textarea>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-5">
+                            <label>Requerimientos</label>
+                            <div class="input-group">
+                              <angular2-multiselect id="multiselect" name="multiselect" [data]="itemList"
+                                [(ngModel)]="selectedItems"
+                                [settings]="settings"
+                                (onSelect)="onItemSelect($event)"
+                                (onDeSelect)="OnItemDeSelect($event)">
+                               </angular2-multiselect>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-row col-md-12">
+                          <div class="form-group col-md-3">
+                            <label>Fecha de solicitud de cliente</label>
+                            <div class="input-group">
+                              <span class="input-group-addon" (click)="d7.toggle()" style="float:left;"><i class="icofont icofont-ui-calendar"></i></span>
+                              <input type="text" class="form-control" placeholder="yyyy-mm-dd" id="fechaSolicitud" name="fechaSolicitud" [(ngModel)]="solicitudExp.requestDate" ngbDatepicker #d7="ngbDatepicker" (keyup)="onKey()" required #requestDate="ngModel">
+                            </div>
+                            <div *ngIf="requestDate.invalid && ( (requestDate.dirty || requestDate.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="requestDate.errors.required">
+                                La fecha de solicitud es requerida.
+                              </div>
+                              <div *ngIf="isValidDate(solicitudExp.requestDate)==false">
+                                El valor de la fecha no es válida.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="form-group col-md-3">
+                            <label>Hora de solicitud</label>
+                            <div class="input-group">
+                              <span class="input-group-addon"><i class="icofont icofont-clock-time"></i></span>
+                              <input type="time" class="form-control" id="horaSolicitud" name="horaSolicitud" [(ngModel)]="solicitud.requestTime" required #horaSolicitud="ngModel" />
+                            </div>
+                            <div *ngIf="horaSolicitud.invalid && ( (horaSolicitud.dirty || horaSolicitud.touched) || guardarSolicitud)" class="alert alert-danger">
+                              <div *ngIf="horaSolicitud.errors.required">
+                                La hora es requerida.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <button type="submit" id="guardarEditarManifiesto" class="btn btn-primary m-b-20" (click)="guardarSolicitud = true" *ngIf="btnIsVisible == true">Guardar</button>
+                        <button type="button" title="Atrás"  class="btn btn-primary m-b-20" (click)="back()">Atrás</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane" id="consignment" role="tabpanel">
+              <div class="m-t-15">
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Creación / Edición de cargue</h5>
+                    </div>
+                    <div class="card-footer text-center">
+                      <button type="button" class="btn btn-primary m-b-20" (click)="openModalCargue(modalContentCargue,-1)" *ngIf="btnIsVisible == true">+Nuevo cargue</button>
+                    </div>
+                    <div class="card-block">
+                      <div class="dt-responsive table-responsive">
+                        <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                          <thead>
+                            <tr>
+                              <th>Acción</th>
+                              <th>Fecha/hora de cargue</th>
+                              <th>Fecha/hora de salida de cargue</th>
+                              <th>Propietario</th>
+                              <th>Dirección de cargue</th>
+                              <th>Cedula</th>
+                              <th>Nombre</th>
+                              <th>Telefono</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let ca of cargues; let i = index">
+                              <td>
+                                <a (click)="openModalCargue(modalContentCargue,i)" style="padding-right: 15px;cursor: pointer;" *ngIf="btnIsVisible == true"><i class="icofont icofont-edit-alt"></i></a>
+                                <a (click)="borrarCargue(i);" style="padding-right: 15px;cursor: pointer;" *ngIf="btnIsVisible == true"><i class="icofont icofont-trash"></i></a>
+                              </td>
+                              <td>{{ca.loadDate}} {{ca.loadTime}}</td>
+                              <td>{{ca.loadDepartureDate}} {{ca.loadDepartureTime}}</td>
+                              <td>{{ca.ownerName}}</td>
+                              <td>{{ca.address}}</td>
+                              <td>{{ca.receiverIdentificationLoad}}</td>
+                              <td>{{ca.receiverNameLoad}}</td>
+                              <td>{{ca.receiverPhoneLoad}}</td>
+                              
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="manifiestRelated" role="tabpanel">
+              <div class="m-t-15">
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Creación / Edición de descargue</h5>
+                    </div>
+                    <div class="card-footer text-center">
+                      <button type="button" class="btn btn-primary m-b-20" (click)="openModalDescargue(modalContentDescargue,-1)" *ngIf="btnIsVisible == true">+Nuevo descargue</button>
+                    </div>
+                    <div class="dt-responsive table-responsive">
+                      <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                        <thead>
+                          <tr>
+                            <th>Acción</th>
+                            <th>Fecha/hora de descargue</th>
+                            <th>Fecha/hora de salida de descargue</th>
+                            <th># Contenedor</th>
+                            <th>Tipo</th>
+                            <th>Propietario</th>
+                            <th>Dirección de devolución</th>
+                            <th>Fecha devolución contenedor</th>
+                            <th>Cedula</th>
+                            <th>Nombre</th>
+                            <th>Telefono</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let de of descargues; let i = index">
+                            <td>
+                              <a (click)="openModalDescargue(modalContentDescargue,i)" style="padding-right: 15px;cursor: pointer;" *ngIf="btnIsVisible == true"><i class="icofont icofont-edit-alt"></i></a>
+                              <a (click)="borrarDescargue(i);" style="padding-right: 15px;cursor: pointer;" *ngIf="btnIsVisible == true"><i class="icofont icofont-trash"></i></a>
+                            </td>
+                            <td>{{de.unloadDate}} {{de.unloadTime}}</td>
+                            <td>{{de.unloadDepartureDate}} {{de.unloadDepartureTime}}</td>
+                            <td>{{de.containerNumber}}</td>
+                            <td>{{de.containerType}}</td>
+                            <td>{{de.ownerName}}</td>
+                            <td>{{de.address}}</td>
+                            <td>{{de.unloadDevolutionDate}} {{de.unloadDevolutionTime}}</td>
+                            <td>{{de.receiverIdentificationUnload}}</td>
+                            <td>{{de.receiverNameUnload}}</td>
+                            <td>{{de.receiverPhoneUnload}}</td>
+                            
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

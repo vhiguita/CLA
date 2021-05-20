@@ -1,0 +1,751 @@
+<ng-template #modalContent let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f.form.valid && crearActualizarCuenta(); f.form.valid && c('Al guardar')" #f="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar Cuenta</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Banco</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="bank" name="name" [(ngModel)]="cuentaProveedor.bank" placeholder="Digite el banco" required #bank="ngModel">
+          <div *ngIf="bank.invalid && ( (bank.dirty || bank.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="bank.errors.required">
+              El banco es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Número de la cuenta</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="accountNumber" name="accountNumber" [(ngModel)]="cuentaProveedor.accountNumber" placeholder="Digite el número de la cuenta" required #accountNumber="ngModel">
+          <div *ngIf="accountNumber.invalid && ( (accountNumber.dirty || accountNumber.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="accountNumber.errors.required">
+              La número de la cuenta es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Nombre de la cuenta</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="accountName" name="accountName" [(ngModel)]="cuentaProveedor.accountName" placeholder="Digite el nombre de la cuenta" required #accountName="ngModel">
+          <div *ngIf="accountName.invalid && ( (accountName.dirty || accountName.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="accountName.errors.required">
+              La nombre de la cuenta es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Tipo</label>
+        <div class="col-7">
+          <select class="form-control" name="accounttype" id="accounttype" [(ngModel)]="cuentaProveedor.accountTypeId" #accounttype="ngModel" required>
+            <option value="" disabled>Seleccione el tipo de cuenta</option>
+            <option *ngFor="let tipoCuenta of tiposCuenta" [ngValue]="tipoCuenta.id">
+              {{ tipoCuenta.description}}
+            </option>
+          </select>
+          <div *ngIf="accounttype.invalid && ( (accounttype.dirty || accounttype.touched) || f.submitted)" class="alert alert-danger">
+            <div *ngIf="accounttype.errors.required">
+              El tipo de cuenta es requerida.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+<ng-template #modalContent1 let-c="close" let-d="dismiss" id="modal-container">
+  <form name="form" (ngSubmit)="f1.form.valid && crearActualizarContacto(); f1.form.valid && c('Al guardar')" #f1="ngForm" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title">Crear / modificar contacto</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Nombre(s) y Apellido(s)</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="name" name="name" [(ngModel)]="contactoProveedor.name" placeholder="Digite el nombre" required #name="ngModel">
+          <div *ngIf="name.invalid && ( (name.dirty || name.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="name.errors.required">
+              El nombre es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Profesión</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="occupation" name="occupation" [(ngModel)]="contactoProveedor.occupation" placeholder="Digite la profesión" required #occupation="ngModel">
+          <div *ngIf="occupation.invalid && ( (occupation.dirty || occupation.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="occupation.errors.required">
+              La profesión es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Empresa donde labora</label>
+        <div  class="col-7">
+          <input type="text" class="form-control" id="workplace" name="workplace" [(ngModel)]="contactoProveedor.workplace" placeholder="Digite la empresa" #workplace="ngModel">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Teléfono donde labora</label>
+        <div  class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-phone"></i></span>
+          <input type="text" class="form-control" style="width:90%;padding:4px;" id="workphone" name="workphone" [(ngModel)]="contactoProveedor.workphone" placeholder="Digite el teléfono" #workphone="ngModel">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Teléfono casa</label>
+        <div class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-phone"></i></span>
+          <input type="text" class="form-control" style="width:90%;padding:4px;" id="phone" name="phone" [(ngModel)]="contactoProveedor.phone" placeholder="Digite el teléfono" required #phone="ngModel">
+          <div *ngIf="phone.invalid && ( (phone.dirty || phone.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="phone.errors.required">
+              El teléfono es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Celular</label>
+        <div class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-mobile-phone"></i></span>
+          <input type="text" class="form-control" style="width:90%;padding:4px;" id="cellphone" name="cellphone" [(ngModel)]="contactoProveedor.cellphone" placeholder="Digite el celular" required #cellphone="ngModel">
+          <div *ngIf="cellphone.invalid && ( (cellphone.dirty || cellphone.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="cellphone.errors.required">
+              El celular es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Teléfono alternativo</label>
+        <div class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-phone-circle"></i></span>
+          <input type="text" class="form-control" style="width:90%;padding:4px;" id="optionalphone" name="optionalphone" [(ngModel)]="contactoProveedor.optionalphone" placeholder="Digite el teléfono" #optionalphone="ngModel">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Dirección casa</label>
+        <div class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-home"></i></span>
+          <input type="text" class="form-control" style="width:90%;padding:4px;" id="address" name="address" [(ngModel)]="contactoProveedor.address" placeholder="Digite la dirección" required #address="ngModel">
+          <div *ngIf="address.invalid && ( (address.dirty || address.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="address.errors.required">
+              La dirección es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Correo</label>
+        <div class="col-7">
+          <span class="input-group-addon" style="float:left;"><i class="icofont icofont-ui-email"></i></span>
+          <input type="email" class="form-control" style="width:90%;padding:4px;" id="correo" name="correo" [(ngModel)]="contactoProveedor.email" placeholder="Digite el correo" #correo="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+
+          <div *ngIf="correo.invalid && ( (correo.dirty || correo.touched) || f1.submitted)" class="alert alert-danger">
+            <!--<div *ngIf="correo.errors.required">
+              El correo es requerido.
+            </div>-->
+            <div *ngIf="correo.errors.pattern">
+              Formato de correo incorrecto.
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Parentesco</label>
+        <div class="col-7">
+          <input type="text" class="form-control" id="relationship" name="relationship" [(ngModel)]="contactoProveedor.relationship" placeholder="Digite el parentesco" required #relationship="ngModel">
+          <div *ngIf="relationship.invalid && ( (relationship.dirty || relationship.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="relationship.errors.required">
+              El parentesco es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-5 col-form-label">Tipo</label>
+        <div class="col-7">
+          <select class="form-control" name="type" id="type" [(ngModel)]="contactoProveedor.idTypeReference" #type="ngModel" required>
+            <option value="" disabled>Seleccione el tipo</option>
+            <option *ngFor="let tipoReferencia of tipos" [ngValue]="tipoReferencia.id">
+              {{ tipoReferencia.description}}
+            </option>
+          </select>
+          <div *ngIf="type.invalid && ( (type.dirty || type.touched) || f1.submitted)" class="alert alert-danger">
+            <div *ngIf="type.errors.required">
+              El tipo es requerido.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary m-b-20">Guardar</button>
+      <button type="button" class="btn btn-primary m-b-20" (click)="c('Close click')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>
+<div class="page-body">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="md-tabs md-card-tabs">
+        <ngb-tabset>
+          <ngb-tab title="Información básica">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <!-- personal card start -->
+                <div class="card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Creación / Edición de proveedor</h5>
+                      </div>
+                        <div class="card-block">
+                          <form #proveedorForm="ngForm" (ngSubmit)="proveedorForm.form.valid && crearActualizarProveedor()">
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-3">
+                              <label>Documento</label>
+                              <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-id"></i></span>
+                                <input type="text" class="form-control" id="identification" name="identification" [(ngModel)]="proveedor.identification" placeholder="Digite el documento" required #identification="ngModel">
+                              </div>
+                              <div *ngIf="identification.invalid && ((identification.dirty || identification.touched) || guardarProveedor)" class="alert alert-danger">
+                                <div *ngIf="identification.errors.required">
+                                  El documento es requerido
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label>Regimen</label>
+                              <div class="input-group">
+                                <select class="form-control" name="regimeid" id="regimeid" [(ngModel)]="proveedor.regimeId" #regimeid="ngModel" required>
+                                  <option value="" disabled>Seleccione el régimen</option>
+                                  <option *ngFor="let r of regimenes" [ngValue]="r.id">
+                                    {{r.description}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="regimeid.invalid && ( (regimeid.dirty || regimeid.touched) || guardarProveedor)" class="alert alert-danger">
+                                <div *ngIf="regimeid.errors.required">
+                                  El régimen es requerido.
+                                </div>
+                              </div>
+                              <!--<div class="input-group">
+                                <input type="text" class="form-control" id="regimen" name="regimen" [(ngModel)]="proveedor.regime" required #regimen="ngModel" placeholder="Digite el regimen">
+                              </div>
+                              <div *ngIf="regimen.invalid && ((regimen.dirty || regimen.touched) || guardarProveedor)" class="alert alert-danger">
+                                <div *ngIf="regimen.errors.required">
+                                  El regimen es requerido.
+                                </div>
+                              </div>-->
+
+                            </div>
+
+                            <div class="form-group col-md-3">
+                              <label>Lugar del documento</label>
+                              <div class="input-group">
+                                <select class="form-control" name="documentPlace" id="documentPlace" [(ngModel)]="proveedor.identificationPlaceId" (ngModelChange)="obtenerDepartamento($event)" #documentPlace="ngModel" required>
+                                  <option value="" disabled>Seleccione la ciudad</option>
+                                  <option *ngFor="let c of lugarDocumento" [ngValue]="c.id">
+                                    {{ c.description}}
+                                  </option>
+                                </select>
+                              </div>
+                              <div *ngIf="documentPlace.invalid && ( (documentPlace.dirty || documentPlace.touched) || guardarProveedor)" class="alert alert-danger">
+                                <div *ngIf="documentPlace.errors.required">
+                                  La ciudad es requerida.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label for="input-group">Departamento</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="department1" name="department1" [(ngModel)]="proveedorExp.deparment1" disabled="">
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">Nombre de la empresa ó razón</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="nombre" name="nombre" [(ngModel)]="proveedor.name" required #name="ngModel" placeholder="Digite el nombre de la empresa o razón social">
+                              </div>
+                              <div *ngIf="name.invalid && ((name.dirty || name.touched) || guardarProveedor)" class="alert alert-danger">
+                                <div *ngIf="name.errors.required">
+                                  El nombre de la empresa ó razón social es requerido.
+                                </div>
+                              </div>
+                          </div>
+
+                          <div class="form-group col-md-6">
+                            <label for="inputAddress">Contacto</label>
+                           <div class="input-group">
+                             <input type="text" class="form-control" id="contact" name="contact" [(ngModel)]="proveedor.contact" required #contact="ngModel" placeholder="Digite el contacto">
+                           </div>
+                           <div *ngIf="contact.invalid && ((contact.dirty || contact.touched) || guardarProveedor)" class="alert alert-danger">
+                             <div *ngIf="contact.errors.required">
+                               El contacto es requerido.
+                             </div>
+                           </div>
+                          </div>
+                          </div>
+
+                          <hr>
+
+                          <div class="form-row col-md-12">
+                            <div class="form-group col-md-4">
+                              <label for="inputAddress">Dirección</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="address" name="address" [(ngModel)]="proveedor.address" required #address="ngModel" placeholder="Digite la dirección">
+                              </div>
+                              <div *ngIf="address.invalid && ((address.dirty || address.touched) || guardarProveedor)" class="alert alert-danger">
+                                <div *ngIf="address.errors.required">
+                                  La dirección es requerido.
+                                </div>
+                              </div>
+                          </div>
+
+                          <div class="form-group col-md-3">
+                            <label for="inputAddress">Ciudad</label>
+                            <div class="input-group">
+                              <select class="form-control" name="cityid" id="cityid" [(ngModel)]="proveedor.cityId" #cityid="ngModel" required (ngModelChange)="obtenerBarriosCiudad($event)">
+                                <option value="" disabled>Seleccione la ciudad</option>
+                                <option *ngFor="let c of ciudades" [ngValue]="c.id">
+                                  {{ c.description}}
+                                </option>
+                              </select>
+                            </div>
+                            <div *ngIf="cityid.invalid && ( (cityid.dirty || cityid.touched) || guardarProveedor)" class="alert alert-danger">
+                              <div *ngIf="cityid.errors.required">
+                                La ciudad es requerida.
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-3">
+                            <label for="input-group">Departamento</label>
+                            <div class="input-group">
+                              <input type="text" class="form-control" id="department2" name="department2" [(ngModel)]="proveedorExp.deparment2" disabled="">
+                            </div>
+                          </div>
+                          <div class="form-group col-md-2">
+                            <label for="inputAddress">Barrio</label>
+                            <div class="input-group">
+                              <select class="form-control" name="districtid" id="districtid" [(ngModel)]="proveedor.districtId" #districtid="ngModel" required>
+                                <option value="" disabled>Seleccione el barrio</option>
+                                <option *ngFor="let b of barrios" [ngValue]="b.id">
+                                  {{ b.description}}
+                                </option>
+                              </select>
+                            </div>
+                            <div *ngIf="districtid.invalid && ( (districtid.dirty || districtid.touched) || guardarProveedor)" class="alert alert-danger">
+                              <div *ngIf="districtid.errors.required">
+                                El barrio es requerido.
+                              </div>
+                            </div>
+                          </div>
+                          </div>
+
+                            <hr>
+
+                            <div class="form-row col-md-12">
+                              <div class="form-group col-md-6">
+                                <label for="inputAddress">E-mail</label>
+                                <div class="input-group">
+                                  <input type="text" class="form-control" id="correo" name="correo" [(ngModel)]="proveedor.email" required #correo="ngModel" placeholder="Digite el correo" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                                </div>
+                                <div *ngIf="correo.invalid && ((correo.dirty || correo.touched) || guardarProveedor)" class="alert alert-danger">
+                                  <div *ngIf="correo.errors.required">
+                                    El correo es requerido
+                                  </div>
+                                  <div *ngIf="correo.errors.pattern">
+                                    Formato de correo incorrecto.
+                                  </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                              <label for="inputAddress">Sitio web</label>
+                             <div class="input-group">
+                               <input type="text" class="form-control" id="website" name="website" [(ngModel)]="proveedor.website" #website="ngModel" placeholder="Digite el sitio web">
+                             </div>
+                            </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-row col-md-12">
+                              <div class="form-group col-md-4">
+                                <label for="inputAddress">Celular</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-mobile-phone"></i></span>
+                                  <input type="text" class="form-control" id="phone1" name="phone1" [(ngModel)]="proveedor.phone1" placeholder="Digite el telefono" required #phone1="ngModel">
+                                </div>
+                                <div *ngIf="phone1.invalid && ( (phone1.dirty || phone1.touched) || guardarProveedor)" class="alert alert-danger">
+                                  <div *ngIf="phone1.errors.required">
+                                    El celular es requerido.
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="form-group col-md-4">
+                                <label for="inputAddress">Telefono fijo</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-phone"></i></span>
+                                  <input type="text" class="form-control" id="phone2" name="phone2" [(ngModel)]="proveedor.phone2" placeholder="Digite el telefono" #phone2="ngModel" required >
+                                </div>
+                                <div *ngIf="phone2.invalid && ( (phone2.dirty || phone2.touched) || guardarProveedor)" class="alert alert-danger">
+                                  <div *ngIf="phone2.errors.required">
+                                    El telefono es requerido.
+                                  </div>
+                                </div>
+
+                              </div>
+                              <div class="form-group col-md-4">
+                                <label for="inputAddress">Telefono alternativo</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon"><i class="icofont icofont-phone-circle"></i></span>
+                                  <input type="text" class="form-control" id="phone3" name="phone3" [(ngModel)]="proveedor.phone3" placeholder="Digite el telefono" #phone3="ngModel">
+                                </div>
+                              </div>
+                            </div>
+
+                            <hr>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-2">
+                                  <label>Valor cupo</label>
+                                  <div class="input-group">
+                                    <input type="number" class="form-control" id="quota" name="quota" [(ngModel)]="proveedor.quota" #quota="ngModel" placeholder="Digite el valor del cupo" required>
+                                  </div>
+                                  <div *ngIf="quota.invalid && ((quota.dirty || quota.touched) || guardarProveedor)" class="alert alert-danger">
+                                    <div *ngIf="quota.errors.required">
+                                      El valor del cupo es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                  <label>Plazo (días)</label>
+                                  <div class="input-group">
+                                    <input type="number" step="1" min="1" class="form-control" id="deadline" name="deadline" [(ngModel)]="proveedor.deadLine" #deadline="ngModel" placeholder="Digite el plazo" required>
+                                  </div>
+                                  <div *ngIf="deadline.invalid && ( (deadline.dirty || deadline.touched) || guardarProveedor)"
+                                   class="alert alert-danger">
+                                    <div *ngIf="deadline.errors.required">
+                                      El plazo es requerido
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-2">
+                                  <label>Aplica retención</label>
+                                  <div class="form-group row">
+                                    <div class="checkbox-fade fade-in-primary">
+                                      <label>
+                                        <div class="col-sm-10">
+                                            <input class="border-checkbox" type="checkbox" id="checkboxRetencion" name="checkboxRetencion" #applyRetention="ngModel" [(ngModel)]="proveedor.applyRetention">
+                                            <span class="cr">
+                                              <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                            </span>
+                                            <label *ngIf="proveedor.applyRetention" class="border-checkbox-label" for="checkboxRetencion">Si</label>
+                                            <label *ngIf="!proveedor.applyRetention" class="border-checkbox-label" for="checkboxRetencion">No</label>
+                                        </div>
+                                        </label>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-2">
+                                  <label>Factura IVA</label>
+                                  <div class="form-group row">
+                                    <div class="checkbox-fade fade-in-primary">
+                                      <label>
+                                        <div class="col-sm-10">
+                                            <input class="border-checkbox" type="checkbox" id="checkboxIVA" name="checkboxIVA" #billHasIVA="ngModel" [(ngModel)]="proveedor.billHasIVA">
+                                            <span class="cr">
+                                              <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                            </span>
+                                            <label *ngIf="proveedor.billHasIVA" class="border-checkbox-label" for="checkboxIVA">Si</label>
+                                            <label *ngIf="!proveedor.billHasIVA" class="border-checkbox-label" for="checkboxIVA">No</label>
+                                        </div>
+                                        </label>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>PUC Proveedor</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="userPUC" name="userPUC" #userPUC="ngModel" [(ngModel)]="proveedor.userPUC" placeholder="Digite el PUC" required>
+                                  </div>
+
+                                  <div *ngIf="userPUC.invalid && ((userPUC.dirty || userPUC.touched) || guardarProveedor)" class="alert alert-danger">
+                                    <div *ngIf="userPUC.errors.required">
+                                      El PUC es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <hr>
+                                <div class="form-row col-md-12">
+                                  <div class="form-group col-md-4">
+                                    <label>Servicios</label>
+                                    <div class="input-group">
+                                      <angular2-multiselect id="multiselect" name="multiselect" [data]="itemList"
+                                        [(ngModel)]="selectedItems"
+                                        [settings]="settings"
+                                        (onSelect)="onItemSelect($event)"
+                                        (onDeSelect)="OnItemDeSelect($event)">
+                                       </angular2-multiselect>
+                                    </div>
+                                    <!--<div *ngIf="quota.invalid && ((quota.dirty || quota.touched) || guardarProveedor)" class="alert alert-danger">
+                                      <div *ngIf="quota.errors.required">
+                                        El valor del cupo es requerido.
+                                      </div>
+                                    </div>-->
+                                  </div>
+                                </div>
+                              <!--
+                              <hr>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-2">
+                                  <label>Factura IVA</label>
+                                  <div class="form-group row">
+                                    <div class="checkbox-fade fade-in-primary">
+                                      <label>
+                                        <div class="col-sm-10">
+                                            <input class="border-checkbox" type="checkbox" id="checkboxIVA" name="checkboxIVA" #billHasIVA="ngModel" [(ngModel)]="proveedor.billHasIVA">
+                                            <span class="cr">
+                                              <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+                                            </span>
+                                            <label *ngIf="proveedor.billHasIVA" class="border-checkbox-label" for="checkboxIVA">Si</label>
+                                            <label *ngIf="!proveedor.billHasIVA" class="border-checkbox-label" for="checkboxIVA">No</label>
+                                        </div>
+                                        </label>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label>PUC cliente</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="userPUC" name="userPUC" #userPUC="ngModel" [(ngModel)]="proveedor.userPUC" placeholder="Digite el PUC" required>
+                                  </div>
+
+                                  <div *ngIf="userPUC.invalid && ((userPUC.dirty || userPUC.touched) || guardarProveedor)" class="alert alert-danger">
+                                    <div *ngIf="userPUC.errors.required">
+                                      El PUC es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>-->
+
+                            <!--<hr>
+                              <div class="form-row col-md-12">
+                                <div class="form-group col-md-3">
+                                  <label for="inputAddress">Banco</label>
+                                  <div class="input-group">
+                                    <span class="input-group-addon"><i class="icofont icofont-bank"></i></span>
+                                    <input type="text" class="form-control" id="bank" name="bank" [(ngModel)]="clienteAccount.bank" placeholder="Digite el banco" required #bank="ngModel">
+
+                                  </div>
+                                  <div *ngIf="bank.invalid && ( (bank.dirty || bank.touched) || guardarCliente)" class="alert alert-danger">
+                                    <div *ngIf="bank.errors.required">
+                                      El banco es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                  <label for="inputAddress">Tipo de cuenta</label>
+                                  <div class="input-group">
+                                    <select class="form-control" name="accounttype" id="accounttype" [(ngModel)]="clienteAccount.accountTypeId" #accounttype="ngModel" required>
+                                      <option value="" disabled>Seleccione el tipo de cuenta</option>
+                                      <option *ngFor="let tipoCuenta of tiposCuenta" [ngValue]="tipoCuenta.id">
+                                        {{ tipoCuenta.description}}
+                                      </option>
+                                    </select>
+                                  </div>
+                                  <div *ngIf="accounttype.invalid && ( (accounttype.dirty || accounttype.touched) || guardarCliente)" class="alert alert-danger">
+                                    <div *ngIf="accounttype.errors.required">
+                                      El tipo de cuenta es requerido.
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                  <label for="inputAddress">Numero de la cuenta</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="accountnumber" name="accountnumber" [(ngModel)]="clienteAccount.accountNumber" placeholder="Digite el número de cuenta" required #accountnumber="ngModel">
+                                  </div>
+                                  <div *ngIf="accountnumber.invalid && ( (accountnumber.dirty || accountnumber.touched) || guardarCliente)" class="alert alert-danger">
+                                    <div *ngIf="accountnumber.errors.required">
+                                      El número de cuenta es requerida.
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                  <label for="inputAddress">Nombre de la cuenta</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" id="accountname" name="accountname" [(ngModel)]="clienteAccount.accountName" placeholder="Digite el nombre de la cuenta" required #accountname="ngModel">
+                                  </div>
+                                  <div *ngIf="accountname.invalid && ( (accountname.dirty || accountname.touched) || guardarCliente)" class="alert alert-danger">
+                                    <div *ngIf="accountname.errors.required">
+                                      El nombre de la cuenta es requerida.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>-->
+                              <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Estado</label>
+                                <div class="col-sm-10">
+
+                                  <input class="border-checkbox" type="checkbox" id="checkboxStatus" name="checkboxStatus" #status="ngModel" [(ngModel)]="proveedor.status">
+                                  <label *ngIf="proveedor.status" class="border-checkbox-label" for="checkboxStatus">Activo</label>
+                                  <label *ngIf="!proveedor.status" class="border-checkbox-label" for="checkboxStatus">Inactivo</label>
+                                </div>
+                              </div>
+                              <hr>
+
+                              <button type="submit" id="guardarEditarProveedor" class="btn btn-primary m-b-20" (click)="guardarProveedor = true">Guardar</button>
+                          </form>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- personal card end-->
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="Cuentas de Banco" *ngIf="visibleProviderBankContent">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15">
+                <!-- info card start -->
+                <div class="card">
+
+                    <div class="card-header">
+                      <h5>Creación / Edición de cuenta</h5>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="button" class="btn btn-primary m-b-20" (click)="openModal(modalContent,-1)">+Nuevo</button>
+                    </div>
+                    <div class="card-block">
+                      <div class="dt-responsive table-responsive">
+                        <table id="base-style" class="table table-striped table-bordered nowrap table-hover">
+                          <thead>
+                            <tr>
+                              <th>Banco</th>
+                              <th>Tipo</th>
+                              <th>Número de la cuenta</th>
+                              <th>Nombre de la cuenta</th>
+                              <th>Acción</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let cuenta of cuentasProveedor; let i = index">
+                              <td>{{cuenta.bank}}</td>
+                              <td>{{cuenta.accountTypeName}}</td>
+                              <td>{{cuenta.accountNumber}}</td>
+                              <td>{{cuenta.accountName}}</td>
+                              <td>
+                                <a (click)="openModal(modalContent,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                <a (click)="borrar(i);" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-trash"></i></a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </div>
+                    </div>
+                </div>
+                <!-- info card end -->
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab title="Contactos" id="ngbContactos" *ngIf="visibleProviderContactContent">
+            <ng-template ngbTabContent>
+              <div [@fadeInOutTranslate] class="m-t-15" id="contactos">
+                <div class="card" id="contactos-card">
+                  <div class="tab-content tabs card-block">
+                    <div class="card-header">
+                      <h5>Creación / Edición de contacto</h5>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="button" class="btn btn-primary m-b-20" (click)="openModal_(modalContent1,-1)">+Nuevo</button>
+                    </div>
+                    <div class="card-block">
+                      <div class="dt-responsive table-responsive">
+                        <table id="base-style-2" class="table table-striped table-bordered nowrap table-hover">
+                          <thead>
+                            <tr>
+                              <th>Nombre</th>
+                              <th>Ocupación</th>
+                              <th>Empresa</th>
+                              <th>Teléfono empresa</th>
+                              <th>Teléfono casa</th>
+                              <th>Celular</th>
+                              <th>Teléfono alternativo</th>
+                              <th>Dirección casa</th>
+                              <th>Correo</th>
+                              <th>Parentesco</th>
+                              <th>Tipo</th>
+                              <th>Acción</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let c of contactosProveedor; let i = index">
+                              <td>{{c.name}}</td>
+                              <td>{{c.occupation}}</td>
+                              <td>{{c.workplace}}</td>
+                              <td>{{c.workphone}}</td>
+                              <td>{{c.phone}}</td>
+                              <td>{{c.cellphone}}</td>
+                              <td>{{c.optionalphone}}</td>
+                              <td>{{c.address}}</td>
+                              <td>{{c.email}}</td>
+                              <td>{{c.relationship}}</td>
+                              <td>{{c.nameTypeReference}}</td>
+                              <td>
+                                <a (click)="openModal_(modalContent1,i)" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-edit-alt"></i></a>
+                                <a (click)="borrarContacto(i);" style="padding-right: 15px;cursor: pointer;"><i class="icofont icofont-trash"></i></a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </div>
+                </div>
+                </div>
+               </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+
+        </ngb-tabset>
+      </div>
+    </div>
+  </div>
+</div>
